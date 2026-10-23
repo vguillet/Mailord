@@ -39,8 +39,46 @@
     if (moved.some(path => rest.includes(path))) throw new Error('Un dossier porte déjà ce nom à cet endroit.');
     return withParents([...rest, ...moved]);
   }
+  const UPDATE_BUSY = new Set(['checking', 'installing', 'restarting']);
+  const UPDATE_RESTART = new Set(['installing', 'restarting']);
+  function updateView(state, {offline = false, stalled = false} = {}) {
+    const status = state?.status || 'unconfigured';
+    const titles = {unconfigured: 'Reliez votre source de mises à jour', idle: 'Prêt à vérifier les versions', checking: 'Recherche d’une nouvelle version…', available: 'Une nouvelle version est disponible', current: 'Votre application est à jour', installing: 'Installation en cours…', restarting: 'Votre application redémarre…', updated: 'La mise à jour est installée', error: 'La mise à jour demande votre attention'};
+    const details = {unconfigured: 'Indiquez une fois le dépôt fourni par la personne qui maintient Auto-secrétaire.', idle: 'Vérifiez la disponibilité d’une version publiée sur la branche choisie.', checking: 'La branche publiée est consultée. Votre travail reste disponible.', available: 'Vous pouvez installer cette version quand vous le souhaitez.', current: 'Aucune nouvelle version n’a été trouvée sur la branche choisie.', installing: 'La nouvelle version est préparée et contrôlée avant le redémarrage.', restarting: 'Cette page se reconnectera automatiquement. Vous pouvez la laisser ouverte.', updated: 'Le service a redémarré. Votre espace est de nouveau disponible.', error: 'Consultez le détail ci-dessous, puis vérifiez à nouveau quand le problème est résolu.'};
+    const reconnecting = offline && UPDATE_RESTART.has(status);
+    return {
+      status,
+      title: reconnecting ? (stalled ? 'La reconnexion prend plus de temps' : 'Reconnexion à votre espace…') : offline ? 'Le service est momentanément indisponible' : titles[status] || 'État de mise à jour indisponible',
+      description: reconnecting ? (stalled ? 'Le service ne répond pas encore. La page continue d’essayer ; vérifiez que le lanceur reste ouvert sur le Mac.' : 'Le service redémarre. La connexion sera rétablie dès qu’il sera prêt.') : offline ? 'Réessayez la connexion. Le panneau conserve votre configuration en attendant le retour du service.' : details[status] || 'Réessayez la connexion pour obtenir l’état courant.',
+      busy: UPDATE_BUSY.has(status),
+      canCheck: !UPDATE_BUSY.has(status) && !!state?.repository && !offline,
+      canInstall: status === 'available' && !!state?.available_commit && state?.managed === true && !offline,
+      tone: offline && (!reconnecting || stalled) || status === 'error' ? 'error' : status === 'available' ? 'available' : ['current', 'updated'].includes(status) ? 'success' : ''
+    };
+  }
+  function updateRecovery(state, intent, now = Date.now()) {
+    if (!intent) return {intent: null, reload: false};
+    if (state.current_commit === intent.target || (['updated', 'error'].includes(state.status) && (intent.sawRestart || intent.hadDisconnection))) return {intent: null, reload: true};
+    if (state.status === 'error') return {intent: null, reload: false};
+    if (state.status === 'restarting') return {intent: {...intent, sawRestart: true}, reload: false};
+    if (['idle', 'available', 'current', 'unconfigured'].includes(state.status) && now - intent.startedAt > 15000 && !intent.accepted) {
+      return {intent: null, reload: false, notice: 'Aucune installation en cours n’a été confirmée. Vous pouvez vérifier les versions puis réessayer.'};
+    }
+    return {intent, reload: false};
+  }
+  async function sessionRequest(path, options, renewSession, fetcher = fetch) {
+    let response = await fetcher(path, options);
+    // A rejected mutation has not been executed. Refresh once, then retry only that rejection.
+    if ([401, 403].includes(response.status) && options.method !== 'GET') {
+      const token = await renewSession();
+      if (typeof token !== 'string' || !token) throw new Error('Impossible de renouveler la session locale. Réessayez la connexion.');
+      response = await fetcher(path, {...options, headers: {...options.headers, 'X-CSRF-Token': token}});
+    }
+    return response;
+  }
+
   // Export deterministic transformations for focused tests without a browser.
-  if (typeof module !== 'undefined' && module.exports) module.exports = {escape, checkedFolder, withParents, changeBranch};
+  if (typeof module !== 'undefined' && module.exports) module.exports = {escape, checkedFolder, withParents, changeBranch, updateView, updateRecovery, sessionRequest};
   if (typeof document === 'undefined') return;
 
   const $ = (selector, root = document) => root.querySelector(selector);
@@ -51,6 +89,7 @@
   const modalContent = $('#modal-content');
   let toastTimer;
   let disconnected = false;
+  const updateMonitor = {state: null, timer: null, polling: false, offline: false, disconnectedAt: 0, awaitingRestart: false};
 
   function dateLabel(date, full = false) {
     if (!date || Number.isNaN(new Date(date).getTime())) return 'Date inconnue';
@@ -81,17 +120,29 @@
   }
   function clearError() { $('#form-error', modal)?.remove(); }
   async function api(path, method = 'GET', data) {
+    if (method !== 'GET' && !path.startsWith('/api/updates/') && updatesLocked()) throw new Error('La mise à jour est en cours. Attendez la reconnexion avant de modifier votre espace.');
     const headers = {Accept: 'application/json'};
     if (method !== 'GET') {
       if (!model.state?.csrf_token) throw new Error('Le service est déconnecté. Réessayez la connexion avant cette action.');
       headers['Content-Type'] = 'application/json'; headers['X-CSRF-Token'] = model.state.csrf_token;
     }
     let response;
-    try { response = await fetch(path, {method, headers, body: data === undefined ? undefined : JSON.stringify(data), credentials: 'same-origin'}); }
-    catch (_) { throw new Error('Le service local ne répond pas. Vérifiez qu’Auto-secrétaire est lancé, puis réessayez.'); }
+    try {
+      response = await sessionRequest(path, {method, headers, body: data === undefined ? undefined : JSON.stringify(data), credentials: 'same-origin'}, async () => {
+        const fresh = await api('/api/state');
+        if (!fresh.csrf_token) throw new Error('La session locale n’a pas pu être renouvelée.');
+        model.state = fresh;
+        acceptUpdateState(fresh.updates);
+        return fresh.csrf_token;
+      });
+    } catch (cause) {
+      if (cause.status) throw cause;
+      const error = new Error('Le service local ne répond pas. Vérifiez qu’Auto-secrétaire est lancé, puis réessayez.');
+      error.networkUnavailable = true; error.cause = cause; throw error;
+    }
     let result;
     try { result = await response.json(); } catch (_) { throw new Error(`Réponse du service illisible (${response.status}). Réessayez dans un instant.`); }
-    if (!response.ok) throw new Error(typeof result.detail === 'string' ? result.detail : `L’action n’a pas abouti (${response.status}). Vérifiez les réglages et réessayez.`);
+    if (!response.ok) { const error = new Error(typeof result.detail === 'string' ? result.detail : `L’action n’a pas abouti (${response.status}). Vérifiez les réglages et réessayez.`); error.status = response.status; throw error; }
     return result;
   }
   async function action(key, work, button) {
@@ -113,12 +164,14 @@
       if (!Array.isArray(next.clients) || !Array.isArray(next.messages)) throw new Error('État du service incomplet. Relancez la connexion.');
       const changed = JSON.stringify(model.state) !== JSON.stringify(next) || disconnected;
       model.state = next; disconnected = false;
+      acceptUpdateState(next.updates);
       if (model.client && !next.clients.some(c => c.id === model.client)) model.client = null;
       model.selected = new Set([...model.selected].filter(id => next.messages.some(m => m.id === id)));
       if (!quiet || changed) render();
       if (notify) toast('État du service actualisé.');
     } catch (error) {
       disconnected = true;
+      if (expectedUpdateRestart()) { markUpdateOffline(); return; }
       $('#global-error').classList.remove('hidden');
       $('#global-error').innerHTML = `<span>${escape(error.message)}</span><button class="button small" data-action="refresh">Réessayer</button>`;
       if (!model.state) $('#message-list').innerHTML = empty('Connexion interrompue', 'Votre espace apparaîtra dès que le service local sera disponible.', '<button class="button" data-action="refresh">Réessayer</button>');
@@ -166,7 +219,7 @@
       notice.className = 'notice';
       notice.innerHTML = '<span><b>Votre espace d’essai.</b> Explorez le classement avec les messages de démonstration. Le mode d’impression est indiqué dans les réglages.</span><button class="button quiet small" data-action="settings">Configurer ma messagerie ↗</button>';
     } else notice.className = 'notice hidden';
-    renderClients(); renderSummary(); renderMessages(); renderDetail();
+    renderClients(); renderSummary(); renderMessages(); renderDetail(); renderUpdateControls();
     $('#last-scan').textContent = relativeDate(state.last_scan);
   }
   function renderClients() {
@@ -373,6 +426,150 @@
     modal.dataset.kind = 'reprint';
     openModal('Lancer une nouvelle impression ?', 'Cette action crée une nouvelle soumission, même si le document a déjà été envoyé à l’imprimante.', `<div class="notice warning"><span>${m.print_status === 'uncertain' ? 'Le résultat précédent est incertain. Vérifiez d’abord la file de l’imprimante et les feuilles déjà sorties.' : 'Vérifiez que vous avez besoin d’un nouvel exemplaire avant de continuer.'}</span></div><p class="dialog-note">${escape(m.subject || 'Sans objet')}</p><label class="checkbox-field"><input id="reprint-confirm" type="checkbox"><span>J’ai vérifié et je souhaite une nouvelle impression.</span></label>`, `<button class="button quiet" data-action="close-modal">Annuler</button><button class="button primary" id="reprint-submit" data-action="confirm-reprint" data-id="${escape(id)}" disabled>Réimprimer</button>`);
   }
+  function storedUpdate() {
+    try {
+      const item = JSON.parse(sessionStorage.getItem('autosecretaire.update') || 'null');
+      return item && typeof item.target === 'string' && /^[a-f0-9]{40,64}$/i.test(item.target) ? item : null;
+    } catch (_) { return null; }
+  }
+  function saveUpdateIntent(intent) {
+    updateMonitor.intent = intent;
+    try {
+      if (intent) sessionStorage.setItem('autosecretaire.update', JSON.stringify(intent));
+      else sessionStorage.removeItem('autosecretaire.update');
+    } catch (_) { /* Reconnection still works if session storage is unavailable. */ }
+  }
+  function expectedUpdateRestart() { return !!updateMonitor.intent || UPDATE_RESTART.has(updateMonitor.state?.status); }
+  function updatesLocked() { return expectedUpdateRestart(); }
+  function scheduleUpdatePoll(delay) {
+    clearTimeout(updateMonitor.timer);
+    const active = expectedUpdateRestart() || UPDATE_BUSY.has(updateMonitor.state?.status);
+    const open = modal.open && modal.dataset.kind === 'updates';
+    if (!active && !open) return;
+    updateMonitor.timer = setTimeout(pollUpdates, delay ?? (active ? 1500 : 5000));
+  }
+  function reloadUpdatedInterface() {
+    if (updateMonitor.reloading) return;
+    updateMonitor.reloading = true;
+    saveUpdateIntent(null);
+    try { sessionStorage.setItem('autosecretaire.reopen-updates', '1'); } catch (_) { /* Optional UI restoration. */ }
+    window.location.reload();
+  }
+  function acceptUpdateState(next) {
+    if (!next || typeof next.status !== 'string') return;
+    updateMonitor.state = next;
+    updateMonitor.offline = false; updateMonitor.disconnectedAt = 0;
+    if (model.state) model.state.updates = next;
+    const recovery = updateRecovery(next, updateMonitor.intent);
+    if (recovery.reload) { reloadUpdatedInterface(); return; }
+    if (recovery.intent !== updateMonitor.intent) saveUpdateIntent(recovery.intent);
+    if (recovery.notice) updateMonitor.notice = recovery.notice;
+    renderUpdateControls(); scheduleUpdatePoll();
+  }
+  function markUpdateOffline() {
+    updateMonitor.offline = true;
+    if (!updateMonitor.disconnectedAt) updateMonitor.disconnectedAt = Date.now();
+    if (updateMonitor.intent) saveUpdateIntent({...updateMonitor.intent, hadDisconnection: true, sawRestart: updateMonitor.intent.sawRestart || updateMonitor.state?.status === 'restarting'});
+    $('#connection-dot').classList.add('offline');
+    $('#connection-label').innerHTML = expectedUpdateRestart() ? 'Reconnexion en cours<small>Mise à jour du service</small>' : 'Service déconnecté<small>Nouvel essai automatique</small>';
+    renderUpdateControls(); scheduleUpdatePoll(1500);
+  }
+  async function pollUpdates() {
+    if (updateMonitor.polling || updateMonitor.reloading) return;
+    updateMonitor.polling = true;
+    try {
+      const next = await api('/api/updates');
+      const wasDisconnected = updateMonitor.offline || disconnected;
+      const restartFinished = expectedUpdateRestart() && !UPDATE_RESTART.has(next.status);
+      if (wasDisconnected || restartFinished) {
+        // Fetch a fresh session before enabling any mutation against the restarted worker.
+        const fresh = await api('/api/state');
+        if (!fresh.csrf_token || !Array.isArray(fresh.clients) || !Array.isArray(fresh.messages)) throw new Error('La reconnexion n’est pas encore prête.');
+        model.state = fresh; disconnected = false;
+        acceptUpdateState(fresh.updates || next);
+        if (!updateMonitor.reloading) render();
+      } else acceptUpdateState(next);
+      updateMonitor.connectionError = '';
+      renderUpdateControls();
+    } catch (error) {
+      updateMonitor.connectionError = expectedUpdateRestart() ? '' : error.message;
+      markUpdateOffline();
+    } finally { updateMonitor.polling = false; scheduleUpdatePoll(updateMonitor.offline ? 2000 : undefined); }
+  }
+  function renderUpdateControls() {
+    const state = updateMonitor.state;
+    const stalled = updateMonitor.offline && Date.now() - updateMonitor.disconnectedAt > 120000;
+    const view = updateView(state, {offline: updateMonitor.offline, stalled});
+    const active = updatesLocked();
+    $('#updates-dot')?.classList.toggle('hidden', view.status !== 'available');
+    $('#update-available-button')?.classList.toggle('hidden', view.status !== 'available' || active);
+    const banner = $('#update-banner');
+    if (banner) {
+      banner.classList.toggle('hidden', !active);
+      banner.innerHTML = `<span>${updateMonitor.offline ? 'Le service redémarre. Cette page se reconnectera automatiquement.' : 'Mise à jour en cours. Le classement et les réglages seront disponibles après le redémarrage.'}</span><button class="button quiet small" data-action="updates">Voir l’avancement</button>`;
+    }
+    $$('[data-action="sync"], [data-action="process"], [data-action="new-client"], [data-action="classify"], [data-action="print"], [data-action="reprint"]').forEach(button => {
+      if (active) {
+        if (!('updateWasDisabled' in button.dataset)) button.dataset.updateWasDisabled = String(button.disabled);
+        button.disabled = true;
+      } else if ('updateWasDisabled' in button.dataset) {
+        button.disabled = button.dataset.updateWasDisabled === 'true'; delete button.dataset.updateWasDisabled;
+      }
+    });
+    if (!modal.open || modal.dataset.kind !== 'updates') return;
+    const panel = $('#update-status-panel');
+    if (!panel) return;
+    const progress = typeof state?.progress === 'string' ? state.progress : '';
+    const error = state?.error || updateMonitor.connectionError || '';
+    const stages = ['Vérification', 'Préparation', 'Redémarrage'];
+    const stageIndex = view.status === 'checking' ? 0 : view.status === 'installing' ? 1 : view.status === 'restarting' || updateMonitor.offline && active ? 2 : ['updated', 'current'].includes(view.status) ? 3 : -1;
+    const loading = view.busy || active;
+    const icon = loading ? '<span class="spinner" aria-hidden="true"></span>' : `<span aria-hidden="true">${view.tone === 'success' ? '✓' : view.tone === 'error' ? '!' : '↻'}</span>`;
+    const headline = !state ? 'Connexion au service de mise à jour…' : view.title;
+    const content = `<div class="update-state ${view.tone}"><div class="update-state-icon">${icon}</div><div><h3>${escape(headline)}</h3><p>${escape(view.description)}</p></div></div>${loading ? `<ol class="update-steps" aria-label="Étapes de la mise à jour">${stages.map((name, i) => `<li class="${i < stageIndex ? 'done' : i === stageIndex ? 'active' : ''}" ${i === stageIndex ? 'aria-current="step"' : ''}><span>${i < stageIndex ? '✓' : i + 1}</span>${name}</li>`).join('')}</ol>` : ''}${progress ? `<p class="update-progress" role="status">${escape(progress)}</p>` : ''}${error ? `<div class="form-error" role="alert">${escape(error)}</div>` : ''}${updateMonitor.notice ? `<p class="dialog-note">${escape(updateMonitor.notice)}</p>` : ''}${state?.managed === false ? '<div class="notice warning"><span>La mise à jour en un clic n’est pas activée pour ce lancement. Utilisez le lanceur Auto-secrétaire installé sur le Mac pour l’activer.</span></div>' : ''}<div class="update-version-grid"><div><span>Version installée</span><strong title="${escape(state?.current_commit || '')}">${escape(state?.current_commit?.slice(0, 10) || 'Non identifiée')}</strong></div><div><span>Version publiée</span><strong title="${escape(state?.available_commit || '')}">${escape(state?.available_commit?.slice(0, 10) || 'À vérifier')}</strong></div></div><div class="update-action-row"><span class="subtle small">${state?.checked_at ? `Vérifié le ${escape(dateLabel(state.checked_at, true))}` : 'Aucune vérification pour le moment'}</span><div>${updateMonitor.offline ? '<button class="button small" data-action="updates-reconnect">Réessayer la connexion</button>' : `<button class="button small" data-action="updates-check" ${!view.canCheck || active ? 'disabled' : ''}>Vérifier les versions</button>${view.status === 'available' ? `<button class="button primary small" data-action="updates-install" data-commit="${escape(state.available_commit)}" ${!view.canInstall || active ? 'disabled' : ''}>Mettre à jour</button>` : ''}`}</div></div>`;
+    if (panel.dataset.content !== content) { panel.innerHTML = content; panel.dataset.content = content; }
+    $$('#updates-config-form input, #updates-config-form button').forEach(control => { control.disabled = view.busy || active; });
+    const form = $('#updates-config-form');
+    if (form) {
+      form.setAttribute('aria-busy', String(view.busy || active));
+      if (state && form.dataset.seeded !== 'true' && form.dataset.edited !== 'true') {
+        $('[name="repository"]', form).value = state.repository || '';
+        $('[name="branch"]', form).value = state.branch || 'main';
+        form.dataset.seeded = 'true';
+        if (state.repository) $('.update-config', modal).open = false;
+      }
+    }
+  }
+  function openUpdates() {
+    if (modal.open && modal.dataset.kind === 'updates') { renderUpdateControls(); scheduleUpdatePoll(0); return; }
+    const state = updateMonitor.state || model.state?.updates;
+    modal.dataset.kind = 'updates';
+    openModal('Mises à jour d’Auto-secrétaire', 'Les versions publiées sont vérifiées automatiquement. Vous choisissez quand les installer.', `<section id="update-status-panel" aria-label="État de la mise à jour" aria-live="polite"></section><details class="update-config" ${!state?.repository ? 'open' : ''}><summary>Source des mises à jour</summary><form id="updates-config-form"><label class="field"><span>Dépôt du projet</span><input name="repository" type="text" value="${escape(state?.repository || '')}" placeholder="https://github.com/organisation/auto-secretaire.git" required autocomplete="off" autocapitalize="off" spellcheck="false"><small>Adresse HTTPS ou SSH fournie par le mainteneur. N’incluez aucun mot de passe ni jeton d’accès dans cette adresse.</small></label><label class="field"><span>Branche publiée</span><input name="branch" value="${escape(state?.branch || 'main')}" required autocomplete="off" autocapitalize="off" spellcheck="false"><small>Gardez « main », sauf indication du mainteneur.</small></label><p class="dialog-note">Choisissez uniquement le dépôt de confiance fourni pour ce logiciel. L’accès à un dépôt privé se prépare une fois sur le Mac.</p><button class="button" type="submit">Enregistrer la source</button></form></details>`, '<button class="button quiet" data-action="close-modal">Fermer</button>');
+    $('#updates-config-form').dataset.seeded = String(!!state);
+    renderUpdateControls(); scheduleUpdatePoll(0);
+  }
+  async function beginUpdate(button) {
+    const commit = button.dataset.commit;
+    const view = updateView(updateMonitor.state, {offline: updateMonitor.offline});
+    if (!view.canInstall || commit !== updateMonitor.state?.available_commit) throw new Error('Vérifiez de nouveau la version disponible avant de l’installer.');
+    updateMonitor.notice = '';
+    saveUpdateIntent({target: commit, startedAt: Date.now(), sawRestart: false, accepted: false});
+    renderUpdateControls();
+    try {
+      const next = await api('/api/updates/install', 'POST', {commit});
+      if (updateMonitor.intent) saveUpdateIntent({...updateMonitor.intent, accepted: true});
+      acceptUpdateState(next);
+    } catch (error) {
+      if (error.networkUnavailable) {
+        // The worker may already be restarting: observe its state, never resubmit this request.
+        markUpdateOffline();
+      } else {
+        saveUpdateIntent(null); renderUpdateControls(); throw error;
+      }
+    }
+    scheduleUpdatePoll(500);
+  }
+
   function shortcuts() {
     modal.dataset.kind = 'shortcuts';
     openModal('Quelques raccourcis utiles', 'Ils sont actifs en dehors des champs de saisie.', '<dl class="shortcuts-list"><dt><kbd>/</kbd></dt><dd>Rechercher un client</dd><dt><kbd>J</kbd> / <kbd>K</kbd></dt><dd>Communication suivante / précédente</dd><dt><kbd>C</kbd></dt><dd>Choisir le dossier de destination</dd><dt><kbd>Espace</kbd></dt><dd>Ajouter ou retirer le mail de la sélection</dd><dt><kbd>⌘</kbd> + clic</dt><dd>Sélectionner plusieurs mails du même client</dd><dt><kbd>Échap</kbd></dt><dd>Fermer un dialogue ou vider la sélection</dd></dl>', '<button class="button" data-action="close-modal">Compris</button>');
@@ -391,6 +588,14 @@
   }
 
   const actions = {
+    updates: openUpdates,
+    'updates-reconnect': pollUpdates,
+    'updates-check': async () => {
+      updateMonitor.notice = '';
+      acceptUpdateState(await api('/api/updates/check', 'POST', {}));
+      scheduleUpdatePoll(500);
+    },
+    'updates-install': beginUpdate,
     'all-clients': () => chooseClient(null),
     client: button => chooseClient(button.dataset.id),
     'new-client': newClient,
@@ -496,6 +701,7 @@
   });
   document.addEventListener('input', event => {
     const element = event.target;
+    if (element.closest('#updates-config-form')) $('#updates-config-form').dataset.edited = 'true';
     if (element.id === 'client-search') { model.clientQuery = element.value; renderClients(); }
     if (element.id === 'message-search') { model.query = element.value; renderMessages(); renderDetail(); }
     if (element.id === 'client-name') clientPreview();
@@ -519,6 +725,17 @@
     if (element.id === 'reprint-confirm') $('#reprint-submit').disabled = !element.checked;
   });
   document.addEventListener('submit', event => {
+    if (event.target.id === 'updates-config-form') {
+      event.preventDefault();
+      action('updates-config', async () => {
+        const data = new FormData(event.target);
+        const repository = String(data.get('repository') || '').trim();
+        const branch = String(data.get('branch') || 'main').trim();
+        acceptUpdateState(await api('/api/updates/config', 'PUT', {repository, branch}));
+        toast('Source enregistrée. Vous pouvez vérifier les versions.');
+        scheduleUpdatePoll(500);
+      }, event.submitter);
+    }
     if (event.target.id === 'client-form') {
       event.preventDefault();
       action('create-client', async () => {
@@ -580,7 +797,11 @@
       model.template = changeBranch(model.template, draggedPath, next); model.templateSelected = next; model.templateDirty = true; draggedPath = ''; renderTemplate();
     });
   });
+  updateMonitor.intent = storedUpdate();
+  let reopenUpdates = !!updateMonitor.intent;
+  try { reopenUpdates ||= sessionStorage.getItem('autosecretaire.reopen-updates') === '1'; sessionStorage.removeItem('autosecretaire.reopen-updates'); } catch (_) { /* Optional restoration. */ }
+  if (reopenUpdates) openUpdates();
   refresh();
   setInterval(() => { if (!document.hidden && !model.busy.size && !modal.open) refresh({quiet: true}); }, 15000);
-  document.addEventListener('visibilitychange', () => { if (!document.hidden && !modal.open) refresh(); });
+  document.addEventListener('visibilitychange', () => { if (!document.hidden) { if (expectedUpdateRestart() || modal.dataset.kind === 'updates') scheduleUpdatePoll(0); if (!modal.open) refresh(); } });
 })();
