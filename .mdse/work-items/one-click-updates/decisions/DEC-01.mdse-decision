@@ -1,0 +1,38 @@
+{
+  "mdse": "2.3",
+  "kind": "Decision",
+  "id": "DEC-01",
+  "name": "Versions natives isolées et superviseur stable",
+  "status": "accepted",
+  "revision": 1,
+  "createdAt": "2026-10-23",
+  "updatedAt": "2026-10-23",
+  "workItem": "WI-one-click-updates",
+  "requirements": [
+    "REQ-01",
+    "REQ-02",
+    "REQ-03",
+    "REQ-04"
+  ],
+  "context": "Le service existant utilise Apple Mail et CUPS sur macOS ; l’utilisatrice souhaite un bouton et laisse le choix du mécanisme.",
+  "chosen": "Dépôt HTTPS/SSH et branche configurables, contrôles horaires Git ls-remote, versions immuables par SHA avec venv dédiée ; superviseur stdlib stable, contrôle HTTP authentifié avant activation ; journal de bascule et sauvegarde SQLite après arrêt propre ; retour automatique uniquement sur échec avant activation.",
+  "rationale": "Ne modifie ni le clone de développement ni les documents ; évite Docker et ses relais Mac ; mises à jour sans terminal après configuration.",
+  "rejected": [
+    {
+      "alternative": "git pull dans le code en cours",
+      "reason": "Conflits et dépendances modifiées avant validation du démarrage."
+    },
+    {
+      "alternative": "Docker",
+      "reason": "Changement d’architecture inutile pour le besoin exprimé et accès Apple Mail/CUPS plus complexe."
+    }
+  ],
+  "decidedBy": "agent",
+  "consequences": [
+    "Le dépôt publié doit être de confiance et respecter le protocole update_protocol=1 et data_schema=1 du manifeste update.json ; changement incompatible exclu des mises à jour automatiques.",
+    "Les dépendances doivent être verrouillées ; installation initiale Git/Python et accès privé préparés une fois par le mainteneur.",
+    "La disponibilité est celle de la branche distante après push. Aucun dépôt distant encore fourni.",
+    "Les versions et sauvegardes restent locales ; pas de nettoyage destructif automatique.",
+    "La probation n’effectue aucune récupération de fichiers ni impression ; restauration automatique avant activation uniquement, pas de retour après migrations ou travail utilisateur."
+  ]
+}

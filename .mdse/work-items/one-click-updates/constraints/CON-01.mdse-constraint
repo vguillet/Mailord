@@ -1,0 +1,14 @@
+{
+  "mdse": "2.3",
+  "kind": "Constraint",
+  "id": "CON-01",
+  "name": "Données et accès locaux",
+  "status": "active",
+  "revision": 1,
+  "createdAt": "2026-10-23",
+  "updatedAt": "2026-10-23",
+  "workItem": "WI-one-click-updates",
+  "type": "prohibition",
+  "statement": "Ne pas réinitialiser le dépôt utilisateur, effacer les archives, inclure des secrets dans les réponses, exposer le serveur au réseau ou installer automatiquement sans clic.",
+  "reason": "Préserver le travail et le contrôle local."
+}

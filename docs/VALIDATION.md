@@ -51,7 +51,7 @@ Aucun compte de messagerie personnel n’a été consulté, aucun mail envoyé e
 
 ## Mises à jour — 24 octobre 2026
 
-- Suite complète : **136 tests réussis**, aucun échec ni test sauté (Python 3.11).
+- Suite complète : **136 tests réussis**, aucun échec ni test sauté (Python 3.11 et environnement installé Python 3.14). Ce dernier émet l’avertissement Starlette/httpx déjà connu, sans échec.
 - Git réel sur dépôts temporaires : détection de branche, commit sélectionné conservé même après un autre commit, copie isolée, manifeste incompatible et erreurs de transport.
 - Processus et HTTP réels : bascule réussie, nouvelle session CSRF, conservation des clients et documents, relancement ultérieur depuis le lanceur initial ; candidate volontairement défectueuse restaurée automatiquement. Environnement Python partagé dans ces deux tests de processus pour ne pas télécharger de dépendances à chaque exécution.
 - Installation réelle des dépendances verrouillées dans un environnement Python 3.14 neuf : réussie ; imports applicatifs vérifiés.

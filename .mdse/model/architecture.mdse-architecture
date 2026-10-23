@@ -4,9 +4,9 @@
   "id": "ARCH",
   "name": "Architecture initiale Auto-secretaire",
   "status": "current",
-  "revision": 2,
+  "revision": 3,
   "createdAt": "2026-10-23",
-  "updatedAt": "2026-10-23",
+  "updatedAt": "2026-10-24",
   "style": "Service natif macOS modulaire, FastAPI sur boucle locale, interface HTML/CSS/JavaScript et registre SQLite.",
   "components": [
     {
@@ -59,6 +59,20 @@
       "name": "Registre",
       "responsibility": "Persister l'identité des clients et messages, les versions de modèles, les chemins, les états par étape, la file et l'historique des opérations.",
       "state": "existing"
+    },
+    {
+      "name": "MisesAJour",
+      "responsibility": "Détecter une branche publiée, préparer le commit choisi et ses dépendances dans une version isolée ; état et configuration privés.",
+      "state": "existing"
+    },
+    {
+      "name": "SuperviseurLocal",
+      "responsibility": "Lancer la version active, sauvegarder le registre à l’arrêt, contrôler la candidate sans traitement et restaurer l’ancienne version si le démarrage échoue.",
+      "state": "existing",
+      "dependsOn": [
+        "MisesAJour",
+        "Registre"
+      ]
     }
   ],
   "dataFlows": [
@@ -108,6 +122,16 @@
         "Enregistrer les documents complets dans la racine locale choisie.",
         "Laisser le fournisseur existant synchroniser cette racine.",
         "Ne présenter la copie cloud comme confirmée que si une preuve de synchronisation est disponible."
+      ]
+    },
+    {
+      "name": "Mise à jour explicite",
+      "steps": [
+        "Comparer le commit local à la branche distante périodiquement ou sur demande.",
+        "Au clic, préparer le SHA sélectionné et son venv séparé.",
+        "Arrêter proprement, sauvegarder SQLite et lancer une probation sans traitements.",
+        "En cas d’échec revenir au précédent ; sinon enregistrer la version active puis autoriser le traitement.",
+        "Recharger automatiquement l’interface et conserver le même registre et les documents."
       ]
     }
   ],
@@ -178,9 +202,14 @@
     {
       "concern": "Vérification et limites",
       "approach": "VER-01 : 99 tests et parcours navigateur. Essais matériels réels en attente ; PDF textuel, formats pris en charge explicites, fichiers déplacés manuellement rapprochés explicitement."
+    },
+    {
+      "concern": "Mises à jour et compatibilité",
+      "approach": "Protocole et schéma version 1 déclarés dans update.json ; accès Git de confiance configuré une fois ; rollback uniquement avant activation ; aucune réinitialisation du dépôt utilisateur."
     }
   ],
   "workItems": [
-    "WI-local-v1"
+    "WI-local-v1",
+    "WI-one-click-updates"
   ]
 }

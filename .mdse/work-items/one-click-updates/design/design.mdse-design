@@ -1,0 +1,88 @@
+{
+  "mdse": "2.3",
+  "kind": "Design",
+  "id": "DESIGN",
+  "name": "Contrats de mise à jour locale",
+  "status": "approved",
+  "revision": 1,
+  "createdAt": "2026-10-23",
+  "updatedAt": "2026-10-23",
+  "workItem": "WI-one-click-updates",
+  "requirements": [
+    "REQ-01",
+    "REQ-02",
+    "REQ-03",
+    "REQ-04"
+  ],
+  "decisions": [
+    "DEC-01"
+  ],
+  "components": [
+    {
+      "name": "Updater",
+      "responsibility": "Configuration séparée, check non interactif, état persistant, préparation du SHA exact en venv, contrôles manifeste et préflight, demande de redémarrage.",
+      "state": "new",
+      "path": "autosecretaire/updates.py"
+    },
+    {
+      "name": "Supervisor",
+      "responsibility": "Lanceur stable stdlib, singleton, arrêt gracieux, sauvegarde SQLite, probation avec jeton privé, bascule atomique, récupération des interruptions et retour au précédent.",
+      "state": "new",
+      "path": "autosecretaire/supervisor.py"
+    },
+    {
+      "name": "InterfaceLocale",
+      "responsibility": "Bouton, progression, configuration dépôt/branche, reconnexion avec nouveau jeton CSRF.",
+      "state": "modified",
+      "path": "autosecretaire/static/app.js"
+    },
+    {
+      "name": "API",
+      "responsibility": "Routes CSRF updates, statut dans state, mode probation sans mutations/traitement, intégration arrêt et activation.",
+      "state": "modified",
+      "path": "autosecretaire/app.py"
+    }
+  ],
+  "internalInterfaces": [
+    {
+      "signature": "UpdateManager(runtime, source_root, restart=None).state(); .configure(repository, branch); .check_async(); .install_async(commit); .close()",
+      "purpose": "state object: status(unconfigured|idle|checking|available|current|installing|restarting|updated|error), repository,branch,current_commit,available_commit,checked_at,error,progress,managed(bool). All jobs serialized; concurrent clicks rejected. restart callback after pending.json is durable. Config stored updates/config.json independently of engine settings. UI never submits commands."
+    },
+    {
+      "signature": "Supervisor.run(root, runtime, args, port) -> int",
+      "purpose": "Worker subprocess with --worker and env AUTOSECRETAIRE_MANAGED=1, AUTOSECRETAIRE_HEALTH_TOKEN random. Candidate AUTOSECRETAIRE_PROBATION=1; GET /api/health authenticated X-Supervisor-Token reports ready, POST /api/activate same token starts worker. JSON active.json {root,commit}, pending.json {root,commit}, transaction.json {previous,candidate,backup}; atomic writes. Supervisor consumes only validated release directories and fixed protocol1 schema1. Pre-activation failure restores stopped SQLite; commit active pointer and remove transaction before activation (recovery on normal startup never rolls back already activated user work)."
+    }
+  ],
+  "apiEndpoints": [
+    {
+      "method": "GET",
+      "path": "/api/updates",
+      "description": "Current update state"
+    },
+    {
+      "method": "PUT",
+      "path": "/api/updates/config",
+      "description": "Configure repository and branch; body repository,branch"
+    },
+    {
+      "method": "POST",
+      "path": "/api/updates/check",
+      "description": "Begin asynchronous check"
+    },
+    {
+      "method": "POST",
+      "path": "/api/updates/install",
+      "description": "Install selected available_commit; body commit"
+    },
+    {
+      "method": "GET",
+      "path": "/api/health",
+      "description": "Private supervisor readiness"
+    },
+    {
+      "method": "POST",
+      "path": "/api/activate",
+      "description": "Private supervisor activation"
+    }
+  ]
+}

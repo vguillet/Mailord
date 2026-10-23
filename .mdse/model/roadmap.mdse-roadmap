@@ -4,9 +4,9 @@
   "id": "ROADMAP",
   "name": "Feuille de route Auto-secretaire",
   "status": "current",
-  "revision": 2,
+  "revision": 4,
   "createdAt": "2026-10-23",
-  "updatedAt": "2026-10-23",
+  "updatedAt": "2026-10-24",
   "milestones": [
     {
       "id": "MS-01",
@@ -73,6 +73,18 @@
       "state": "in-progress",
       "order": 6,
       "workItems": []
+    },
+    {
+      "id": "MS-07",
+      "name": "Mises à jour en un clic",
+      "goal": "Installer une version publiée depuis l’interface.",
+      "state": "delivered",
+      "order": 7,
+      "workItems": [
+        "WI-one-click-updates"
+      ],
+      "deliveredDate": "2026-10-24",
+      "notes": "136 tests et mise à jour depuis Chrome sur dépôt de test ; source distante finale à configurer."
     }
   ],
   "backlog": [

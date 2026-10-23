@@ -4,7 +4,7 @@
   "id": "PRODUCT",
   "name": "Définition du produit Auto-secretaire",
   "status": "current",
-  "revision": 1,
+  "revision": 2,
   "createdAt": "2026-10-23",
   "updatedAt": "2026-10-23",
   "problem": "La professionnelle classe les communications de ses clients dans des dossiers de messagerie, puis télécharge, renomme, range et imprime manuellement les mails et leurs pièces jointes. Elle doit vérifier ce qui a déjà été enregistré et reproduire une structure de dossiers pour chaque nouveau client.",
@@ -114,6 +114,11 @@
       "statement": "Profiter de règles de messagerie par correspondant pour alimenter les dossiers clients tout en gardant le déplacement manuel comme déclencheur valable.",
       "persona": "Professionnelle qui gère les communications de ses clients dans Apple Mail sur Mac",
       "priority": "should"
+    },
+    {
+      "id": "NEED-16",
+      "statement": "Installer les versions publiées sur Git depuis un bouton local sans utiliser le terminal.",
+      "priority": "must"
     }
   ],
   "successMeasures": [

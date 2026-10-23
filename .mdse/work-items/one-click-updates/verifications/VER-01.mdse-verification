@@ -1,0 +1,138 @@
+{
+  "mdse": "2.3",
+  "kind": "Verification",
+  "id": "VER-01",
+  "name": "Vérification des mises à jour en un clic",
+  "status": "pass",
+  "revision": 1,
+  "createdAt": "2026-10-24",
+  "updatedAt": "2026-10-24",
+  "workItem": "WI-one-click-updates",
+  "requirements": [
+    "REQ-01",
+    "REQ-02",
+    "REQ-03",
+    "REQ-04"
+  ],
+  "executions": [
+    "TASK-01-E01",
+    "TASK-02-E01",
+    "TASK-03-E01",
+    "TASK-03-E02"
+  ],
+  "tasks": [],
+  "testRun": {
+    "runner": "pytest",
+    "command": "python3 -c 'import pytest; raise SystemExit(pytest.main([\"-q\"]))'",
+    "passed": 136,
+    "failed": 0,
+    "skipped": 0
+  },
+  "results": [
+    {
+      "requirement": "REQ-01",
+      "result": "pass",
+      "methods": [
+        "VM-01"
+      ],
+      "acceptanceCriteria": [
+        {
+          "id": "AC-01",
+          "covered": true,
+          "test": "test_check_exact_commit_and_current"
+        },
+        {
+          "id": "AC-02",
+          "covered": true,
+          "test": "test_network_error_sanitized"
+        }
+      ]
+    },
+    {
+      "requirement": "REQ-02",
+      "result": "pass",
+      "methods": [
+        "VM-02"
+      ],
+      "acceptanceCriteria": [
+        {
+          "id": "AC-01",
+          "covered": true,
+          "test": "test_prepare_isolated_pinned_and_does_not_replace_data"
+        },
+        {
+          "id": "AC-02",
+          "covered": true,
+          "test": "test_failed_install_leaves_current_and_retries"
+        }
+      ]
+    },
+    {
+      "requirement": "REQ-03",
+      "result": "pass",
+      "methods": [
+        "VM-03"
+      ],
+      "acceptanceCriteria": [
+        {
+          "id": "AC-01",
+          "covered": true,
+          "test": "test_supervised_process_update_preserves_data_and_rolls_back"
+        },
+        {
+          "id": "AC-02",
+          "covered": true,
+          "test": "test_backup_restore_and_interrupted_transaction"
+        }
+      ]
+    },
+    {
+      "requirement": "REQ-04",
+      "result": "pass",
+      "methods": [
+        "VM-04"
+      ],
+      "acceptanceCriteria": [
+        {
+          "id": "AC-01",
+          "covered": true,
+          "test": "test_exact_requested_version_reloads_once_and_clears_intent"
+        },
+        {
+          "id": "AC-02",
+          "covered": true,
+          "test": "test_csrf_rejection_renews_then_retries_exactly_once"
+        }
+      ]
+    }
+  ],
+  "evidence": [
+    {
+      "kind": "test-output",
+      "reference": "docs/update-method-results.json",
+      "description": "Exécution réelle de chaque méthode ; suite complète 136 tests sous Python 3.11 et 3.14."
+    },
+    {
+      "kind": "browser-review",
+      "reference": "docs/VALIDATION.md",
+      "description": "Clic, préparation effective, bascule et reload automatique sur démonstration isolée ; données préservées."
+    }
+  ],
+  "deviationReview": [
+    {
+      "execution": "TASK-03-E01",
+      "summary": "Chemins absolus, import pytest et relancement vérifiés.",
+      "state": "resolved"
+    },
+    {
+      "execution": "TASK-03-E02",
+      "summary": "Fixture adaptée au venv réel ; suite Python 3.14 réussie.",
+      "state": "resolved"
+    }
+  ],
+  "warnings": [
+    "Le futur dépôt distant et ses accès privés ne sont pas fournis ; essais Git locaux réels.",
+    "Le retour automatique est limité au démarrage avant activation ; aucun rollback de travail utilisateur après activation.",
+    "Avertissement Starlette/httpx sous Python 3.14, déjà présent avant cette modification."
+  ]
+}

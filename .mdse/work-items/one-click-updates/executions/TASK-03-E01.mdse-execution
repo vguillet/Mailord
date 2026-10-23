@@ -1,0 +1,119 @@
+{
+  "mdse": "2.3",
+  "kind": "Execution",
+  "id": "TASK-03-E01",
+  "name": "Intégration et validation",
+  "status": "succeeded",
+  "revision": 1,
+  "createdAt": "2026-10-24",
+  "updatedAt": "2026-10-24",
+  "workItem": "WI-one-click-updates",
+  "task": "TASK-03",
+  "attempt": 1,
+  "participants": [
+    {
+      "actor": "agent-codex",
+      "roles": [
+        "performer"
+      ]
+    },
+    {
+      "actor": "person-project-owner",
+      "roles": [
+        "initiator"
+      ]
+    }
+  ],
+  "startedAt": "2026-10-23",
+  "completedAt": "2026-10-24",
+  "summary": "Contrats implémentés, tests exécutés. Sources et transports de test locaux ; aucun dépôt distant utilisateur configuré.",
+  "commits": [
+    {
+      "hash": "f1b09a9e35c041173e96cc4fe0482ab342d04a05",
+      "message": "feat(updates): integrate one-click restart and validate recovery (REQ-01, REQ-02, REQ-03, REQ-04)",
+      "type": "feat"
+    }
+  ],
+  "filesChanged": [
+    {
+      "path": "README.md",
+      "action": "update"
+    },
+    {
+      "path": "autosecretaire/__main__.py",
+      "action": "update"
+    },
+    {
+      "path": "autosecretaire/app.py",
+      "action": "update"
+    },
+    {
+      "path": "autosecretaire/engine.py",
+      "action": "update"
+    },
+    {
+      "path": "autosecretaire/supervisor.py",
+      "action": "update"
+    },
+    {
+      "path": "docs/API.md",
+      "action": "update"
+    },
+    {
+      "path": "docs/INSTALLATION.md",
+      "action": "update"
+    },
+    {
+      "path": "docs/UPDATES.md",
+      "action": "create"
+    },
+    {
+      "path": "docs/VALIDATION.md",
+      "action": "update"
+    },
+    {
+      "path": "pyproject.toml",
+      "action": "update"
+    },
+    {
+      "path": "tests/test_update_api.py",
+      "action": "create"
+    },
+    {
+      "path": "tests/test_update_integration.py",
+      "action": "create"
+    }
+  ],
+  "testing": {
+    "approach": "selective-TDD",
+    "passed": 136,
+    "failed": 0,
+    "skipped": 0
+  },
+  "implementationDeviations": [
+    {
+      "rule": 2,
+      "type": "missing-critical",
+      "found": "Les options de chemins relatives changeraient de sens dans le répertoire d’une nouvelle version.",
+      "action": "Normaliser les chemins du registre et des archives avant transmission aux processus ; test de relancement avec chemin relatif.",
+      "resolved": true
+    },
+    {
+      "rule": 3,
+      "type": "blocking",
+      "found": "Le proxy de tests remplace python -m pytest par pytest et perd l’import du dépôt.",
+      "action": "Définir pythonpath dans la configuration pytest ; vérifier les commandes de méthode.",
+      "resolved": true
+    }
+  ],
+  "doneCriteria": [
+    {
+      "id": "DC-01",
+      "met": true
+    },
+    {
+      "id": "DC-02",
+      "met": true
+    }
+  ]
+}

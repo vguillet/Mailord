@@ -1,0 +1,33 @@
+{
+  "mdse": "2.3",
+  "kind": "Requirement",
+  "id": "REQ-04",
+  "name": "Bouton de mise à jour",
+  "status": "verified",
+  "revision": 2,
+  "createdAt": "2026-10-23",
+  "updatedAt": "2026-10-24",
+  "workItem": "WI-one-click-updates",
+  "keyword": "SHALL",
+  "statement": "L’interface SHALL proposer une configuration initiale du dépôt puis un bouton de mise à jour disponible, l’avancement et la reconnexion automatique après redémarrage.",
+  "priority": "must",
+  "acceptanceCriteria": [
+    {
+      "id": "AC-01",
+      "kind": "happy-path",
+      "given": "une nouvelle version publiée",
+      "when": "l’utilisatrice clique sur Mettre à jour",
+      "then": "les étapes sont visibles puis l’interface se reconnecte"
+    },
+    {
+      "id": "AC-02",
+      "kind": "failure-path",
+      "given": "une erreur ou une session périmée",
+      "when": "l’opération échoue",
+      "then": "l’erreur est lisible et la page permet de vérifier à nouveau sans commande"
+    }
+  ],
+  "verifiedBy": [
+    "VM-04"
+  ]
+}

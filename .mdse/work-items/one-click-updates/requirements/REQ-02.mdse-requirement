@@ -1,0 +1,33 @@
+{
+  "mdse": "2.3",
+  "kind": "Requirement",
+  "id": "REQ-02",
+  "name": "Installer une version isolée",
+  "status": "verified",
+  "revision": 2,
+  "createdAt": "2026-10-23",
+  "updatedAt": "2026-10-24",
+  "workItem": "WI-one-click-updates",
+  "keyword": "SHALL",
+  "statement": "Le service SHALL préparer uniquement le commit sélectionné dans un répertoire et environnement Python séparés sans modifier le dépôt initial.",
+  "priority": "must",
+  "acceptanceCriteria": [
+    {
+      "id": "AC-01",
+      "kind": "happy-path",
+      "given": "une version disponible",
+      "when": "l’installation est demandée",
+      "then": "le commit exact et ses dépendances verrouillées sont préparés"
+    },
+    {
+      "id": "AC-02",
+      "kind": "failure-path",
+      "given": "une dépendance ou un commit indisponible",
+      "when": "la préparation échoue",
+      "then": "la version courante continue et une relance est possible"
+    }
+  ],
+  "verifiedBy": [
+    "VM-02"
+  ]
+}
