@@ -51,7 +51,11 @@ def test_supervised_process_update_preserves_data_and_rolls_back(tmp_path,broken
     if broken:(release/'autosecretaire/__main__.py').write_text('raise RuntimeError("fixture startup failure")\n')
     else:(release/'marker').write_text('updated')
     git(release,'add','autosecretaire/__main__.py' if broken else 'marker');git(release,'commit','-m','candidate')
-    sha=git(release,'rev-parse','HEAD');(release/'.venv/bin').mkdir(parents=True);(release/'.venv/bin/python').symlink_to(sys.executable)
+    sha=git(release,'rev-parse','HEAD')
+    if sys.prefix!=sys.base_prefix:
+        (release/'.venv').symlink_to(Path(sys.prefix),target_is_directory=True)
+    else:
+        (release/'.venv/bin').mkdir(parents=True);(release/'.venv/bin/python').symlink_to(sys.executable)
     with socket.socket() as sock:sock.bind(('127.0.0.1',0));port=sock.getsockname()[1]
     log=open(tmp_path/'service.log','w+')
     process=subprocess.Popen([sys.executable,'-m','autosecretaire','--data-dir',os.path.relpath(runtime,source),'--port',str(port)],cwd=source,stdout=log,stderr=log,env={**os.environ,'PYTHONPATH':str(source)})
