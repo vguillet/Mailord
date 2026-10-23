@@ -41,7 +41,7 @@ def test_classify_bulk_confined_and_no_overwrite(engine):
     c=engine.create_client('Camille');add_mail(engine,c);engine.scan();engine.process();m=engine.state()['messages'][0]
     with pytest.raises(ValueError):engine.classify([m['id']],'../escape')
     engine.classify([m['id']],'03 MAILS (PDF)');m=engine.state()['messages'][0];assert m['classification']=='classified'
-    assert all(('02 CORRESPONDANCES' if d['kind']=='email' else '03 MAILS (PDF)') in d['path'] for d in m['documents'])
+    assert all('03 MAILS (PDF)' in d['path'] for d in m['documents'])
     engine.classify([m['id']],'07 FACTURES');assert len(engine.store.all('print'))==0
 
 

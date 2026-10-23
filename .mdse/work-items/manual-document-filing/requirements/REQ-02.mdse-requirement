@@ -1,0 +1,33 @@
+{
+  "mdse": "2.3",
+  "kind": "Requirement",
+  "id": "REQ-02",
+  "name": "États non classés visibles",
+  "status": "approved",
+  "revision": 1,
+  "createdAt": "2026-10-24",
+  "updatedAt": "2026-10-24",
+  "workItem": "WI-manual-document-filing",
+  "keyword": "SHALL",
+  "statement": "L’interface SHALL afficher les documents non classés avec un libellé explicite et un contraste visuel fort dans la liste, le détail et le sélecteur de classement.",
+  "priority": "must",
+  "acceptanceCriteria": [
+    {
+      "id": "AC-01",
+      "kind": "happy-path",
+      "given": "un mail dont le PDF et une pièce sont non classés",
+      "when": "la liste, le détail et le sélecteur sont consultés",
+      "then": "chaque document en attente porte un statut À classer foncé et gras sur fond distinct ; le PDF a le même bouton de classement que les pièces"
+    },
+    {
+      "id": "AC-02",
+      "kind": "failure-path",
+      "given": "une partie des documents est classée",
+      "when": "l’interface est actualisée",
+      "then": "la mise en évidence disparaît seulement des documents classés ; les autres restent identifiables, sans dépendre seulement de la couleur"
+    }
+  ],
+  "verifiedBy": [
+    "VM-02"
+  ]
+}

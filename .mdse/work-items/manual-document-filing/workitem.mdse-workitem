@@ -1,0 +1,42 @@
+{
+  "mdse": "2.3",
+  "kind": "WorkItem",
+  "id": "WI-manual-document-filing",
+  "name": "Classement choisi pour tous les documents",
+  "status": "taskified",
+  "revision": 1,
+  "createdAt": "2026-10-24",
+  "updatedAt": "2026-10-24",
+  "slug": "manual-document-filing",
+  "purpose": "Correction explicite de l’utilisateur après WI-correspondence-filing : rendre le PDF du mail classable comme une pièce jointe et rendre les états non classés très visibles. Les archives déjà rangées et les présélections de dossiers sont conservées.",
+  "testingApproach": "selective-TDD",
+  "userStories": [
+    {
+      "id": "US-01",
+      "role": "utilisatrice",
+      "capability": "choisir la destination de chaque PDF de mail et repérer immédiatement les documents non classés",
+      "benefit": "garder le contrôle du classement sans manquer un document"
+    }
+  ],
+  "requirements": [
+    "REQ-01",
+    "REQ-02"
+  ],
+  "methods": [
+    "VM-01",
+    "VM-02"
+  ],
+  "constraints": [
+    "CON-01"
+  ],
+  "decisions": [
+    "DEC-01"
+  ],
+  "tasks": [
+    "TASK-01"
+  ],
+  "executions": [],
+  "verifications": [],
+  "deliverables": [],
+  "design": "DESIGN"
+}

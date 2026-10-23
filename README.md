@@ -24,7 +24,7 @@ Choisissez la messagerie et le dossier des archives dans **Réglages avant de cr
 ## Ce que l’application fait
 
 - Crée un client et son dossier mail, ou rattache un dossier mail existant. Reprend les présélections du modèle (Correspondances initialement), modifiables pour les dossiers à créer tout de suite, même vides ; les autres apparaissent au premier document, branche par branche.
-- Archive le PDF de chaque mail dans Correspondances et permet de répartir ses pièces jointes indépendamment, avec statut et destination par pièce.
+- Exporte le PDF du mail et ses pièces jointes dans la zone À classer. Chaque document peut être rangé indépendamment ou avec une sélection, avec statut et destination visibles ; les documents en attente sont surlignés.
 - Édite un modèle hiérarchique de dossiers : ajout, renommage, déplacement, duplication, suppression et versions. Toutes les destinations sont proposées aux clients existants, même absentes du Mac ; seules les branches utilisées ou cochées à la création sont créées.
 - Surveille les messages lus comme non lus. Génère le PDF du mail, conserve les pièces jointes et préfixe les noms avec `AAAA-MM-JJ -`.
 - Contrôle les fichiers, reprend les étapes interrompues et répare les exports manquants ou corrompus. Une copie modifiée est conservée dans la quarantaine privée avant réparation.

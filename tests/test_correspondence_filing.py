@@ -61,11 +61,13 @@ def test_invalid_template_options_are_atomic(engine, options):
     assert engine.template() == before
 
 
-def test_export_routes_mail_even_if_correspondence_unchecked(engine):
+def test_export_leaves_mail_pending_even_if_correspondence_is_available(engine):
     c = engine.create_client('Client', initial_folders=[])
     m = receive(engine, c)
     email = next(d for d in m['documents'] if d['kind'] == 'email')
-    assert Path(email['path']).parent == Path(c['folder']) / '02 CORRESPONDANCES'
+    assert Path(email['path']).parent == Path(c['folder']) / '00 - À classer'
+    assert email['classification'] == 'pending'
+    assert not (Path(c['folder']) / '02 CORRESPONDANCES').exists()
     assert all(d['destination'] == '00 - À classer' and d['classification'] == 'pending' for d in attachments(m))
     assert m['classification'] == 'pending'
 
@@ -82,34 +84,40 @@ def test_independent_attachment_destinations_and_print_after_all(engine):
     assert engine.store.all('print') == []
     assert engine.store.get('document', b['id'])['path'] == b['path']
     engine.classify([m['id']], '05 PIÈCES/Pièces client', document_ids=[b['id']])
+    assert engine.state()['messages'][0]['classification'] == 'pending'
+    assert engine.store.all('print') == []
+    engine.classify([m['id']], '03 MAILS (PDF)', document_ids=[email['id']])
     current = engine.state()['messages'][0]
     assert current['classification'] == 'classified'
     assert {d['destination'] for d in attachments(current)} == {'07 FACTURES', '05 PIÈCES/Pièces client'}
-    assert engine.store.get('document', email['id'])['path'] == email['path']
+    email_path = engine.store.get('document', email['id'])['path']
+    assert Path(email_path).parent == Path(c['folder']) / '03 MAILS (PDF)'
     assert len(engine.store.all('print')) == 3
     Path(engine.store.get('document', a['id'])['path']).unlink()
     engine.process()
     assert {d['id']: digest(d['path']) for d in engine.state()['messages'][0]['documents']} == original
-    engine.classify([m['id']], '08 NOTES INTERNES')
-    assert engine.store.get('document', email['id'])['path'] == email['path']
+    engine.classify([m['id']], '08 NOTES INTERNES', document_ids=[a['id'], b['id']])
+    assert engine.store.get('document', email['id'])['path'] == email_path
     assert len(engine.store.all('print')) == 3
 
 
-def test_mail_without_attachment_is_already_filed(engine):
+def test_legacy_email_folder_setting_does_not_route_mail_without_attachment(engine):
+    engine.save_template(['Courriers', 'Factures'], email_folder='Courriers', initial_folders=[])
     c = engine.create_client('Client', initial_folders=[])
     m = receive(engine, c, count=0, new=True)
-    assert m['classification'] == 'classified'
+    assert m['classification'] == 'pending'
+    assert engine.store.all('print') == []
+    assert not (Path(c['folder']) / 'Courriers').exists()
+    engine.classify([m['id']], 'Factures')
+    assert engine.state()['messages'][0]['classification'] == 'classified'
     assert len(engine.store.all('print')) == 1
     assert not (Path(c['folder']) / '00 - À classer').exists()
-    with pytest.raises(ValueError, match='pièce jointe'):
-        engine.classify([m['id']], '07 FACTURES')
 
 
 def test_rejected_document_selection_leaves_all_files_in_place(engine):
     c = engine.create_client('Client')
     m = receive(engine, c)
-    email = next(d for d in m['documents'] if d['kind'] == 'email')
-    for ids in [[], [email['id']], ['inconnu'], 'invalid']:
+    for ids in [[], [False], ['inconnu'], 'invalid']:
         with pytest.raises((ValueError, KeyError)):
             engine.classify([m['id']], 'Destination/Absente', document_ids=ids)
     assert all(Path(d['path']).exists() for d in m['documents'])
@@ -132,7 +140,7 @@ def test_partial_attachment_move_resumes_without_filing_other_pieces(engine, mon
     assert resumed.store.all('print') == []
 
 
-def test_legacy_pdf_moves_without_changing_attachments_or_printing(engine):
+def test_legacy_pdf_keeps_its_location_without_printing(engine):
     c = engine.create_client('Client')
     m = receive(engine, c, count=0)
     d = m['documents'][0]
@@ -145,9 +153,10 @@ def test_legacy_pdf_moves_without_changing_attachments_or_printing(engine):
     engine.store.put('message', m['id'], record)
     engine.process()
     current = engine.state()['messages'][0]
-    assert Path(current['documents'][0]['path']).parent == Path(c['folder']) / '02 CORRESPONDANCES'
+    assert Path(current['documents'][0]['path']) == old
+    assert current['documents'][0]['destination'] == 'Ancien'
     assert digest(current['documents'][0]['path']) == d['sha256']
-    assert not old.exists()
+    assert old.exists()
     assert engine.store.all('print') == []
 
 
@@ -226,9 +235,11 @@ def test_legacy_adaptation_preserves_filed_attachments_and_print_intents(engine,
     with monkeypatch.context() as patch:
         patch.setattr('autosecretaire.engine.os.link', lambda *a: (_ for _ in ()).throw(OSError('disque occupé')))
         engine.process()
+    assert engine.state()['messages'][0]['status'] == 'ready'
     assert old.exists()
     resumed = Engine(engine.settings, engine.store);resumed.process()
-    assert not old.exists()
+    assert old.exists()
+    assert digest(old) == d['sha256']
     assert engine.store.all('print') == prints
     assert {d['id']: (d['path'], digest(d['path'])) for d in attachments(engine.state()['messages'][0])} == original_attachments
 
@@ -245,6 +256,6 @@ def test_associating_a_pdf_does_not_mark_pending_attachments_filed(engine):
     assert next(d for d in current['documents'] if d['kind'] == 'email')['destination'] == '.'
     engine.process()
     current = engine.state()['messages'][0]
-    assert next(d for d in current['documents'] if d['kind'] == 'email')['destination'] == '02 CORRESPONDANCES'
+    assert next(d for d in current['documents'] if d['kind'] == 'email')['destination'] == '.'
     assert all(d['classification'] == 'pending' for d in attachments(current))
     assert engine.store.all('print') == []

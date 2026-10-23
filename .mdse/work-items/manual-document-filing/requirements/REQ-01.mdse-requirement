@@ -1,0 +1,33 @@
+{
+  "mdse": "2.3",
+  "kind": "Requirement",
+  "id": "REQ-01",
+  "name": "Classement manuel du PDF et des pièces",
+  "status": "approved",
+  "revision": 1,
+  "createdAt": "2026-10-24",
+  "updatedAt": "2026-10-24",
+  "workItem": "WI-manual-document-filing",
+  "keyword": "SHALL",
+  "statement": "Le service SHALL laisser chaque nouveau PDF de mail et chaque pièce jointe en attente de classement jusqu’au choix de sa destination par l’utilisatrice.",
+  "priority": "must",
+  "acceptanceCriteria": [
+    {
+      "id": "AC-01",
+      "kind": "happy-path",
+      "given": "un mail nouveau avec ou sans pièce jointe",
+      "when": "il est exporté puis ses documents sont classés séparément",
+      "then": "tous commencent dans la zone d’attente ; chacun peut être rangé indépendamment et la communication reste à classer tant qu’un document ne l’est pas"
+    },
+    {
+      "id": "AC-02",
+      "kind": "failure-path",
+      "given": "des archives antérieures, une réparation ou une interruption",
+      "when": "le service est mis à jour ou reprend le traitement",
+      "then": "les emplacements choisis et contenus sont conservés, les intentions reprennent sans déplacement automatique vers Correspondances ni réimpression"
+    }
+  ],
+  "verifiedBy": [
+    "VM-01"
+  ]
+}

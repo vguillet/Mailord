@@ -748,8 +748,11 @@ main {
   white-space:nowrap
 }
 .chip.pending {
-  background:var(--amber-bg);
-  color:#a28b50
+  background:#fff1cf;
+  color:#7b2d00;
+  border:1px solid #d89a3a;
+  font-size:11px;
+  font-weight:750
 }
 .chip.error {
   background:var(--red-bg);
@@ -918,6 +921,67 @@ main {
   line-height:1.4;
   margin-top:2px
 }
+.document.pending {
+  background:#fff8e8;
+  border-color:#e3b45f;
+  border-left:4px solid #b66b00
+}
+.document.pending .document-name {
+  color:#542a05;
+  font-size:12px;
+  font-weight:700
+}
+.document.pending .document-location,
+.document.pending [data-action="classify-document"] {
+  color:#703600;
+  font-weight:700
+}
+.filing-status {
+  display:inline-flex;
+  margin:5px 0 2px;
+  padding:3px 7px;
+  border-radius:4px;
+  font-size:11px;
+  font-weight:650;
+  color:#375b43;
+  background:#edf3e8
+}
+.filing-status.pending {
+  color:#7b2d00;
+  background:#fff1cf;
+  border:1px solid #d89a3a;
+  font-weight:750;
+  text-transform:uppercase;
+  letter-spacing:.035em
+}
+.filing-summary {
+  display:grid;
+  gap:5px;
+  margin:16px 0;
+  padding:12px 14px;
+  border-radius:7px;
+  background:#edf3e8;
+  color:#375b43
+}
+.filing-summary strong { font-size:14px }
+.filing-summary > span { font-size:11px }
+.filing-summary.pending {
+  background:#fff1cf;
+  color:#7b2d00;
+  border-left:4px solid #b66b00
+}
+.filing-choice {
+  padding:10px 12px;
+  margin:0;
+  border-bottom:1px solid #e6ebde
+}
+.filing-choice.pending {
+  background:#fff8e8;
+  border-left:4px solid #b66b00;
+  color:#542a05
+}
+.filing-choice > span > b { display:block; font-size:13px }
+.filing-choice.pending small { color:#703600 }
 .document .icon-button {
   font-size:14px;
   flex-shrink:0;

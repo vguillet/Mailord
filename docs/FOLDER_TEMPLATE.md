@@ -63,7 +63,7 @@ L’éditeur reste libre et versionné. Le modèle courant est proposé au class
 | --- | --- |
 | Consultation | 01 CONSULTATIONS ; conserver Word et PDF, jamais en Correspondances. |
 | Courrier | 02 CORRESPONDANCES selon le destinataire, pas selon l’objet. Avocat comprend confrères et postulant ; Administrations comprend notamment mairie, cadastre, hypothèques, CDI et CDF. PDF systématique ; Word également pour LO, consultation ou négociation. |
-| Mail | La consigne directe du 24 octobre prévaut sur le PDF source : archivage automatique dans `02 CORRESPONDANCES`, désigné dans l’éditeur du modèle. L’ancienne rubrique `03 MAILS (PDF)` reste disponible, sans recevoir automatiquement les mails. |
+| Mail | La correction directe du 24 octobre impose le choix manuel du dossier pour chaque PDF de mail, comme pour une pièce jointe. `03 MAILS (PDF)` et les autres rubriques restent disponibles ; aucune destination n’est imposée. |
 | LO ou MED | 04 PROCÉDURE/LO et MED ; double à ranger dans la catégorie de correspondances du destinataire. |
 | Conclusions, conclusions adverses | 04 / juridiction / 01 ou 01 bis ; abréviation CCL. |
 | Requête | 04 / juridiction / 02 ; REQ. |
@@ -88,6 +88,6 @@ L’éditeur reste libre et versionné. Le modèle courant est proposé au class
 
 La demande directe de l’utilisateur reste prioritaire : `AAAA-MM-JJ - nom d’origine.ext`, avec la date de réception par défaut (date d’envoi sélectionnable). Le PDF du mail prend son objet comme nom de base ; les pièces jointes gardent leur nom d’origine après assainissement et résolution des collisions. Les modèles métier du PDF complètent les pratiques manuelles : parties, destinataire, juridiction, nature de l’acte, objet et date ; inverser les parties quand le document est adverse. Les `/` qui séparent ces éléments sont à remplacer par des tirets dans le nom du fichier.
 
-L’outil ne déduit pas la nature juridique d’un document. Le PDF du mail reste dans Correspondances. Chaque pièce jointe peut être classée indépendamment, ou plusieurs pièces peuvent être rangées ensemble. Les copies dans plusieurs rubriques, la fusion de plusieurs annexes et le renommage selon la nature de l’acte restent manuels.
+L’outil ne déduit pas la nature juridique d’un document. Le PDF du mail et chaque pièce jointe peuvent être classés indépendamment, ou plusieurs documents peuvent être rangés ensemble. Les copies dans plusieurs rubriques, la fusion de plusieurs annexes et le renommage selon la nature de l’acte restent manuels.
 
 Les règles transverses des pages 3 et 4 relèvent de la rédaction et du traitement du courrier : polices, page x/x, références du destinataire et juridiction, présentation des actes, filigranes de projets, mentions VD/AR24, formulation des dires, copies de mails et rangement dans deux espaces. Elles restent des consignes de travail dans le PDF source. Leur présence dans le document ne déclenche aucun envoi, aucune modification d’un acte ni aucune copie automatique vers une autre boîte ou un autre espace.
