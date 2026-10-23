@@ -1,0 +1,115 @@
+{
+  "mdse": "2.3",
+  "kind": "Execution",
+  "id": "TASK-01-E01",
+  "name": "Classement manuel uniforme et états visibles",
+  "status": "succeeded",
+  "revision": 1,
+  "createdAt": "2026-10-24",
+  "updatedAt": "2026-10-24",
+  "workItem": "WI-manual-document-filing",
+  "task": "TASK-01",
+  "attempt": 1,
+  "participants": [
+    {
+      "actor": "agent-codex",
+      "roles": [
+        "performer"
+      ]
+    },
+    {
+      "actor": "person-project-owner",
+      "roles": [
+        "initiator"
+      ]
+    }
+  ],
+  "startedAt": "2026-10-24",
+  "completedAt": "2026-10-24",
+  "summary": "Tous les nouveaux documents restent en attente ; PDF et pièces classables séparément ou ensemble. Conservation des anciennes destinations, suppression du rôle automatique dans le modèle, badges contrastés et choix explicite de dossier.",
+  "commits": [
+    {
+      "hash": "eb65de49c3120276ca915305dba221fa2a82d994",
+      "message": "feat(manual-document-filing): choose destinations for mail PDFs and highlight pending documents (REQ-01, REQ-02)",
+      "type": "feat"
+    }
+  ],
+  "filesChanged": [
+    {
+      "path": "autosecretaire/engine.py",
+      "action": "update"
+    },
+    {
+      "path": "autosecretaire/static/app.js",
+      "action": "update"
+    },
+    {
+      "path": "autosecretaire/static/style.css",
+      "action": "update"
+    },
+    {
+      "path": "autosecretaire/static/index.html",
+      "action": "update"
+    },
+    {
+      "path": "tests/test_manual_document_filing.py",
+      "action": "create"
+    },
+    {
+      "path": "tests/test_correspondence_filing.py",
+      "action": "update"
+    },
+    {
+      "path": "tests/test_lazy_folders.py",
+      "action": "update"
+    },
+    {
+      "path": "tests/test_engine.py",
+      "action": "update"
+    },
+    {
+      "path": "README.md",
+      "action": "update"
+    },
+    {
+      "path": "docs/API.md",
+      "action": "update"
+    },
+    {
+      "path": "docs/INSTALLATION.md",
+      "action": "update"
+    },
+    {
+      "path": "docs/FOLDER_TEMPLATE.md",
+      "action": "update"
+    },
+    {
+      "path": "docs/VALIDATION.md",
+      "action": "update"
+    }
+  ],
+  "testing": {
+    "approach": "selective-TDD",
+    "passed": 197,
+    "failed": 0,
+    "skipped": 0
+  },
+  "doneCriteria": [
+    {
+      "id": "DC-01",
+      "met": true
+    },
+    {
+      "id": "DC-02",
+      "met": true
+    }
+  ],
+  "implementationDeviations": [],
+  "evidence": [
+    {
+      "kind": "test-output",
+      "reference": "docs/VALIDATION.md",
+      "description": "Six tests ciblés rouges puis verts ; 197 tests réussis ; parcours Chrome et contraste effectif mesuré à 8,45:1 pour les badges. Anciennes assertions de routage adaptées à la correction explicite, protections conservées."
+    }
+  ]
+}

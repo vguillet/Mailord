@@ -4,7 +4,7 @@
   "id": "ROADMAP",
   "name": "Feuille de route Auto-secretaire",
   "status": "current",
-  "revision": 8,
+  "revision": 9,
   "createdAt": "2026-10-23",
   "updatedAt": "2026-10-24",
   "milestones": [
@@ -133,6 +133,18 @@
       ],
       "deliveredDate": "2026-10-24",
       "notes": "191 tests, formulaire et classement séparé contrôlés dans Chrome ; adaptation des PDF suivis et impressions préservées."
+    },
+    {
+      "id": "MS-12",
+      "name": "Classement choisi pour tous les documents",
+      "goal": "Choisir le dossier du PDF du mail comme celui des pièces jointes et rendre les documents en attente immédiatement visibles.",
+      "state": "delivered",
+      "order": 12,
+      "workItems": [
+        "WI-manual-document-filing"
+      ],
+      "deliveredDate": "2026-10-24",
+      "notes": "197 tests, parcours Chrome de classement partiel et complet, badges mesurés à 8,45:1 ; ancienne règle automatique remplacée, archives existantes conservées."
     }
   ],
   "backlog": [

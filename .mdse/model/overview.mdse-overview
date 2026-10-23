@@ -4,7 +4,7 @@
   "id": "OVERVIEW",
   "name": "Vue d'ensemble Auto-secretaire",
   "status": "current",
-  "revision": 7,
+  "revision": 8,
   "createdAt": "2026-10-23",
   "updatedAt": "2026-10-24",
   "summary": "Auto-secrétaire automatise localement sur Mac les dossiers de communications clients : PDF, pièces jointes, nommage chronologique, classement et impression avec interface web française.",
@@ -16,12 +16,12 @@
     },
     {
       "name": "Surveillance et PDF",
-      "description": "Mails lus/non lus, exports PDF passifs, originaux, préfixes de date, collisions et contrôle des fichiers. PDF dans Correspondances, pièces en attente ; adaptation des anciens PDF suivis sans réimpression.",
+      "description": "Mails lus/non lus, exports PDF passifs, originaux, préfixes de date, collisions et contrôle des fichiers. Tous les nouveaux documents restent en attente du choix de destination ; anciennes archives conservées à leur emplacement et réparées sans réimpression.",
       "state": "implemented"
     },
     {
       "name": "Classement ergonomique",
-      "description": "Navigation clients, états et aperçu, lots, recherche, favoris et raccourcis. Chaque destination indique si elle existe sur le Mac ou sera créée au classement. Classement indépendant ou groupé des seules pièces jointes ; emplacements et statuts par pièce.",
+      "description": "Navigation clients, états et aperçu, lots, recherche, favoris et raccourcis. Chaque destination indique si elle existe sur le Mac ou sera créée au classement. Classement indépendant ou groupé des PDF de mails et pièces jointes ; badges À CLASSER contrastés, noms en gras et fonds ambrés pour les documents en attente.",
       "state": "implemented"
     },
     {
@@ -70,7 +70,7 @@
       "description": "Hiérarchie du cabinet, repères et limites de la configuration."
     }
   ],
-  "currentState": "Version locale avec présélections du modèle et séparation PDF Correspondances/pièces jointes implémentées, vérifiées et réconciliées ; 191 tests réussis et parcours Chrome fictif. Intégrations matérielles encore à valider.",
+  "currentState": "Version locale avec choix manuel de destination pour chaque PDF et pièce jointe, présélections de dossiers conservées et états en attente contrastés ; 197 tests réussis et parcours Chrome fictif. Intégrations matérielles encore à valider.",
   "knownGaps": [
     "Les intégrations Orange, Apple Mail et imprimante cible sont testées sur transports simulés ; validation terrain non réalisée.",
     "Rendu HTML en texte structuré et formats Office conservés sans conversion imprimable.",

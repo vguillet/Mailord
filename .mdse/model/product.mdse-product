@@ -4,7 +4,7 @@
   "id": "PRODUCT",
   "name": "Définition du produit Auto-secretaire",
   "status": "current",
-  "revision": 4,
+  "revision": 5,
   "createdAt": "2026-10-23",
   "updatedAt": "2026-10-24",
   "problem": "La professionnelle classe les communications de ses clients dans des dossiers de messagerie, puis télécharge, renomme, range et imprime manuellement les mails et leurs pièces jointes. Elle doit vérifier ce qui a déjà été enregistré et reproduire une structure de dossiers pour chaque nouveau client.",
@@ -57,7 +57,7 @@
     },
     {
       "id": "NEED-06",
-      "statement": "Obtenir automatiquement un PDF lisible de chaque mail avec ses en-têtes utiles, ainsi que ses pièces jointes conservées localement et préparées pour l'impression lorsque leur format le permet. Archiver automatiquement le PDF du mail dans Correspondances, indépendamment des pièces jointes.",
+      "statement": "Obtenir automatiquement un PDF lisible de chaque mail avec ses en-têtes utiles, ainsi que ses pièces jointes conservées localement et préparées pour l’impression lorsque leur format le permet. Choisir leur destination de classement, y compris celle du PDF du mail.",
       "persona": "Professionnelle qui gère les communications de ses clients dans Apple Mail sur Mac",
       "priority": "must"
     },
@@ -75,13 +75,13 @@
     },
     {
       "id": "NEED-09",
-      "statement": "Naviguer par client dans une barre latérale, consulter chaque mail, son PDF, ses pièces jointes, ses statuts et l'emplacement exact de ses documents.",
+      "statement": "Naviguer par client, consulter mails, PDF, pièces jointes, statuts et emplacements exacts, et repérer immédiatement les documents non classés grâce à un affichage contrasté et explicite.",
       "persona": "Professionnelle qui gère les communications de ses clients dans Apple Mail sur Mac",
       "priority": "must"
     },
     {
       "id": "NEED-10",
-      "statement": "Choisir rapidement la destination de chaque pièce jointe ou d’un groupe de pièces, avec recherche, favoris et clavier, en gardant le PDF du mail dans Correspondances.",
+      "statement": "Choisir rapidement la destination de chaque document, PDF de mail ou pièce jointe, seul ou en groupe, avec recherche, favoris et clavier.",
       "persona": "Professionnelle qui gère les communications de ses clients dans Apple Mail sur Mac",
       "priority": "must"
     },
@@ -125,7 +125,7 @@
     {
       "measure": "Traçabilité des mails du corpus de validation",
       "target": "Chaque message possède un état explicite et chaque PDF archivé un emplacement résolu.",
-      "current": "Non mesuré : aucun logiciel implémenté."
+      "current": "Traçabilité observée sur la démonstration et dans les tests automatisés ; corpus réel de l’utilisatrice encore non mesuré."
     },
     {
       "measure": "Reprise après interruption sur le corpus de validation",
