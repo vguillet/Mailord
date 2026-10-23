@@ -106,10 +106,10 @@ def test_retry_failed_print_only(engine,monkeypatch):
     from autosecretaire import printing
     c=engine.create_client('Camille');engine.scan();add_mail(engine,c);engine.scan();engine.process();m=engine.state()['messages'][0]
     actual=printing.submit;calls=[]
-    def first(path,printer,dry_run=False):
+    def first(path,printer,dry_run=False,**options):
         calls.append(str(path))
         if len(calls)==1:raise printing.PrintError('printer not accepting')
-        return actual(path,printer,dry_run)
+        return actual(path,printer,dry_run,**options)
     monkeypatch.setattr(printing,'submit',first);engine.print_messages([m['id']]);assert len(calls)==2
     engine.print_messages([m['id']]);assert len(calls)==3;assert engine.state()['messages'][0]['print_status']=='simulated'
 

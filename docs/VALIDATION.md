@@ -58,3 +58,10 @@ Aucun compte de messagerie personnel n’a été consulté, aucun mail envoyé e
 - Parcours Chrome réel sur démonstration isolée : panneau non configuré, détection d’une version sur dépôt Git de test local, clic **Mettre à jour**, installation effective des dépendances, bascule et rechargement automatique du navigateur. Version cible `b511994610c2b2a053ea5c5b1a6f6f81840f0bb0`, état final `current`, 3 clients et 7 mails conservés, intention de mise à jour effacée après succès. Ce commit appartient uniquement au dépôt temporaire de validation.
 - Les routes de contrôle privées refusent un jeton absent/invalide ; la probation bloque l’API métier et ne récupère pas les impressions avant activation.
 - Le dépôt distant définitif et ses éventuels identifiants restent à configurer. Aucun push réel, compte Orange, autorisation Apple Mail ou périphérique d’impression n’a été utilisé pour cet essai. Le rollback est limité à la phase précédant l’activation ; une régression après activation demande une version corrective.
+
+## Préférences d’impression — 24 octobre 2026
+
+- **154 tests réussis**, dont 18 nouveaux cas de préférences, dans l’environnement Python 3.14 installé. Avertissement Starlette/httpx déjà présent, sans échec.
+- Contrôle de la persistance API et du redémarrage, des valeurs invalides et de l’atomicité des réglages ; vérification des arguments CUPS et des choix de pilotes simulés, du mode simulation sans appel système, de la reprise des intentions et de l’absence de doublons après changement des préférences.
+- Chrome réel sur une démonstration isolée : sélection et enregistrement « Recto verso · bord long » + « Noir et blanc », rechargement puis relecture des choix. Impression simulée du PDF d’un mail et de sa pièce jointe texte : deux travaux `simulated` portant les mêmes options `two-sided-long-edge` et `monochrome`. Aucune erreur console.
+- Aucun travail matériel soumis. Le comportement physique sur le pilote et l’imprimante cible reste à vérifier ; les modes standard CUPS sont transmis, avec traduction des choix `ColorModel` / `Duplex` reconnus quand le pilote les annonce.

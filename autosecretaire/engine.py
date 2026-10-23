@@ -283,13 +283,19 @@ class Engine:
                     previous=self.store.get('print',pid)
                     if previous and not (previous['status']=='preparing' or (previous['status']=='error' and retry_failed)):continue
                     if not self._healthy(d):raise ValueError('Fichier manquant ou modifié ; effectuez un contrôle.')
-                    p={'message_id':m['id'],'document_id':d['id'],'status':'preparing','created_at':now(),'error':'','job_id':''}
+                    options={'sides':self.settings.get('print_sides','printer'),'color_mode':self.settings.get('print_color_mode','printer')}
+                    p={'message_id':m['id'],'document_id':d['id'],'status':'preparing','created_at':now(),'error':'','job_id':'',
+                       'options':options,'printer':self.settings['printer'],'dry_run':self.settings['dry_run']}
+                    # A prepared but not submitted intent keeps its original settings on resume.
+                    if previous and previous['status']=='preparing':
+                        for key in ('options','printer','dry_run','created_at'):
+                            if key in previous:p[key]=previous[key]
                     self.store.put('print',pid,p)
                     try:
                         printable=documents.convert_for_print(Path(d['path']),self.runtime/'print')
                         p['status']='submitting';self.store.put('print',pid,p)
-                        job=printing.submit(printable,self.settings['printer'],dry_run=self.settings['dry_run'])
-                        p.update(status='simulated' if self.settings['dry_run'] else 'submitted',job_id=job)
+                        job=printing.submit(printable,p['printer'],dry_run=p['dry_run'],**p['options'])
+                        p.update(status='simulated' if p['dry_run'] else 'submitted',job_id=job)
                     except printing.PrintUncertain as e:p.update(status='uncertain',error=self.error_text(e))
                     except printing.PrintError as e:p.update(status='error',error=self.error_text(e))
                     except Exception as e:p.update(status='uncertain' if p['status']=='submitting' else 'error',error=self.error_text(e))
@@ -337,6 +343,8 @@ class Engine:
             if type(s['imap_port']) is not int or not 1<=s['imap_port']<=65535:raise ValueError('Port IMAP invalide.')
             for k in ['dry_run','print_attachments']:
                 if type(s[k]) is not bool:raise ValueError('Valeur booléenne attendue.')
+            try:printing.validate_options(s['print_sides'],s['print_color_mode'])
+            except printing.PrintError as e:raise ValueError(str(e)) from e
             pattern=s['client_folder_pattern']
             if pattern.count('{name}')!=1 or '/' in pattern or '\\' in pattern or '{' in pattern.replace('{name}',''):raise ValueError('Le nom client doit contenir {name} une fois, sans séparateurs.')
             relative(pattern.replace('{name}','Client'))

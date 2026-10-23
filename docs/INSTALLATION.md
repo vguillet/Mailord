@@ -94,3 +94,13 @@ Références techniques : [IMAP Python](https://docs.python.org/3/library/imapli
 ## Mises à jour sans terminal
 
 Les lancements habituels utilisent désormais un superviseur local. Après une première installation de cette fonctionnalité, fermer puis relancer une fois le service. Configurer le dépôt et la branche dans **Mises à jour**. Voir [le guide des mises à jour](UPDATES.md) pour le bouton, les accès privés et les limites du retour automatique. Conserver le dossier d’installation initial et sa `.venv` : ils servent de lanceur stable.
+
+## Recto verso, couleur et pièces jointes
+
+Dans **Réglages → Impression**, choisir les **Faces à imprimer** : réglage de l’imprimante, recto seul, recto verso avec retournement sur le bord long (comme un livre) ou le bord court (comme un bloc-notes). Choisir ensuite **Couleur** : réglage de l’imprimante, noir et blanc ou couleur. Enregistrer les réglages ; ils sont conservés au redémarrage et s’appliquent aux prochaines soumissions. Ils ne modifient ni les documents archivés ni les préférences des autres applications.
+
+Le service imprime **le PDF du mail et les pièces jointes imprimables cochées**. Les PDF valides, images et textes compatibles sont pris en charge. Les documents Word/Excel et autres formats non compatibles sont archivés mais pas convertis pour impression. Les images intégrées aux messages (par exemple les signatures) sont exclues par défaut. Chaque document apparaît avec sa propre case dans le détail du mail : il est possible de n’imprimer que le mail, que certaines pièces jointes, ou les deux.
+
+**Inclure les pièces jointes imprimables** définit leur sélection lors des prochains exports. Pour un mail déjà présent, utiliser les cases de ses documents. Chaque fichier constitue un travail séparé : le recto verso concerne ses pages et ne place pas automatiquement la première pièce jointe au dos du mail. Changer ces préférences ne relance aucune impression déjà soumise.
+
+Le mode simulation reste actif par défaut et n’imprime aucun papier. La prise en charge physique du recto verso et de la couleur dépend de l’imprimante et de son pilote ; elle reste à essayer sur le matériel cible. Le service transmet les [options CUPS par travail](https://openprinting.github.io/cups/doc/options.html) et les options `Duplex` / `ColorModel` reconnues quand elles sont annoncées par le pilote. Les options globales du Mac ne sont pas modifiées. Un mode absent des choix reconnus du pilote est refusé avec une erreur lisible ; si aucune description du pilote n’est disponible, les options standard sont transmises.

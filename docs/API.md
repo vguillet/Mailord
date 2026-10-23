@@ -33,3 +33,14 @@ Les modèles ont un numéro de version et une liste de chemins normalisés. L’
 - `POST /api/updates/install` : `{commit}` ; commit sélectionné exact, installation en fond ; refuse session non supervisée et opération concurrente.
 
 Mêmes protections Host, origine et CSRF que les autres mutations. Les routes privées `GET /api/health` et `POST /api/activate` exigent le jeton aléatoire `X-Supervisor-Token` transmis uniquement au processus enfant. Pendant la probation, toutes les autres routes répondent 503 ; aucune récupération ni traitement métier avant activation. Le jeton CSRF change au redémarrage : la page recharge son état avant toute nouvelle action.
+
+## Préférences d’impression
+
+`PUT /api/settings` et `GET /api/state.settings` incluent :
+
+- `print_sides` : `printer` (défaut), `one-sided`, `two-sided-long-edge`, `two-sided-short-edge`.
+- `print_color_mode` : `printer` (défaut), `monochrome`, `color`.
+
+Une valeur invalide retourne 400 sans enregistrer les autres champs de la demande. Le défaut `printer` préserve les options du pilote sans modifier ses préférences globales. Chaque nouvelle intention d’impression mémorise `options: {sides, color_mode}`, `printer` et `dry_run` dans les enregistrements `print_jobs`. Une reprise `preparing` garde cet instantané ; un nouvel essai après refus certain ou une réimpression explicite prend les réglages courants. Les travaux déjà soumis, simulés ou incertains ne sont pas resoumis à cause d’un changement de préférence.
+
+Les options s’appliquent à chaque document coché et imprimable : le PDF du mail et les pièces jointes sélectionnées. `print_attachments` définit la sélection initiale des prochaines pièces jointes exportées, sans changer les cases des documents déjà présents. La simulation ne consulte pas les imprimantes et ne soumet aucun travail.

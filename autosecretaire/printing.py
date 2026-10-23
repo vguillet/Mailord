@@ -25,7 +25,62 @@ def _printer_name(value: str) -> bool:
     return bool(value and not value.startswith('-') and not re.search(r'[\s/#\x00-\x1f\x7f]', value))
 
 
-def submit(path: Path, printer: str, dry_run: bool = False) -> str:
+PRINT_SIDES = ('printer', 'one-sided', 'two-sided-long-edge', 'two-sided-short-edge')
+PRINT_COLOR_MODES = ('printer', 'monochrome', 'color')
+
+
+def validate_options(sides='printer', color_mode='printer'):
+    if not isinstance(sides, str) or sides not in PRINT_SIDES:
+        raise PrintError('Choisissez un mode recto ou recto verso valide.')
+    if not isinstance(color_mode, str) or color_mode not in PRINT_COLOR_MODES:
+        raise PrintError('Choisissez un mode couleur valide.')
+
+
+def _driver_choices(printer):
+    """Read available PPD options only; never change the Mac's printer defaults."""
+    try:
+        result = subprocess.run(['/usr/bin/lpoptions', '-p', printer, '-l'],
+                                capture_output=True, text=True, encoding='utf-8', errors='replace',
+                                env=_environment(), timeout=15, check=False)
+    except (OSError, subprocess.TimeoutExpired):
+        return {}
+    if result.returncode:
+        return {}
+    choices = {}
+    for line in result.stdout.splitlines():
+        label, separator, values = line.partition(':')
+        key = label.split('/', 1)[0].strip()
+        if separator and key in ('ColorModel', 'Duplex'):
+            choices[key] = {value.lstrip('*') for value in values.split()}
+    return choices
+
+
+def _job_options(printer, sides, color_mode):
+    options = []
+    if sides != 'printer':
+        options += ['-o', 'sides=' + sides]
+    if color_mode != 'printer':
+        options += ['-o', 'print-color-mode=' + color_mode]
+    if not options:
+        return options
+    choices = _driver_choices(printer)
+    if sides != 'printer' and choices.get('Duplex'):
+        value = {'one-sided': 'None', 'two-sided-long-edge': 'DuplexNoTumble',
+                 'two-sided-short-edge': 'DuplexTumble'}[sides]
+        if value not in choices['Duplex']:
+            raise PrintError('Ce mode recto verso n’est pas proposé par le pilote de cette imprimante. Choisissez un autre mode dans les réglages.')
+        options += ['-o', 'Duplex=' + value]
+    if color_mode != 'printer' and choices.get('ColorModel'):
+        aliases = ('Gray', 'Grayscale', 'DeviceGray', 'KGray', 'CMYGray', 'FastGray') if color_mode == 'monochrome' else ('RGB', 'CMYK', 'Color', 'DeviceRGB', 'DeviceCMYK', 'CMY')
+        value = next((candidate for candidate in aliases if candidate in choices['ColorModel']), None)
+        if value is None:
+            raise PrintError('Ce mode couleur n’est pas reconnu parmi les options du pilote. Choisissez « Réglage de l’imprimante » ou un autre mode.')
+        options += ['-o', 'ColorModel=' + value]
+    return options
+
+
+def submit(path: Path, printer: str, dry_run: bool = False, *, sides: str = "printer", color_mode: str = "printer") -> str:
+    validate_options(sides, color_mode)
     path = Path(path).resolve()
     if not path.is_file():
         raise PrintError('Le document à imprimer est absent.')
@@ -33,8 +88,9 @@ def submit(path: Path, printer: str, dry_run: bool = False) -> str:
         return 'simulated-' + uuid.uuid4().hex
     if not isinstance(printer, str) or not _printer_name(printer):
         raise PrintError('Choisissez une imprimante configurée valide.')
+    options = _job_options(printer, sides, color_mode)
     try:
-        result = subprocess.run(['/usr/bin/lp', '-d', printer, '--', str(path)],
+        result = subprocess.run(['/usr/bin/lp', '-d', printer, *options, '--', str(path)],
                                 capture_output=True, text=True, encoding='utf-8', errors='replace',
                                 env=_environment(), timeout=30, check=False)
     except subprocess.TimeoutExpired as exc:
