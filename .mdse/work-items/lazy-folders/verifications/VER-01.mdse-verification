@@ -1,0 +1,129 @@
+{
+  "mdse": "2.3",
+  "kind": "Verification",
+  "id": "VER-01",
+  "name": "Vérification des dossiers à la demande et sélection initiale",
+  "status": "pass",
+  "revision": 1,
+  "createdAt": "2026-10-24",
+  "updatedAt": "2026-10-24",
+  "workItem": "WI-lazy-folders",
+  "requirements": [
+    "REQ-01",
+    "REQ-02",
+    "REQ-03",
+    "REQ-04"
+  ],
+  "executions": [
+    "TASK-01-E01"
+  ],
+  "tasks": [],
+  "testRun": {
+    "runner": "pytest",
+    "command": "/Users/vguillet/Documents/Repos/Auto-secretaire/.venv/bin/python -c 'import pytest; raise SystemExit(pytest.main([\"-q\"]))'",
+    "passed": 174,
+    "failed": 0,
+    "skipped": 0
+  },
+  "results": [
+    {
+      "requirement": "REQ-01",
+      "result": "pass",
+      "methods": [
+        "VM-01"
+      ],
+      "acceptanceCriteria": [
+        {
+          "id": "AC-01",
+          "covered": true,
+          "test": "test_new_client_and_retry_reserve_all_paths_without_creating_directories ; test_state_api_exposes_virtual_and_existing_paths_without_writes"
+        },
+        {
+          "id": "AC-02",
+          "covered": true,
+          "test": "test_latest_template_and_favorites_available_to_existing_client_after_restart"
+        }
+      ]
+    },
+    {
+      "requirement": "REQ-02",
+      "result": "pass",
+      "methods": [
+        "VM-02"
+      ],
+      "acceptanceCriteria": [
+        {
+          "id": "AC-01",
+          "covered": true,
+          "test": "test_export_and_classify_create_only_needed_chain_and_remove_empty_source ; parcours Chrome Expertise"
+        },
+        {
+          "id": "AC-02",
+          "covered": true,
+          "test": "test_failed_export_or_missing_source_does_not_create_destination ; test_symlink_destination_cannot_create_outside_client ; test_failed_publication_cleans_empty_target_but_can_resume"
+        }
+      ]
+    },
+    {
+      "requirement": "REQ-03",
+      "result": "pass",
+      "methods": [
+        "VM-03"
+      ],
+      "acceptanceCriteria": [
+        {
+          "id": "AC-01",
+          "covered": true,
+          "test": "test_export_and_classify_create_only_needed_chain_and_remove_empty_source"
+        },
+        {
+          "id": "AC-02",
+          "covered": true,
+          "test": "test_cleanup_keeps_other_documents_hidden_files_and_unrelated_empty_folders ; test_interrupted_classification_recovers_missing_branch_and_cleans_source"
+        }
+      ]
+    },
+    {
+      "requirement": "REQ-04",
+      "result": "pass",
+      "methods": [
+        "VM-04"
+      ],
+      "acceptanceCriteria": [
+        {
+          "id": "AC-01",
+          "covered": true,
+          "test": "test_initial_selection_creates_only_chosen_folders_and_parents ; formulaire Chrome 37 cases non cochées, Tout cocher/Tout décocher, sélection partielle"
+        },
+        {
+          "id": "AC-02",
+          "covered": true,
+          "test": "test_initial_selection_resumes_after_partial_creation ; test_invalid_initial_selection_has_no_side_effects ; test_initial_selection_api_validates_payload_and_exposes_created_paths ; test_resubmitting_client_adds_choices_without_erasing_existing_ones"
+        },
+        {
+          "id": "AC-03",
+          "covered": true,
+          "test": "test_initial_selection_survives_retry_template_change_and_emptying"
+        }
+      ]
+    }
+  ],
+  "evidence": [
+    {
+      "kind": "test-output",
+      "reference": "docs/VALIDATION.md",
+      "description": "20 tests ciblés et 174 tests de la suite passent ; parcours Chrome sur dossiers fictifs, fichiers et arborescence contrôlés."
+    }
+  ],
+  "deviationReview": [
+    {
+      "execution": "TASK-01-E01",
+      "summary": "Inventaire des noms importés corrigé et test de non-régression passé.",
+      "state": "resolved"
+    }
+  ],
+  "warnings": [
+    "Aucun nettoyage global des anciens dossiers vides ; seules les branches concernées par un déplacement sont nettoyées, sauf choix initiaux protégés.",
+    "Intégrations Orange, Apple Mail et imprimante cible non exercées ; démonstration simulée et avertissement Starlette/httpx préexistant."
+  ]
+}

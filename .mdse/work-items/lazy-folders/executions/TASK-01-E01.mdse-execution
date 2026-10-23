@@ -1,0 +1,117 @@
+{
+  "mdse": "2.3",
+  "kind": "Execution",
+  "id": "TASK-01-E01",
+  "name": "Dossiers à la demande et sélection initiale",
+  "status": "succeeded",
+  "revision": 1,
+  "createdAt": "2026-10-24",
+  "updatedAt": "2026-10-24",
+  "workItem": "WI-lazy-folders",
+  "task": "TASK-01",
+  "attempt": 1,
+  "participants": [
+    {
+      "actor": "agent-codex",
+      "roles": [
+        "performer"
+      ]
+    },
+    {
+      "actor": "person-project-owner",
+      "roles": [
+        "initiator"
+      ]
+    }
+  ],
+  "startedAt": "2026-10-24",
+  "completedAt": "2026-10-24",
+  "summary": "Catalogue virtuel, publication tardive, nettoyage borné et sélection initiale facultative persistée ; TDD ciblé et parcours Chrome sur démonstration isolée.",
+  "commits": [
+    {
+      "hash": "e5576cd8ae820e0fc53a644b38fba3614c79a018",
+      "message": "feat(lazy-folders): materialize only used archive branches (REQ-01, REQ-02, REQ-03)",
+      "type": "feat"
+    },
+    {
+      "hash": "d8ca63f9b02a025f0ee4aa11483fff2c38da5272",
+      "message": "feat(lazy-folders): choose and preserve initial client folders (REQ-04)",
+      "type": "feat"
+    }
+  ],
+  "filesChanged": [
+    {
+      "path": "autosecretaire/engine.py",
+      "action": "update"
+    },
+    {
+      "path": "autosecretaire/static/app.js",
+      "action": "update"
+    },
+    {
+      "path": "tests/test_engine.py",
+      "action": "update"
+    },
+    {
+      "path": "tests/test_update_integration.py",
+      "action": "update"
+    },
+    {
+      "path": "tests/test_lazy_folders.py",
+      "action": "create"
+    },
+    {
+      "path": "docs/API.md",
+      "action": "update"
+    },
+    {
+      "path": "docs/INSTALLATION.md",
+      "action": "update"
+    },
+    {
+      "path": "docs/FOLDER_TEMPLATE.md",
+      "action": "update"
+    },
+    {
+      "path": "docs/VALIDATION.md",
+      "action": "update"
+    },
+    {
+      "path": "README.md",
+      "action": "update"
+    },
+    {
+      "path": "autosecretaire/app.py",
+      "action": "update"
+    }
+  ],
+  "testing": {
+    "approach": "selective-TDD",
+    "passed": 174,
+    "failed": 0,
+    "skipped": 0
+  },
+  "implementationDeviations": [
+    {
+      "rule": 1,
+      "type": "bug",
+      "found": "La validation des noms existants pendant l’inventaire rejetait les dossiers importés contenant des espaces.",
+      "action": "Inventaire en lecture seule conservant les noms ; validation stricte maintenue pour les écritures et test de non-régression passé.",
+      "resolved": true
+    }
+  ],
+  "doneCriteria": [
+    {
+      "id": "DC-01",
+      "met": true
+    },
+    {
+      "id": "DC-02",
+      "met": true
+    },
+    {
+      "id": "DC-03",
+      "met": true
+    }
+  ]
+}

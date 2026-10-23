@@ -4,7 +4,7 @@
   "id": "ROADMAP",
   "name": "Feuille de route Auto-secretaire",
   "status": "current",
-  "revision": 6,
+  "revision": 7,
   "createdAt": "2026-10-23",
   "updatedAt": "2026-10-24",
   "milestones": [
@@ -109,6 +109,18 @@
       ],
       "deliveredDate": "2026-10-24",
       "notes": "37 dossiers ; inspection du PDF, création et préservation, 154 tests et parcours navigateur sur données fictives."
+    },
+    {
+      "id": "MS-10",
+      "name": "Dossiers à la demande et choix initiaux",
+      "goal": "Proposer toute l’arborescence sans dossiers vides superflus et permettre de cocher les dossiers à préparer à la création du client.",
+      "state": "delivered",
+      "order": 10,
+      "workItems": [
+        "WI-lazy-folders"
+      ],
+      "deliveredDate": "2026-10-24",
+      "notes": "174 tests et parcours Chrome : destinations virtuelles, classement dans une branche absente, nettoyage borné et sélection initiale conservée."
     }
   ],
   "backlog": [

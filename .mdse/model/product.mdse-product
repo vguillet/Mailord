@@ -4,9 +4,9 @@
   "id": "PRODUCT",
   "name": "Définition du produit Auto-secretaire",
   "status": "current",
-  "revision": 2,
+  "revision": 3,
   "createdAt": "2026-10-23",
-  "updatedAt": "2026-10-23",
+  "updatedAt": "2026-10-24",
   "problem": "La professionnelle classe les communications de ses clients dans des dossiers de messagerie, puis télécharge, renomme, range et imprime manuellement les mails et leurs pièces jointes. Elle doit vérifier ce qui a déjà été enregistré et reproduire une structure de dossiers pour chaque nouveau client.",
   "valueProposition": "Conserver son organisation par client tout en automatisant l'export PDF, le nommage chronologique, le contrôle des documents et l'impression, avec une interface locale qui rend le classement rapide et l'avancement visible.",
   "targetUsers": [
@@ -39,7 +39,7 @@
     },
     {
       "id": "NEED-03",
-      "statement": "Créer un client en saisissant son nom et obtenir automatiquement son dossier mail, son dossier local et toute l'arborescence standard, avec un suivi des créations incomplètes.",
+      "statement": "Créer un client avec son dossier mail et choisir facultativement les dossiers locaux à préparer même vides ; proposer toute l’arborescence standard au classement et créer les autres branches au premier document, avec reprise des créations incomplètes.",
       "persona": "Professionnelle qui gère les communications de ses clients dans Apple Mail sur Mac",
       "priority": "must"
     },

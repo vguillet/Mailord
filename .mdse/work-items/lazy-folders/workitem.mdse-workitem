@@ -3,7 +3,7 @@
   "kind": "WorkItem",
   "id": "WI-lazy-folders",
   "name": "Dossiers créés au premier document",
-  "status": "taskified",
+  "status": "reconciled",
   "revision": 1,
   "createdAt": "2026-10-24",
   "updatedAt": "2026-10-24",
@@ -40,8 +40,14 @@
   "tasks": [
     "TASK-01"
   ],
-  "executions": [],
-  "verifications": [],
-  "deliverables": [],
+  "executions": [
+    "TASK-01-E01"
+  ],
+  "verifications": [
+    "VER-01"
+  ],
+  "deliverables": [
+    "DLV-01"
+  ],
   "design": "DESIGN"
 }

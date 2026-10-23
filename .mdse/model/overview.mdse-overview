@@ -4,14 +4,14 @@
   "id": "OVERVIEW",
   "name": "Vue d'ensemble Auto-secretaire",
   "status": "current",
-  "revision": 5,
+  "revision": 6,
   "createdAt": "2026-10-23",
   "updatedAt": "2026-10-24",
   "summary": "Auto-secrétaire automatise localement sur Mac les dossiers de communications clients : PDF, pièces jointes, nommage chronologique, classement et impression avec interface web française.",
   "capabilities": [
     {
       "name": "Clients et modèles",
-      "description": "Création reprenable, rattachement mail/local, modèle hiérarchique versionné et application additive. Modèle initial de cabinet issu du PDF fourni : huit rubriques, 37 dossiers avec zone d’attente, repères et branche de juridiction personnalisable.",
+      "description": "Création reprenable, rattachement mail/local, modèle hiérarchique versionné et application additive. Modèle initial de cabinet issu du PDF fourni : huit rubriques, 37 dossiers avec zone d’attente, repères et branche de juridiction personnalisable. Catalogue complet virtuel, création à la demande, choix initial facultatif de dossiers vides persisté et protégé.",
       "state": "implemented"
     },
     {
@@ -21,7 +21,7 @@
     },
     {
       "name": "Classement ergonomique",
-      "description": "Navigation clients, états et aperçu, lots, recherche, favoris et raccourcis.",
+      "description": "Navigation clients, états et aperçu, lots, recherche, favoris et raccourcis. Chaque destination indique si elle existe sur le Mac ou sera créée au classement.",
       "state": "implemented"
     },
     {
@@ -70,7 +70,7 @@
       "description": "Hiérarchie du cabinet, repères et limites de la configuration."
     }
   ],
-  "currentState": "Version locale avec mises à jour, préférences d’impression et modèle de cabinet implémentés, vérifiés et réconciliés ; 154 tests réussis et contrôle navigateur en simulation. Intégrations matérielles encore à valider.",
+  "currentState": "Version locale avec mises à jour, impression, modèle du cabinet, dossiers à la demande et choix initiaux implémentés, vérifiés et réconciliés ; 174 tests réussis et parcours Chrome en simulation. Intégrations matérielles encore à valider.",
   "knownGaps": [
     "Les intégrations Orange, Apple Mail et imprimante cible sont testées sur transports simulés ; validation terrain non réalisée.",
     "Rendu HTML en texte structuré et formats Office conservés sans conversion imprimable.",
