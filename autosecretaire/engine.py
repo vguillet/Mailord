@@ -8,7 +8,7 @@ import threading
 import uuid
 from datetime import datetime, timezone
 from pathlib import Path
-from .config import DEFAULT_FOLDERS
+from .config import DEFAULT_FOLDERS, DEFAULT_EMAIL_FOLDER
 from .connectors import make_connector
 from . import documents, printing
 
@@ -66,14 +66,31 @@ class Engine:
         events=self.store.all('event')
         for x in events[:-200]:self.store.delete('event',x['id'])
 
-    def template(self):return self.store.all('template')[-1]
+    def template(self):
+        t=self.store.all('template')[-1]
+        t.setdefault('email_folder',DEFAULT_EMAIL_FOLDER)
+        t['folders']=list(dict.fromkeys(t['folders']+[t['email_folder']]))
+        t.setdefault('initial_folders',[t['email_folder']])
+        return t
 
-    def save_template(self,folders):
+    def save_template(self,folders,initial_folders=None,email_folder=None):
         with self.lock:
             if not isinstance(folders,list) or not 1<=len(folders)<=250:raise ValueError('Le modèle doit contenir de 1 à 250 dossiers.')
             cleaned=[relative(x) for x in folders]
             if len({x.casefold() for x in cleaned})!=len(cleaned):raise ValueError('Deux dossiers portent le même nom.')
-            t={'version':len(self.store.all('template'))+1,'folders':cleaned,'created_at':now()};id=uid();self.store.put('template',id,t);return self.store.get('template',id)
+            previous=self.template() if self.store.all('template') else {'email_folder':DEFAULT_EMAIL_FOLDER,'initial_folders':[DEFAULT_EMAIL_FOLDER]}
+            mail=relative(previous['email_folder'] if email_folder is None else email_folder)
+            if email_folder is None and mail not in cleaned:cleaned.append(mail)
+            allowed=set(cleaned)
+            for p in cleaned:
+                parts=p.split('/');allowed.update('/'.join(parts[:i]) for i in range(1,len(parts)))
+            if mail not in allowed:raise ValueError('Le dossier des mails doit appartenir au modèle.')
+            selected=[p for p in previous['initial_folders'] if p in allowed] if initial_folders is None else initial_folders
+            if not isinstance(selected,list):raise ValueError('Présélection de dossiers invalide.')
+            selected=list(dict.fromkeys(relative(p) for p in selected))
+            if any(p not in allowed for p in selected):raise ValueError('Un dossier présélectionné est absent du modèle.')
+            if len({p.casefold() for p in cleaned})!=len(cleaned):raise ValueError('Deux dossiers portent le même nom.')
+            t={'version':len(self.store.all('template'))+1,'folders':cleaned,'initial_folders':selected,'email_folder':mail,'created_at':now()};id=uid();self.store.put('template',id,t);return self.store.get('template',id)
 
     def client(self,id):
         c=self.store.get('client',id)
@@ -116,6 +133,7 @@ class Engine:
                     c['initial_folders']=list(dict.fromkeys(c.get('initial_folders',[])+selected))
                     self.store.put('client',c['id'],c)
                     return self.retry_client(c['id'])
+            if initial_folders is None:selected=self.template()['initial_folders']
             folder_name=self.settings.get('client_folder_pattern','{name}').replace('{name}',name);relative(folder_name)
             if '/' in folder_name:raise ValueError('Le modèle de nom client ne doit pas créer de chemin imbriqué.')
             folder=within(self.root,self.root/folder_name)
@@ -175,6 +193,7 @@ class Engine:
                             continue
                         spool=self.runtime/'spool'/(identity+'.eml');tmp=spool.with_suffix('.tmp');tmp.write_bytes(raw);tmp.replace(spool)
                         m={'client_id':c['id'],'subject':parsed['subject'],'sender':parsed['sender'],'recipients':parsed['recipients'],'body':parsed['body'],'date':str(parsed['date']),'received_at':source.received_at or now(),'status':'queued','classification':'pending','destination':'00 - À classer','print_status':'historical' if not c.get('initialized') else 'pending','historical':not c.get('initialized'),'error':'','sources':[source_key],'spool':str(spool),'discovered_at':now()}
+                        m.update(filing_version=2,email_destination=self.template()['email_folder'],classification_auto_print=True)
                         self.store.put('message',identity,m);self._queue(identity)
                     c['initialized']=True;c['error']='';self.store.put('client',c['id'],c)
                 except Exception as e:
@@ -191,16 +210,16 @@ class Engine:
             return p.is_file() and digest(p)==d['sha256'] and (d['kind']!='email' or documents.valid_pdf(p))
         except (ValueError,OSError):return False
 
-    def _target(self,root,name,id,sha):
+    def _target(self,root,name,id,sha,reserved=()):
         target=within(root,root/name)
         # Case-insensitive collision handling also works on case-sensitive development disks.
         occupied={p.name.casefold():p for p in root.iterdir()} if root.exists() else {}
         found=occupied.get(target.name.casefold())
         if found is not None:target=found
-        if target.exists():
+        if target.exists() or str(target).casefold() in reserved:
             target=within(root,root/(Path(name).stem+' - '+id[:10]+Path(name).suffix))
             index=2
-            while target.exists():
+            while target.exists() or str(target).casefold() in reserved:
                 target=within(root,root/(Path(name).stem+' - '+id[:10]+f' ({index})'+Path(name).suffix));index+=1
         return target
 
@@ -237,40 +256,82 @@ class Engine:
             temporary.unlink(missing_ok=True)
             self._prune_empty(self.root,target.parent)
 
+    def _prepare_filing(self,m):
+        if m.get('filing_version')==2:return
+        # Old shared move intents must finish before adapting their final paths.
+        if m.get('move_destination'):raise ValueError('Classement précédent incomplet. Relancez le contrôle.')
+        root=Path(self.client(m['client_id'])['folder'])
+        with self.store.transaction():
+            for d in self._docs(m['id']):
+                d['destination']=str(Path(d['path']).parent.relative_to(root))
+                d['classification']='classified' if d['kind']=='email' else m['classification']
+                self.store.put('document',d['id'],d)
+            m.update(filing_version=2,email_destination=self.template()['email_folder'],
+                     classification_auto_print=m['classification']=='classified')
+            self.store.put('message',m['id'],m)
+
+    def _refresh_classification(self,id):
+        m=self.store.get('message',id);ds=self._docs(id)
+        if m.get('filing_version')!=2 or m['status']!='ready' or not ds:return
+        attachments=[d for d in ds if d['kind']=='attachment']
+        complete=all(d.get('classification')=='classified' and not d.get('move_to') for d in attachments)
+        m['classification']='classified' if complete else 'pending'
+        destinations={d.get('destination','00 - À classer') for d in attachments}
+        m['destination']=next(iter(destinations)) if len(destinations)==1 else ''
+        self.store.put('message',id,m)
+
+    def _route_email(self,m):
+        c=self.client(m['client_id']);root=Path(c['folder'])
+        dest=within(root,root/relative(m['email_destination']))
+        for d in self._docs(m['id']):
+            if d['kind']!='email':continue
+            if d.get('move_to'):raise ValueError('Déplacement du PDF incomplet. Relancez le contrôle.')
+            src=within(root,d['path'])
+            if src.parent==dest:continue
+            target=self._target(dest,src.name,d['id'],d['sha256'])
+            d.update(move_to=str(target),move_destination=m['email_destination'])
+            self.store.put('document',d['id'],d);self._recover_moves()
+            if self.store.get('document',d['id']).get('move_to'):raise ValueError('Déplacement du PDF incomplet. Relancez le contrôle.')
+
     def process(self):
         with self.lock:
             self._recover_moves()
             for m in self.store.all('message'):
-                ds=self._docs(m['id'])
-                if m['status']=='ready' and ds and all(self._healthy(d) for d in ds):continue
-                self._queue(m['id']);self.store.put('job',m['id'],{'message_id':m['id'],'status':'running','error':''})
                 try:
-                    c=self.client(m['client_id']);dest=Path(c['folder']) if m['destination']=='.' else within(Path(c['folder']),Path(c['folder'])/relative(m['destination']))
-                    # Render into a unique private directory. Failed attempts never pollute exports.
-                    stage=self.runtime/'staging'/uid();stage.mkdir()
-                    exports=documents.export_message(Path(m['spool']).read_bytes(),stage,received_at=m['received_at'],date_source=self.settings['date_source'],prefix_format=self.settings['prefix_format'],identity=m['id'])
-                    for index,x in enumerate(exports):
-                        did=m['id']+f'-{index}';d=self.store.get('document',did)
-                        if d and self._healthy(d):continue
-                        if d:
-                            target=within(self.root,d['path'])
-                            if target.exists():
-                                # Preserve a changed/corrupted tracked copy before replacing it.
-                                quarantine=self.runtime/'quarantine'/(uid()+'-'+target.name);shutil.copy2(target,quarantine);target.unlink()
-                        else:
-                            target=self._target(dest,Path(x['path']).name,did,x['sha256'])
-                            d={**x,'message_id':m['id'],'path':str(target),'name':target.name,'selected':x['kind']=='email' or (self.settings.get('print_attachments',True) and x['printable'] and not x.get('inline',False))}
-                            self.store.put('document',did,d)
-                        self._publish(x['path'],target);d.update(path=str(target),name=target.name,sha256=digest(target));self.store.put('document',did,d)
-                    shutil.rmtree(stage);m.update(status='ready',error='');self.store.put('message',m['id'],m);self.store.put('job',m['id'],{'message_id':m['id'],'status':'done','error':''})
-                    if self.settings['print_policy']=='after_export' and not m['historical']:self.print_messages([m['id']],retry_failed=False)
+                    self._prepare_filing(m)
+                    ds=self._docs(m['id'])
+                    if m['status']!='ready' or not ds or not all(self._healthy(d) for d in ds):
+                        self.store.put('job',m['id'],{'message_id':m['id'],'status':'running','error':''})
+                        c=self.client(m['client_id']);root=Path(c['folder'])
+                        stage=self.runtime/'staging'/uid();stage.mkdir()
+                        exports=documents.export_message(Path(m['spool']).read_bytes(),stage,received_at=m['received_at'],date_source=self.settings['date_source'],prefix_format=self.settings['prefix_format'],identity=m['id'])
+                        for index,x in enumerate(exports):
+                            did=m['id']+f'-{index}';d=self.store.get('document',did)
+                            if d and self._healthy(d):continue
+                            if d:
+                                target=within(self.root,d['path'])
+                                if target.exists():
+                                    quarantine=self.runtime/'quarantine'/(uid()+'-'+target.name);shutil.copy2(target,quarantine);target.unlink()
+                            else:
+                                destination=m['email_destination'] if x['kind']=='email' else '00 - À classer'
+                                dest=within(root,root/relative(destination))
+                                target=self._target(dest,Path(x['path']).name,did,x['sha256'])
+                                d={**x,'message_id':m['id'],'path':str(target),'name':target.name,'destination':destination,
+                                   'classification':'classified' if x['kind']=='email' else 'pending',
+                                   'selected':x['kind']=='email' or (self.settings.get('print_attachments',True) and x['printable'] and not x.get('inline',False))}
+                                self.store.put('document',did,d)
+                            self._publish(x['path'],target);d.update(path=str(target),name=target.name,sha256=digest(target));self.store.put('document',did,d)
+                        shutil.rmtree(stage);m.update(status='ready',error='');self.store.put('message',m['id'],m)
+                        self.store.put('job',m['id'],{'message_id':m['id'],'status':'done','error':''})
+                    self._route_email(m)
+                    self._refresh_classification(m['id'])
                 except Exception as e:
-                    m.update(status='error',error=self.error_text(e));self.store.put('message',m['id'],m);self.store.put('job',m['id'],{'message_id':m['id'],'status':'error','error':m['error']})
+                    m.update(status='error',error=self.error_text(e));self.store.put('message',m['id'],m)
+                    self.store.put('job',m['id'],{'message_id':m['id'],'status':'error','error':m['error']})
 
-            # Resume a classification/export whose process stopped before print submission.
             for current in self.store.all('message'):
                 policy=self.settings['print_policy']
-                eligible=policy=='after_export' or (policy=='after_classify' and current['classification']=='classified')
+                eligible=policy=='after_export' or (policy=='after_classify' and current['classification']=='classified' and current.get('classification_auto_print',True))
                 if eligible and current['status']=='ready' and not current['historical']:
                     try:self.print_messages([current['id']],retry_failed=False)
                     except Exception as e:self.event(self.error_text(e),'error')
@@ -286,33 +347,45 @@ class Engine:
                     if digest(src)!=d['sha256']:raise ValueError('Source modifiée pendant le classement ; original conservé.')
                     src.unlink()
                 if src.parent!=dst.parent:self._prune_empty(self.root,src.parent)
-                d.update(path=str(dst),name=dst.name);d.pop('move_to');self.store.put('document',d['id'],d)
+                d.update(path=str(dst),name=dst.name);d.pop('move_to')
+                if 'move_destination' in d:
+                    d['destination']=d.pop('move_destination');d['classification']='classified'
+                self.store.put('document',d['id'],d)
             except (OSError,ValueError) as e:self.event(self.error_text(e),'error')
-        # Finalize messages only when every document has completed its intent.
         for m in self.store.all('message'):
+            # Compatibility with intents recorded by the previous shared filing workflow.
             if m.get('move_destination') and not any(d.get('move_to') for d in self._docs(m['id'])):
                 m['destination']=m.pop('move_destination');m['classification']='classified';self.store.put('message',m['id'],m)
+            self._refresh_classification(m['id'])
 
-    def classify(self,ids,destination):
+    def classify(self,ids,destination,document_ids=None):
         with self.lock:
             destination=relative(destination);ms=self._messages(ids)
             if len({m['client_id'] for m in ms})!=1:raise ValueError('Sélectionnez des messages du même client.')
             if any(m['status']!='ready' for m in ms):raise ValueError('Attendez que tous les documents soient exportés.')
             c=self.client(ms[0]['client_id']);root=Path(c['folder']);dest=within(root,root/destination)
-            for m in ms:
-                for d in self._docs(m['id']):
-                    if not self._healthy(d):raise ValueError('Un fichier manque ou a changé. Lancez le contrôle avant classement.')
-            for m in ms:
-                with self.store.transaction():
-                    for d in self._docs(m['id']):
-                        src=within(self.root,d['path'])
-                        if not self._healthy(d):raise ValueError('Un fichier manque ou a changé. Lancez le contrôle avant classement.')
-                        if src.parent==dest:continue
-                        target=self._target(dest,src.name,d['id'],d['sha256']);d['move_to']=str(target);self.store.put('document',d['id'],d)
-                    m['move_destination']=destination;self.store.put('message',m['id'],m)
-                self._recover_moves()
-                if self.store.get('message',m['id']).get('move_destination'):raise ValueError('Classement incomplet. Consultez le journal et relancez le contrôle.')
-            printable_ids=[m['id'] for m in ms if not m['historical']]
+            all_docs=[d for m in ms for d in self._docs(m['id'])]
+            if any(d.get('move_to') for d in all_docs):raise ValueError('Classement incomplet. Relancez le contrôle avant un nouveau classement.')
+            available={d['id']:d for d in all_docs if d['kind']=='attachment'}
+            if document_ids is None:ds=list(available.values())
+            else:
+                if not isinstance(document_ids,list) or any(not isinstance(i,str) for i in document_ids):raise ValueError('Sélection de pièces jointes invalide.')
+                if any(i not in available for i in document_ids):raise ValueError('Sélectionnez uniquement les pièces jointes des mails choisis.')
+                ds=[available[i] for i in dict.fromkeys(document_ids)]
+            if not ds:raise ValueError('Aucune pièce jointe à classer.')
+            if any(not self._healthy(d) for d in ds):raise ValueError('Un fichier manque ou a changé. Lancez le contrôle avant classement.')
+            reserved=set()
+            with self.store.transaction():
+                for d in ds:
+                    src=within(root,d['path'])
+                    target=src if src.parent==dest else self._target(dest,src.name,d['id'],d['sha256'],reserved)
+                    reserved.add(str(target).casefold())
+                    d.update(move_to=str(target),move_destination=destination);self.store.put('document',d['id'],d)
+                for m in ms:
+                    m['classification_auto_print']=True;self.store.put('message',m['id'],m)
+            self._recover_moves()
+            if any(self.store.get('document',d['id']).get('move_to') for d in ds):raise ValueError('Classement incomplet. Consultez le journal et relancez le contrôle.')
+            printable_ids=[m['id'] for m in ms if not m['historical'] and self.store.get('message',m['id'])['classification']=='classified']
             if self.settings['print_policy']=='after_classify' and printable_ids:
                 self.print_messages(printable_ids,retry_failed=False)
 
@@ -379,8 +452,10 @@ class Engine:
             if not documents.valid_pdf(p):raise ValueError('Le fichier sélectionné n’est pas un PDF valide.')
             if any(d['path']==str(p) and d['message_id']!=id for d in self.store.all('document')):raise ValueError('Ce fichier est déjà associé à un autre message.')
             d=next((x for x in self._docs(id) if x['kind']=='email'),None) or {'id':id+'-0','message_id':id,'kind':'email','inline':False,'selected':True,'printable':True,'original_name':m['subject']+'.pdf'}
-            d.update(path=str(p),name=p.name,sha256=digest(p));self.store.put('document',d['id'],d)
-            m.update(historical=True,print_status='historical',destination=str(p.parent.relative_to(Path(c['folder']))),classification='classified');self.store.put('message',id,m)
+            if d.get('move_to'):raise ValueError('Déplacement du PDF incomplet. Relancez le contrôle avant association.')
+            d.update(path=str(p),name=p.name,sha256=digest(p),destination=str(p.parent.relative_to(Path(c['folder']))),classification='classified');self.store.put('document',d['id'],d)
+            m.update(historical=True,print_status='historical');self.store.put('message',id,m)
+            self._refresh_classification(id)
 
     def update_settings(self,values):
         with self.lock:

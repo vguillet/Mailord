@@ -15,7 +15,7 @@ from test_engine import add_mail
 def engine(tmp_path):
     store = Store(tmp_path / 'state.sqlite3')
     e = Engine(defaults(tmp_path), store)
-    e.save_template(['Procédure/TJ Paris/Conclusions', 'Pièces/Client', 'Factures'])
+    e.save_template(['Procédure/TJ Paris/Conclusions', 'Pièces/Client', 'Factures'], initial_folders=[])
     yield e
     store.close()
 
@@ -36,7 +36,7 @@ def test_new_client_and_retry_reserve_all_paths_without_creating_directories(eng
     assert not Path(c['folder']).exists()
     state = engine.state()['clients'][0]
     assert {'Procédure', 'Procédure/TJ Paris', 'Procédure/TJ Paris/Conclusions',
-            'Pièces', 'Pièces/Client', 'Factures', '00 - À classer'} == set(state['folders'])
+            'Pièces', 'Pièces/Client', 'Factures', '00 - À classer', '02 CORRESPONDANCES'} == set(state['folders'])
     assert state['existing_folders'] == []
     assert engine.history(c['id'])['candidates'] == []
 
@@ -59,19 +59,19 @@ def test_export_and_classify_create_only_needed_chain_and_remove_empty_source(en
     c = engine.create_client('Client')
     root = Path(c['folder'])
     m = exported(engine, c)
-    assert {p.name for p in root.iterdir()} == {'00 - À classer'}
+    assert {p.name for p in root.iterdir()} == {'00 - À classer', '02 CORRESPONDANCES'}
     content = {d['id']: Path(d['path']).read_bytes() for d in m['documents']}
     engine.classify([m['id']], 'Procédure/TJ Paris/Conclusions')
     assert {str(p.relative_to(root)) for p in root.rglob('*') if p.is_dir()} == {
-        'Procédure', 'Procédure/TJ Paris', 'Procédure/TJ Paris/Conclusions'}
+        'Procédure', 'Procédure/TJ Paris', 'Procédure/TJ Paris/Conclusions', '02 CORRESPONDANCES'}
     for d in engine.state()['messages'][0]['documents']:
         assert Path(d['path']).read_bytes() == content[d['id']]
-        assert Path(d['path']).parent == root / 'Procédure/TJ Paris/Conclusions'
+        assert Path(d['path']).parent == root / ('02 CORRESPONDANCES' if d['kind'] == 'email' else 'Procédure/TJ Paris/Conclusions')
     engine.classify([m['id']], 'Factures')
-    assert {p.name for p in root.iterdir()} == {'Factures'}
+    assert {p.name for p in root.iterdir()} == {'Factures', '02 CORRESPONDANCES'}
     state = engine.state()['clients'][0]
     assert 'Procédure/TJ Paris/Conclusions' in state['folders']
-    assert state['existing_folders'] == ['Factures']
+    assert state['existing_folders'] == ['02 CORRESPONDANCES', 'Factures']
     assert engine.store.all('print') == []  # Historical mail stays unprinted.
 
 
@@ -100,7 +100,7 @@ def test_failed_export_or_missing_source_does_not_create_destination(engine, mon
     assert not Path(c['folder']).exists()
     engine.process()
     m = engine.state()['messages'][0]
-    Path(m['documents'][0]['path']).unlink()
+    Path(next(d for d in m['documents'] if d['kind'] == 'attachment')['path']).unlink()
     with pytest.raises(ValueError):
         engine.classify([m['id']], 'Procédure/TJ Paris/Conclusions')
     assert not (Path(c['folder']) / 'Procédure').exists()
@@ -131,7 +131,7 @@ def test_interrupted_classification_recovers_missing_branch_and_cleans_source(en
     resumed = Engine(engine.settings, engine.store)
     current = resumed.state()['messages'][0]
     assert current['classification'] == 'classified'
-    assert all(Path(d['path']).parent == Path(c['folder']) / 'Procédure/TJ Paris/Conclusions'
+    assert all(Path(d['path']).parent == Path(c['folder']) / ('02 CORRESPONDANCES' if d['kind'] == 'email' else 'Procédure/TJ Paris/Conclusions')
                and Path(d['path']).exists() for d in current['documents'])
     assert not (Path(c['folder']) / '00 - À classer').exists()
     assert resumed.store.all('print') == []
@@ -156,7 +156,7 @@ def test_state_api_exposes_virtual_and_existing_paths_without_writes(tmp_path):
     with TestClient(app, base_url='http://127.0.0.1:8765') as client:
         token = client.get('/api/state').json()['csrf_token']
         headers = {'X-CSRF-Token': token}
-        c = client.post('/api/clients', headers=headers, json={'name': 'Client'}).json()
+        c = client.post('/api/clients', headers=headers, json={'name': 'Client', 'initial_folders': []}).json()
         client.put('/api/template', headers=headers, json={'folders': ['Récent/Enfant']})
         state = client.get('/api/state').json()['clients'][0]
         assert {'Récent', 'Récent/Enfant'} <= set(state['folders'])

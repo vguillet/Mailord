@@ -1,0 +1,25 @@
+{
+  "mdse": "2.3",
+  "kind": "Method",
+  "id": "VM-02",
+  "name": "Vérifier pdf en correspondances",
+  "status": "approved",
+  "revision": 1,
+  "createdAt": "2026-10-24",
+  "updatedAt": "2026-10-24",
+  "workItem": "WI-correspondence-filing",
+  "class": "verification",
+  "method": "test",
+  "automated": true,
+  "requirements": [
+    "REQ-02"
+  ],
+  "command": "python -m pytest tests/test_correspondence_filing.py -q",
+  "passCriteria": [
+    {
+      "id": "PC-01",
+      "statement": "Critères couverts par tests de persistance, fichiers et reprise ; parcours du formulaire et classement inspecté dans Chrome."
+    }
+  ],
+  "evidenceKind": "test-output"
+}

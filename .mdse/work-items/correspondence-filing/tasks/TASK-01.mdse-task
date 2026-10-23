@@ -1,0 +1,128 @@
+{
+  "mdse": "2.3",
+  "kind": "Task",
+  "id": "TASK-01",
+  "name": "Présélections et séparation mail/PJ",
+  "status": "pending",
+  "revision": 1,
+  "createdAt": "2026-10-24",
+  "updatedAt": "2026-10-24",
+  "workItem": "WI-correspondence-filing",
+  "order": 1,
+  "type": "software",
+  "objective": "Implémenter et vérifier le modèle, le routage, le classement individuel et groupé des pièces, les reprises et la présentation.",
+  "requirements": [
+    "REQ-01",
+    "REQ-02",
+    "REQ-03"
+  ],
+  "design": "DESIGN",
+  "decisions": [
+    "DEC-01"
+  ],
+  "constraints": [
+    "CON-01"
+  ],
+  "dependsOn": [],
+  "designReferences": [
+    {
+      "section": "components",
+      "item": "GestionClients"
+    },
+    {
+      "section": "components",
+      "item": "TraitementDocuments"
+    },
+    {
+      "section": "components",
+      "item": "ArchivageLocal"
+    },
+    {
+      "section": "components",
+      "item": "InterfaceLocale"
+    }
+  ],
+  "files": [
+    {
+      "path": "autosecretaire/config.py",
+      "action": "update"
+    },
+    {
+      "path": "autosecretaire/engine.py",
+      "action": "update"
+    },
+    {
+      "path": "autosecretaire/app.py",
+      "action": "update"
+    },
+    {
+      "path": "autosecretaire/demo.py",
+      "action": "update"
+    },
+    {
+      "path": "autosecretaire/static/app.js",
+      "action": "update"
+    },
+    {
+      "path": "autosecretaire/static/index.html",
+      "action": "update"
+    },
+    {
+      "path": "tests/test_correspondence_filing.py",
+      "action": "create"
+    },
+    {
+      "path": "tests/test_lazy_folders.py",
+      "action": "update"
+    },
+    {
+      "path": "tests/test_engine.py",
+      "action": "update"
+    },
+    {
+      "path": "docs/API.md",
+      "action": "update"
+    },
+    {
+      "path": "docs/FOLDER_TEMPLATE.md",
+      "action": "update"
+    },
+    {
+      "path": "docs/INSTALLATION.md",
+      "action": "update"
+    },
+    {
+      "path": "docs/VALIDATION.md",
+      "action": "update"
+    },
+    {
+      "path": "README.md",
+      "action": "update"
+    },
+    {
+      "path": "tests/test_update_integration.py",
+      "action": "update"
+    }
+  ],
+  "doneCriteria": [
+    {
+      "id": "DC-01",
+      "statement": "Tests métier ciblés puis suite complète passent, y compris fichiers, interruptions et impressions."
+    },
+    {
+      "id": "DC-02",
+      "statement": "Modèle, formulaire client et classement individuel/multiple vérifiés dans Chrome ; documentation cohérente."
+    }
+  ],
+  "priority": "high",
+  "plannedEffort": "2h",
+  "plannedStart": "2026-10-24",
+  "plannedEnd": "2026-10-24",
+  "outputs": [
+    {
+      "name": "Correspondances et pièces jointes séparées",
+      "kind": "source-code",
+      "deliverable": true
+    }
+  ]
+}

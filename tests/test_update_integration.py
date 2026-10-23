@@ -62,7 +62,7 @@ def test_supervised_process_update_preserves_data_and_rolls_back(tmp_path,broken
     try:
         state=wait_state(port);token=state['csrf_token']
         client=http(port,'/api/clients','POST',{'name':'Client conservé'},token)
-        document=Path(client['folder'])/'preuve.pdf';document.parent.mkdir();document.write_bytes(b'archive unchanged')
+        document=Path(client['folder'])/'preuve.pdf';document.parent.mkdir(exist_ok=True);document.write_bytes(b'archive unchanged')
         atomic_json(runtime/'updates/pending.json',{'root':str(release),'commit':sha})
         http(port,'/test-restart','POST',{},token)
         if broken:

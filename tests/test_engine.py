@@ -22,7 +22,7 @@ def add_mail(e,c,subject='Contrat'):
 def test_provision_template_version_and_safe_additive(engine):
     c=engine.create_client('Émilie');assert c['status']=='ready'
     engine.save_template(['00 - À classer','Contrats/Signés'])
-    root=Path(c['folder']);root.mkdir();(root/'preuve.txt').write_text('conserver')
+    root=Path(c['folder']);root.mkdir(exist_ok=True);(root/'preuve.txt').write_text('conserver')
     engine.apply_template(c['id']);assert 'Contrats/Signés' in engine.client_folders(c);assert not (root/'Contrats').exists();assert (root/'preuve.txt').read_text()=='conserver'
     assert engine.create_client('Émilie')['id']==c['id']
     with pytest.raises(ValueError):engine.save_template(['../escape'])
@@ -41,7 +41,7 @@ def test_classify_bulk_confined_and_no_overwrite(engine):
     c=engine.create_client('Camille');add_mail(engine,c);engine.scan();engine.process();m=engine.state()['messages'][0]
     with pytest.raises(ValueError):engine.classify([m['id']],'../escape')
     engine.classify([m['id']],'03 MAILS (PDF)');m=engine.state()['messages'][0];assert m['classification']=='classified'
-    assert all('03 MAILS (PDF)' in d['path'] for d in m['documents'])
+    assert all(('02 CORRESPONDANCES' if d['kind']=='email' else '03 MAILS (PDF)') in d['path'] for d in m['documents'])
     engine.classify([m['id']],'07 FACTURES');assert len(engine.store.all('print'))==0
 
 
@@ -90,13 +90,13 @@ def test_preparing_print_resumes_without_new_generation(engine):
 
 def test_same_name_existing_destination_is_preserved(engine):
     c=engine.create_client('Camille');add_mail(engine,c);engine.scan();engine.process();m=engine.state()['messages'][0]
-    target=Path(c['folder'])/'03 MAILS (PDF)'/m['documents'][0]['name'];target.parent.mkdir();target.write_bytes(b'precious')
+    target=Path(c['folder'])/'03 MAILS (PDF)'/next(d for d in m['documents'] if d['kind']=='attachment')['name'];target.parent.mkdir();target.write_bytes(b'precious')
     engine.classify([m['id']],'03 MAILS (PDF)');assert target.read_bytes()==b'precious'
-    assert engine.state()['messages'][0]['documents'][0]['path']!=str(target)
+    assert next(d for d in engine.state()['messages'][0]['documents'] if d['kind']=='attachment')['path']!=str(target)
 
 
 def test_resume_partial_move_intent(engine):
-    c=engine.create_client('Camille');add_mail(engine,c);engine.scan();engine.process();m=engine.state()['messages'][0];d=m['documents'][0]
+    c=engine.create_client('Camille');add_mail(engine,c);engine.scan();engine.process();m=engine.state()['messages'][0];d=next(d for d in m['documents'] if d['kind']=='attachment')
     dst=Path(c['folder'])/'03 MAILS (PDF)'/d['name'];dst.parent.mkdir();dst.write_bytes(Path(d['path']).read_bytes())
     record=engine.store.get('document',d['id']);record['move_to']=str(dst);engine.store.put('document',d['id'],record)
     engine.process();assert not Path(d['path']).exists();assert engine.store.get('document',d['id'])['path']==str(dst)

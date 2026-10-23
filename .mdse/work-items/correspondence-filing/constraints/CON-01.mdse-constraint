@@ -1,0 +1,14 @@
+{
+  "mdse": "2.3",
+  "kind": "Constraint",
+  "id": "CON-01",
+  "name": "Conserver archives et impressions",
+  "status": "active",
+  "revision": 1,
+  "createdAt": "2026-10-24",
+  "updatedAt": "2026-10-24",
+  "workItem": "WI-correspondence-filing",
+  "type": "prohibition",
+  "statement": "Ne pas supprimer ou réécrire un document sain, déplacer un fichier non suivi, suivre un lien symbolique, déclencher de réimpression ou modifier les boîtes mail pour reclasser les archives.",
+  "reason": "La séparation concerne les fichiers locaux déjà suivis et doit conserver leurs identités et contenus."
+}

@@ -132,7 +132,7 @@ def create_app(settings,background=True,*,restart=None,probation=False,health_to
     @app.post('/api/clients')
     def create(body:dict=Body(...)):
         return engine.create_client(required(body,'name',str),required(body,'mailbox',str) if 'mailbox' in body else '',
-                                    required(body,'initial_folders',list) if 'initial_folders' in body else [])
+                                    required(body,'initial_folders',list) if 'initial_folders' in body else None)
     @app.post('/api/clients/{id}/retry')
     def retry(id:str):return engine.retry_client(id)
     @app.post('/api/clients/{id}/template')
@@ -140,7 +140,10 @@ def create_app(settings,background=True,*,restart=None,probation=False,health_to
     @app.put('/api/clients/{id}/favorites')
     def favorites(id:str,body:dict=Body(...)):return engine.favorites(id,required(body,'folders',list))
     @app.put('/api/template')
-    def template(body:dict=Body(...)):return engine.save_template(required(body,'folders',list))
+    def template(body:dict=Body(...)):
+        return engine.save_template(required(body,'folders',list),
+                                    required(body,'initial_folders',list) if 'initial_folders' in body else None,
+                                    required(body,'email_folder',str) if 'email_folder' in body else None)
     @app.post('/api/sync')
     def sync():
         engine.scan();engine.process()
@@ -150,7 +153,8 @@ def create_app(settings,background=True,*,restart=None,probation=False,health_to
     def process():engine.process();return {'ok':True}
     @app.post('/api/classify')
     def classify(body:dict=Body(...)):
-        engine.classify(required(body,'message_ids',list),required(body,'destination',str));return {'ok':True}
+        engine.classify(required(body,'message_ids',list),required(body,'destination',str),
+                        required(body,'document_ids',list) if 'document_ids' in body else None);return {'ok':True}
     @app.post('/api/print')
     def print_messages(body:dict=Body(...)):
         engine.print_messages(required(body,'message_ids',list));return {'ok':True}

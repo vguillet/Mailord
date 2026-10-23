@@ -1,0 +1,32 @@
+{
+  "mdse": "2.3",
+  "kind": "Decision",
+  "id": "DEC-01",
+  "name": "Routage du mail et classement par document",
+  "status": "accepted",
+  "revision": 1,
+  "createdAt": "2026-10-24",
+  "updatedAt": "2026-10-24",
+  "workItem": "WI-correspondence-filing",
+  "requirements": [
+    "REQ-01",
+    "REQ-02",
+    "REQ-03"
+  ],
+  "context": "Correction directe de l’utilisateur : Correspondances précoché mais décochable, PDF des mails toujours en Correspondances, pièces jointes réparties séparément. Les comportements historiques de WI-local-v1 et WI-lazy-folders évoluent explicitement.",
+  "chosen": "Étendre les JSON existants : template.initial_folders et email_folder ; document.destination/classification et intentions indépendantes. Conserver le moteur de publication et de reprise. Adapter les PDF déjà suivis via ces intentions, sans toucher les autres fichiers ni relancer les impressions.",
+  "rationale": "Le dossier de correspondances garde son rôle même renommé ; la séparation conserve les empreintes, identifiants et travaux d’impression.",
+  "decidedBy": "agent",
+  "consequences": [
+    "Les versions de modèle anciennes exposent par défaut 02 CORRESPONDANCES et cette seule présélection, sans matérialisation à la lecture.",
+    "Omission de initial_folders utilise le modèle ; [] est un décochage explicite. Les choix du client sont figés pour sa reprise.",
+    "Les pièces jointes restent dans 00 - À classer avant rangement ; un mail seul est classé après export.",
+    "Les PDF déjà suivis sont regroupés au premier contrôle ; une adaptation seule ne déclenche pas l’impression après classement."
+  ],
+  "rejected": [
+    {
+      "alternative": "Garder le déplacement groupé mail/PJ",
+      "reason": "Contradiction avec le flux demandé."
+    }
+  ]
+}

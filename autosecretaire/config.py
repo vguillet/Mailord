@@ -1,5 +1,7 @@
 from pathlib import Path
 
+DEFAULT_EMAIL_FOLDER = '02 CORRESPONDANCES'
+
 # Initial model only: saved template versions remain the user's own configuration.
 # Parenthetical abbreviations and asterisks in the source are filing guidance,
 # not directory names. The jurisdiction branch is edited before provisioning.
