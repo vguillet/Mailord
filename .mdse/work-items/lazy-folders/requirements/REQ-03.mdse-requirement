@@ -9,7 +9,7 @@
   "updatedAt": "2026-10-24",
   "workItem": "WI-lazy-folders",
   "keyword": "SHALL",
-  "statement": "Le service SHALL retirer les répertoires devenus vides sur la branche source après ses déplacements, en conservant les répertoires contenant encore un fichier et les branches sans rapport avec le déplacement.",
+  "statement": "Le service SHALL retirer les répertoires devenus vides sur la branche source après ses déplacements, en conservant les répertoires contenant encore un fichier et les branches sans rapport avec le déplacement. Les dossiers explicitement choisis à la création et leurs parents sont conservés même vides.",
   "priority": "must",
   "acceptanceCriteria": [
     {

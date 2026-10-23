@@ -1,0 +1,25 @@
+{
+  "mdse": "2.3",
+  "kind": "Method",
+  "id": "VM-04",
+  "name": "Vérifier les dossiers initiaux choisis",
+  "status": "approved",
+  "revision": 1,
+  "createdAt": "2026-10-24",
+  "updatedAt": "2026-10-24",
+  "workItem": "WI-lazy-folders",
+  "class": "verification",
+  "method": "test",
+  "automated": true,
+  "requirements": [
+    "REQ-04"
+  ],
+  "command": "python -m pytest tests/test_lazy_folders.py -q",
+  "passCriteria": [
+    {
+      "id": "PC-01",
+      "statement": "Sélection partielle, défaut vide, validation avant effets, persistance, reprise et protection contre nettoyage vérifiées ; formulaire contrôlé dans le navigateur."
+    }
+  ],
+  "evidenceKind": "test-output"
+}

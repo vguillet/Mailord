@@ -11,10 +11,12 @@
   "requirements": [
     "REQ-01",
     "REQ-02",
-    "REQ-03"
+    "REQ-03",
+    "REQ-04"
   ],
   "decisions": [
-    "DEC-01"
+    "DEC-01",
+    "DEC-02"
   ],
   "components": [
     {
@@ -43,7 +45,7 @@
     },
     {
       "signature": "Engine.retry_client; Engine.apply_template",
-      "purpose": "Création mail et validation du chemin local sans mkdir ; apply_template mémorise une version/addition virtuelle sans écriture documentaire."
+      "purpose": "Création mail et validation du chemin local ; seuls les initial_folders explicitement choisis sont créés avec leurs parents. apply_template mémorise une version/addition virtuelle sans écriture documentaire."
     },
     {
       "signature": "Engine._target; Engine._publish; Engine._prune_empty(root, directory)",
@@ -52,6 +54,18 @@
     {
       "signature": "Engine.process; Engine.classify; Engine._recover_moves",
       "purpose": "Supprimer mkdir anticipés. Validation de toutes les sources avant intentions de déplacement ; reprise crée les parents à la publication et nettoie les sources vidées. Les empreintes et intentions continuent de protéger les fichiers."
+    },
+    {
+      "signature": "Engine.create_client(name, mailbox=\"\", initial_folders=None); POST /api/clients {name,mailbox?,initial_folders?:list[str]}",
+      "purpose": "Valider les choix contre les chemins et parents du modèle courant avant tout effet. Persister initial_folders ; retry crée uniquement ces dossiers. Une nouvelle soumission du même nom ajoute les choix sans effacer les anciens."
+    },
+    {
+      "signature": "Client.initial_folders; Engine._prune_empty",
+      "purpose": "Champ facultatif conservé dans le JSON existant ; tous ses chemins et ancêtres sont protégés du rmdir. Ils participent au catalogue même si le modèle courant change."
+    },
+    {
+      "signature": "Formulaire client : checkboxes name=initial_folders",
+      "purpose": "Arbre visuel, aucune case cochée, actions Tout cocher/Tout décocher, choix indépendant par dossier et parents automatiques ; envoi via FormData.getAll."
     }
   ]
 }

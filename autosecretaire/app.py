@@ -130,7 +130,9 @@ def create_app(settings,background=True,*,restart=None,probation=False,health_to
     def printers():
         engine.printers=printing.list_printers();return {'printers':engine.printers}
     @app.post('/api/clients')
-    def create(body:dict=Body(...)):return engine.create_client(required(body,'name',str),body.get('mailbox',''))
+    def create(body:dict=Body(...)):
+        return engine.create_client(required(body,'name',str),required(body,'mailbox',str) if 'mailbox' in body else '',
+                                    required(body,'initial_folders',list) if 'initial_folders' in body else [])
     @app.post('/api/clients/{id}/retry')
     def retry(id:str):return engine.retry_client(id)
     @app.post('/api/clients/{id}/template')

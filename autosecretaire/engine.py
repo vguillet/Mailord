@@ -92,7 +92,7 @@ class Engine:
         return sorted(paths,key=str.casefold)
 
     def client_folders(self,c,existing=None):
-        paths=set(c.get('folders',[])) | set(self.template()['folders']) | {'00 - À classer'}
+        paths=set(c.get('folders',[])) | set(c.get('initial_folders',[])) | set(self.template()['folders']) | {'00 - À classer'}
         paths.update(self.existing_folders(c) if existing is None else existing)
         # A template can store only leaves; every ancestor is also a destination.
         for name in list(paths):
@@ -100,19 +100,29 @@ class Engine:
             paths.update('/'.join(parts[:i]) for i in range(1,len(parts)))
         return sorted(paths,key=str.casefold)
 
-    def create_client(self,name,mailbox=''):
+    def create_client(self,name,mailbox='',initial_folders=None):
         with self.lock:
+            selected=[] if initial_folders is None else initial_folders
+            if not isinstance(selected,list):raise ValueError('Sélection de dossiers invalide.')
+            selected=list(dict.fromkeys(relative(p) for p in selected))
+            allowed=set(self.template()['folders'])
+            for p in list(allowed):
+                parts=p.split('/');allowed.update('/'.join(parts[:i]) for i in range(1,len(parts)))
+            if any(p not in allowed for p in selected):raise ValueError('Choisissez les dossiers à créer dans le modèle courant.')
             name=relative(name.strip())
             if '/' in name:raise ValueError('Le nom du client ne peut pas contenir /.')
             for c in self.store.all('client'):
-                if c['name'].casefold()==name.casefold():return self.retry_client(c['id'])
+                if c['name'].casefold()==name.casefold():
+                    c['initial_folders']=list(dict.fromkeys(c.get('initial_folders',[])+selected))
+                    self.store.put('client',c['id'],c)
+                    return self.retry_client(c['id'])
             folder_name=self.settings.get('client_folder_pattern','{name}').replace('{name}',name);relative(folder_name)
             if '/' in folder_name:raise ValueError('Le modèle de nom client ne doit pas créer de chemin imbriqué.')
             folder=within(self.root,self.root/folder_name)
             if any(Path(c['folder']).name.casefold()==folder_name.casefold() for c in self.store.all('client')):raise ValueError('Ce dossier est déjà associé à un client.')
             mailbox=mailbox.strip() or name
             if any(c['mailbox']==mailbox for c in self.store.all('client')):raise ValueError('Cette boîte est déjà associée à un autre client.')
-            c={'name':name,'mailbox':mailbox,'folder':str(folder),'status':'provisioning','error':'','template_version':self.template()['version'],'folders':self.template()['folders'],'favorites':[],'initialized':False}
+            c={'name':name,'mailbox':mailbox,'folder':str(folder),'status':'provisioning','error':'','template_version':self.template()['version'],'folders':self.template()['folders'],'initial_folders':selected,'favorites':[],'initialized':False}
             id=uid();self.store.put('client',id,c);return self.retry_client(id)
 
     def retry_client(self,id):
@@ -122,6 +132,8 @@ class Engine:
                 root=within(self.root,c['folder'])
                 if root.exists() and not root.is_dir():raise ValueError('Le chemin du client est occupé par un fichier.')
                 self.connector.create_folder(c['mailbox'])
+                for p in c.get('initial_folders',[]):
+                    within(root,root/relative(p)).mkdir(parents=True,exist_ok=True)
                 c.update(status='ready',error='')
             except Exception as e:c.update(status='error',error=self.error_text(e))
             self.store.put('client',id,c);return self.client(id)
@@ -200,7 +212,14 @@ class Engine:
             if root!=self.root:root=within(self.root,root)
             path=within(self.root,directory)
             if not path.is_relative_to(root):return
+            protected=set()
+            for c in self.store.all('client'):
+                for selected in c.get('initial_folders',[]):
+                    keep=within(self.root,Path(c['folder'])/relative(selected))
+                    while keep!=self.root:
+                        protected.add(str(keep).casefold());keep=keep.parent
             while path!=root:
+                if str(path).casefold() in protected:return
                 path.rmdir()
                 path=path.parent
         except (OSError,ValueError):pass

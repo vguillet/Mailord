@@ -3,10 +3,10 @@
 JSON français/UTF-8. Dates ISO. Réponses objets, erreurs `{detail: string}` avec HTTP 400/404/409/503. GET `/api/state` fournit `csrf_token`; toute mutation envoie `X-CSRF-Token`. Même origine obligatoire. Tous les chemins relatifs sont confinés à la racine documentaire ou au client.
 
 - `GET /api/state` → `{clients:[], messages:[], settings:{}, template:{id,version,folders:[string]}, templates:[], jobs:[], events:[], folders:[string], printers:[string], csrf_token, stats:{clients,messages,pending,errors}, last_scan, sync_error}`. `settings` contient uniquement la configuration sans mot de passe. Ne pas demander un secret au formulaire : utiliser variable d’environnement ou Trousseau documenté. `folders` et `printers` peuvent être vides avant le test de connexion.
-- Client (dans `/api/state`) : `{id,name,mailbox,folder,status:ready|error|provisioning,error,template_version,folders:[string],existing_folders:[string],favorites:[string]}`.
+- Client (dans `/api/state`) : `{id,name,mailbox,folder,status:ready|error|provisioning,error,template_version,folders:[string],existing_folders:[string],initial_folders?:[string],favorites:[string]}`.
 - Message: `{id,client_id,subject,sender,recipients,date,body,status:queued|ready|error,classification:pending|classified,destination,print_status:pending|submitted|simulated|uncertain|error|historical, historical:bool,error,documents:[Document],print_jobs:[{id,document_id,status,job_id,error,created_at}]}`.
 - Document: `{id,kind:email|attachment,original_name,path,name,sha256,printable,inline,selected:bool}`. `path` absolu uniquement pour affichage ; utiliser ID pour fichiers/actions.
-- `POST /api/clients {name,mailbox?:str}` → client, `POST /api/clients/{id}/retry {}` reprend la création.
+- `POST /api/clients {name,mailbox?:str,initial_folders?:[string]}` → client, `POST /api/clients/{id}/retry {}` reprend la création.
 - `GET /api/folders` → `{folders:[string]}` effectue la connexion et expose les erreurs.
 - `POST /api/sync {}` → `{ok:true}` synchronise et traite ; `POST /api/process {}` relance le contrôle/export.
 - `PUT /api/template {folders:[string]}` → template versionné ; chemins avec `/` représentent la hiérarchie ; doublons, `..`, chemins absolus et noms vides rejetés.
@@ -22,7 +22,7 @@ JSON français/UTF-8. Dates ISO. Réponses objets, erreurs `{detail: string}` av
 
 Le premier scan d’un dossier marque les messages déjà présents historiques : export et classement possibles mais pas d’impression automatique. Les suivants sont nouveaux. Les identifiants métier proviennent d’une empreinte du MIME ; les identifiants source seuls ne déterminent pas une nouvelle impression.
 
-Les modèles ont un numéro de version et une liste de chemins normalisés. L’éditeur peut ajouter, renommer, déplacer, supprimer ou dupliquer une branche en manipulant cette liste, puis enregistrer. Les anciens clients ne changent que par application additive explicite. Les favoris sont propres à chaque client. Les règles d’expéditeurs sont configurées dans Mail ; le connecteur respecte leur classement.
+Les modèles ont un numéro de version et une liste de chemins normalisés. L’éditeur peut ajouter, renommer, déplacer, supprimer ou dupliquer une branche en manipulant cette liste, puis enregistrer. Le modèle courant est proposé à tous les clients ; son application additive explicite mémorise aussi ces destinations pour les conserver après un changement de modèle. Les favoris sont propres à chaque client. Les règles d’expéditeurs sont configurées dans Mail ; le connecteur respecte leur classement.
 
 ## Mises à jour de l’application
 
@@ -49,4 +49,4 @@ Les options s’appliquent à chaque document coché et imprimable : le PDF du m
 
 Dans `GET /api/state`, `client.folders` est le catalogue virtuel : modèle courant, destinations mémorisées, parents implicites, dossiers locaux et zone `00 - À classer`. `client.existing_folders` contient uniquement les dossiers présents sur le Mac (aucune écriture pendant cet inventaire). Les liens symboliques ne sont pas des dossiers locaux autorisés.
 
-La création/reprise d’un client crée le dossier mail nécessaire à la surveillance, mais réserve seulement son chemin documentaire. L’application du modèle et l’ajout de favoris n’effectuent aucun `mkdir`. Les réponses de mutation client conservent leur forme de registre (modèle mémorisé) : relire `/api/state` pour obtenir le catalogue complet. Un changement de modèle ne crée ni ne déplace de fichier et ne déclenche pas d’impression.
+La création/reprise d’un client crée le dossier mail nécessaire à la surveillance, mais réserve seulement son chemin documentaire par défaut. `initial_folders` permet de créer immédiatement des dossiers vides choisis dans le modèle courant, y compris ses parents implicites. Valeur omise : aucune sélection ; `null`, types incorrects et chemins hors modèle : HTTP 400 avant tout effet. Seuls les choix et leurs parents sont créés, pas les enfants non cochés. La sélection persistée est rejouée par retry ; une nouvelle soumission du même client ajoute les choix sans effacer les précédents. Les dossiers sélectionnés et leurs parents sont protégés du nettoyage des branches vidées. L’application du modèle et l’ajout de favoris n’effectuent aucun `mkdir`. Les réponses de mutation client conservent leur forme de registre (modèle mémorisé) : relire `/api/state` pour obtenir le catalogue complet. Un changement de modèle ne crée ni ne déplace de fichier et ne déclenche pas d’impression.

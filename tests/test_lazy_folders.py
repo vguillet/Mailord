@@ -174,3 +174,89 @@ def test_existing_folder_names_do_not_break_catalogue(engine):
     assert ' Dossier importé ' in state['existing_folders']
     assert 'Factures' in state['folders']
     assert not (root / 'Factures').exists()
+
+
+def test_initial_selection_creates_only_chosen_folders_and_parents(engine):
+    chosen = ['Procédure/TJ Paris/Conclusions', 'Pièces']
+    c = engine.create_client('Client', initial_folders=chosen)
+    root = Path(c['folder'])
+    assert c['status'] == 'ready'
+    assert c['initial_folders'] == chosen
+    assert {str(p.relative_to(root)) for p in root.rglob('*')} == {
+        'Procédure', 'Procédure/TJ Paris', 'Procédure/TJ Paris/Conclusions', 'Pièces'}
+    assert not (root / 'Pièces/Client').exists()  # Checking a parent does not select its children.
+    assert 'Factures' in engine.state()['clients'][0]['folders']
+
+
+def test_initial_selection_survives_retry_template_change_and_emptying(engine):
+    c = engine.create_client('Client', initial_folders=['Procédure/TJ Paris/Conclusions'])
+    root = Path(c['folder'])
+    engine.save_template(['Nouveau'])
+    resumed = Engine(engine.settings, engine.store)
+    resumed.retry_client(c['id'])
+    m = exported(resumed, c)
+    resumed.classify([m['id']], 'Procédure/TJ Paris/Conclusions')
+    resumed.classify([m['id']], 'Nouveau')
+    assert list((root / 'Procédure/TJ Paris/Conclusions').iterdir()) == []
+    assert not (root / '00 - À classer').exists()
+    assert 'Procédure/TJ Paris/Conclusions' in resumed.state()['clients'][0]['folders']
+
+
+def test_initial_selection_resumes_after_partial_creation(engine, monkeypatch):
+    original = Path.mkdir
+    def interrupted(path, *args, **kwargs):
+        if path.name == 'Pièces':
+            raise OSError('interruption')
+        return original(path, *args, **kwargs)
+    with monkeypatch.context() as patch:
+        patch.setattr(Path, 'mkdir', interrupted)
+        c = engine.create_client('Client', initial_folders=['Factures', 'Pièces'])
+    assert c['status'] == 'error'
+    assert c['initial_folders'] == ['Factures', 'Pièces']
+    proof = Path(c['folder']) / 'Factures/preuve.txt'
+    proof.write_text('conserver')
+    resumed = Engine(engine.settings, engine.store)
+    c = resumed.retry_client(c['id'])
+    assert c['status'] == 'ready'
+    assert (Path(c['folder']) / 'Pièces').is_dir()
+    assert not (Path(c['folder']) / 'Pièces/Client').exists()
+    assert proof.read_text() == 'conserver'
+
+
+@pytest.mark.parametrize('selection', ['Factures', [None], ['Inconnu'], ['../Factures'], ['/Factures']])
+def test_invalid_initial_selection_has_no_side_effects(engine, selection):
+    before = engine.list_folders()
+    with pytest.raises(ValueError):
+        engine.create_client('Client', initial_folders=selection)
+    assert engine.store.all('client') == []
+    assert engine.list_folders() == before
+    assert list(engine.root.iterdir()) == []
+
+
+def test_resubmitting_client_adds_choices_without_erasing_existing_ones(engine):
+    c = engine.create_client('Client', initial_folders=['Factures'])
+    proof = Path(c['folder']) / 'Factures/preuve.txt'
+    proof.write_text('conserver')
+    updated = engine.create_client('client', initial_folders=['Pièces', 'Pièces'])
+    assert updated['id'] == c['id']
+    assert set(updated['initial_folders']) == {'Factures', 'Pièces'}
+    assert len(engine.store.all('client')) == 1
+    assert proof.read_text() == 'conserver'
+    assert engine.create_client('Client')['initial_folders'] == updated['initial_folders']
+
+
+def test_initial_selection_api_validates_payload_and_exposes_created_paths(tmp_path):
+    app = create_app(defaults(tmp_path), background=False)
+    with TestClient(app, base_url='http://127.0.0.1:8765') as client:
+        headers = {'X-CSRF-Token': client.get('/api/state').json()['csrf_token']}
+        client.put('/api/template', headers=headers, json={'folders': ['Parent/Enfant', 'Autre']})
+        for invalid in [None, 'Parent', ['Inconnu'], [False]]:
+            response = client.post('/api/clients', headers=headers, json={'name': 'Invalide', 'initial_folders': invalid})
+            assert response.status_code == 400
+        assert client.get('/api/state').json()['clients'] == []
+        response = client.post('/api/clients', headers=headers, json={'name': 'Client', 'initial_folders': ['Parent']})
+        assert response.status_code == 200
+        state = client.get('/api/state').json()['clients'][0]
+        assert state['initial_folders'] == ['Parent']
+        assert state['existing_folders'] == ['Parent']
+        assert {'Parent/Enfant', 'Autre'} <= set(state['folders'])

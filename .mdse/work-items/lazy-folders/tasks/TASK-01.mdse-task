@@ -14,11 +14,13 @@
   "requirements": [
     "REQ-01",
     "REQ-02",
-    "REQ-03"
+    "REQ-03",
+    "REQ-04"
   ],
   "design": "DESIGN",
   "decisions": [
-    "DEC-01"
+    "DEC-01",
+    "DEC-02"
   ],
   "constraints": [
     "CON-01"
@@ -78,6 +80,10 @@
     {
       "path": "README.md",
       "action": "update"
+    },
+    {
+      "path": "autosecretaire/app.py",
+      "action": "update"
     }
   ],
   "doneCriteria": [
@@ -88,6 +94,10 @@
     {
       "id": "DC-02",
       "statement": "Sélecteur réel validé pour une branche absente, documents conservés ; documentation alignée."
+    },
+    {
+      "id": "DC-03",
+      "statement": "Sélection initiale facultative dans le formulaire, validation, conservation et reprise des dossiers cochés vérifiées."
     }
   ],
   "priority": "high",

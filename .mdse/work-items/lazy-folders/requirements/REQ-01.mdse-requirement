@@ -9,13 +9,13 @@
   "updatedAt": "2026-10-24",
   "workItem": "WI-lazy-folders",
   "keyword": "SHALL",
-  "statement": "Le service SHALL proposer la totalité du modèle courant et des destinations conservées du client sans créer de dossier documentaire lors de la création, reprise ou actualisation du client.",
+  "statement": "Le service SHALL proposer la totalité du modèle courant et des destinations conservées du client sans créer de dossier documentaire non explicitement choisi lors de la création, reprise ou actualisation du client.",
   "priority": "must",
   "acceptanceCriteria": [
     {
       "id": "AC-01",
       "kind": "happy-path",
-      "given": "un client créé et un modèle imbriqué",
+      "given": "un client créé sans sélection initiale et un modèle imbriqué",
       "when": "les destinations sont consultées",
       "then": "le modèle entier et ses parents sont sélectionnables, favoris compris, sans création locale"
     },
