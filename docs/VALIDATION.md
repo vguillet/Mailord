@@ -48,3 +48,13 @@ Aucun compte de messagerie personnel n’a été consulté, aucun mail envoyé e
 - Reclassements à effectuer dans l’interface. Un déplacement manuel de fichier déclenche sa régénération à l’emplacement suivi, avec rapprochement explicite possible.
 - Copies de messages identiques dédupliquées par empreinte MIME. Un mail réécrit par un serveur avec un contenu MIME différent peut être considéré comme distinct. Les copies identiques vues chez plusieurs clients restent associées au client d’origine et produisent un événement d’avertissement.
 - Service natif macOS, sans paquet Docker ni application signée. Le service s’arrête quand le Mac est éteint.
+
+## Mises à jour — 24 octobre 2026
+
+- Suite complète : **136 tests réussis**, aucun échec ni test sauté (Python 3.11).
+- Git réel sur dépôts temporaires : détection de branche, commit sélectionné conservé même après un autre commit, copie isolée, manifeste incompatible et erreurs de transport.
+- Processus et HTTP réels : bascule réussie, nouvelle session CSRF, conservation des clients et documents, relancement ultérieur depuis le lanceur initial ; candidate volontairement défectueuse restaurée automatiquement. Environnement Python partagé dans ces deux tests de processus pour ne pas télécharger de dépendances à chaque exécution.
+- Installation réelle des dépendances verrouillées dans un environnement Python 3.14 neuf : réussie ; imports applicatifs vérifiés.
+- Parcours Chrome réel sur démonstration isolée : panneau non configuré, détection d’une version sur dépôt Git de test local, clic **Mettre à jour**, installation effective des dépendances, bascule et rechargement automatique du navigateur. Version cible `b511994610c2b2a053ea5c5b1a6f6f81840f0bb0`, état final `current`, 3 clients et 7 mails conservés, intention de mise à jour effacée après succès. Ce commit appartient uniquement au dépôt temporaire de validation.
+- Les routes de contrôle privées refusent un jeton absent/invalide ; la probation bloque l’API métier et ne récupère pas les impressions avant activation.
+- Le dépôt distant définitif et ses éventuels identifiants restent à configurer. Aucun push réel, compte Orange, autorisation Apple Mail ou périphérique d’impression n’a été utilisé pour cet essai. Le rollback est limité à la phase précédant l’activation ; une régression après activation demande une version corrective.

@@ -15,19 +15,24 @@ from starlette.middleware.trustedhost import TrustedHostMiddleware
 from .engine import Engine, within
 from .store import Store
 from . import printing
+from .updates import UpdateManager
 
 
 STATIC=Path(__file__).parent/'static'
 
 
-def create_app(settings,background=True):
+def create_app(settings,background=True,*,restart=None,probation=False,health_token=""):
+    active=not probation
+    thread=None
+    activation_lock=threading.Lock()
     runtime=Path(settings['runtime']);runtime.mkdir(parents=True,exist_ok=True)
     lock=open(runtime/'server.lock','a')
     try:fcntl.flock(lock,fcntl.LOCK_EX|fcntl.LOCK_NB)
     except BlockingIOError:
         lock.close();raise RuntimeError('Un service utilise déjà cet espace de données.')
     try:
-        store=Store(runtime/'registry.sqlite3');engine=Engine(settings,store)
+        store=Store(runtime/'registry.sqlite3');engine=Engine(settings,store,recover=not probation)
+        updates=UpdateManager(runtime,Path(__file__).resolve().parents[1],restart=restart)
     except BaseException:
         fcntl.flock(lock,fcntl.LOCK_UN);lock.close();raise
     token=secrets.token_urlsafe(32)
@@ -39,25 +44,37 @@ def create_app(settings,background=True):
             except Exception as e:engine.event(engine.error_text(e),'error')
             stop.wait(engine.settings['poll_seconds'])
 
+    def start_workers():
+        nonlocal thread
+        if background and thread is None:
+            thread=threading.Thread(target=worker,daemon=True,name='archive-worker');thread.start()
+            updates.start_periodic()
+
     @asynccontextmanager
     async def lifespan(app):
-        thread=None
-        if background:
-            thread=threading.Thread(target=worker,daemon=True,name='archive-worker');thread.start()
+        if active:start_workers()
         try:yield
         finally:
             stop.set()
             if thread:await asyncio.to_thread(thread.join)
+            await asyncio.to_thread(updates.close)
             store.close()
             fcntl.flock(lock,fcntl.LOCK_UN);lock.close()
 
     app=FastAPI(title='Auto-secrétaire',docs_url=None,redoc_url=None,openapi_url=None,lifespan=lifespan)
     app.state.engine=engine
+    app.state.updates=updates
     app.add_middleware(TrustedHostMiddleware,allowed_hosts=['127.0.0.1','localhost','[::1]'])
 
     @app.middleware('http')
     async def local_security(request,call_next):
-        if request.method not in ('GET','HEAD','OPTIONS'):
+        private=request.url.path in ('/api/health','/api/activate')
+        if private:
+            if not health_token or not secrets.compare_digest(request.headers.get('x-supervisor-token',''),health_token):
+                return JSONResponse({'detail':'Accès réservé au lanceur.'},403)
+        elif not active:
+            return JSONResponse({'detail':'Mise à jour en cours. Reconnexion automatique…'},503)
+        if not private and request.method not in ('GET','HEAD','OPTIONS'):
             origin=request.headers.get('origin')
             if origin:
                 parsed=urlsplit(origin)
@@ -85,7 +102,28 @@ def create_app(settings,background=True):
     @app.get('/')
     def index():return FileResponse(STATIC/'index.html')
     @app.get('/api/state')
-    def state():return {**engine.state(),'csrf_token':token}
+    def state():return {**engine.state(),'csrf_token':token,'updates':updates.state()}
+    @app.get('/api/health')
+    def health():return {'ready':True,'active':active}
+    @app.post('/api/activate')
+    def activate():
+        nonlocal active
+        with activation_lock:
+            if not active:
+                engine.recover()
+                updates._set(status='updated',error='',progress='Mise à jour installée.')
+                active=True
+                start_workers()
+        return {'active':True}
+    @app.get('/api/updates')
+    def update_state():return updates.state()
+    @app.put('/api/updates/config')
+    def update_config(body:dict=Body(...)):
+        return updates.configure(required(body,'repository',str),required(body,'branch',str))
+    @app.post('/api/updates/check')
+    def update_check():return updates.check_async()
+    @app.post('/api/updates/install')
+    def update_install(body:dict=Body(...)):return updates.install_async(required(body,'commit',str))
     @app.get('/api/folders')
     def folders():return {'folders':engine.list_folders()}
     @app.get('/api/printers')

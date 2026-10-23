@@ -49,3 +49,7 @@ mdse validate .mdse
 ```
 
 Le dossier `.mdse/` contient les exigences, décisions, tâches, preuves d’exécution et vérification. Gouvernance légère, mode autonome demandé par l’utilisateur. Le contrat de l’interface est décrit dans [docs/API.md](docs/API.md).
+
+## Mises à jour
+
+Le panneau **Mises à jour** permet de configurer le dépôt Git et la branche une fois, puis d’installer les versions publiées en un clic. Préparation séparée, redémarrage automatique et retour à la version précédente si le démarrage échoue. Voir [le guide](docs/UPDATES.md).

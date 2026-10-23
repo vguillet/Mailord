@@ -39,7 +39,7 @@ def within(root,path):
 
 
 class Engine:
-    def __init__(self, settings, store, connector=None):
+    def __init__(self, settings, store, connector=None, recover=True):
         self.store=store;self.lock=threading.RLock()
         self.settings={**settings,**(store.get('settings','main') or {})};self.settings.pop('id',None)
         self.runtime=Path(settings['runtime']).resolve();self.runtime.mkdir(parents=True,exist_ok=True);self.runtime.chmod(0o700)
@@ -48,6 +48,9 @@ class Engine:
         self.connector=connector or make_connector(self.settings,self.runtime)
         self.folders=[];self.printers=[];self.last_scan='';self.sync_error=''
         if not self.store.all('template'):self.save_template(DEFAULT_FOLDERS)
+        if recover:self.recover()
+
+    def recover(self):
         # A crash after persisting the intent cannot prove whether CUPS received it.
         for p in self.store.all('print'):
             if p['status']=='submitting':p['status']='uncertain';p['error']='Service interrompu pendant la soumission. Vérifiez la file de l’imprimante.';self.store.put('print',p['id'],p)

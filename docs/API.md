@@ -23,3 +23,13 @@ JSON français/UTF-8. Dates ISO. Réponses objets, erreurs `{detail: string}` av
 Le premier scan d’un dossier marque les messages déjà présents historiques : export et classement possibles mais pas d’impression automatique. Les suivants sont nouveaux. Les identifiants métier proviennent d’une empreinte du MIME ; les identifiants source seuls ne déterminent pas une nouvelle impression.
 
 Les modèles ont un numéro de version et une liste de chemins normalisés. L’éditeur peut ajouter, renommer, déplacer, supprimer ou dupliquer une branche en manipulant cette liste, puis enregistrer. Les anciens clients ne changent que par application additive explicite. Les favoris sont propres à chaque client. Les règles d’expéditeurs sont configurées dans Mail ; le connecteur respecte leur classement.
+
+## Mises à jour de l’application
+
+`GET /api/state` inclut `updates`, également accessible par `GET /api/updates` : `status`, `repository`, `branch`, `current_commit`, `available_commit`, `checked_at`, `progress` (texte), `error`, `managed`. États : `unconfigured`, `idle`, `checking`, `available`, `current`, `installing`, `restarting`, `updated`, `error`.
+
+- `PUT /api/updates/config` : `{repository, branch}` ; URL HTTPS sans identifiants ou SSH.
+- `POST /api/updates/check` : lance la vérification en fond, renvoie l’état.
+- `POST /api/updates/install` : `{commit}` ; commit sélectionné exact, installation en fond ; refuse session non supervisée et opération concurrente.
+
+Mêmes protections Host, origine et CSRF que les autres mutations. Les routes privées `GET /api/health` et `POST /api/activate` exigent le jeton aléatoire `X-Supervisor-Token` transmis uniquement au processus enfant. Pendant la probation, toutes les autres routes répondent 503 ; aucune récupération ni traitement métier avant activation. Le jeton CSRF change au redémarrage : la page recharge son état avant toute nouvelle action.

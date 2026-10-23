@@ -156,7 +156,7 @@ class Supervisor:
             try:
                 # An interrupted preparation can leave a durable, approved pending version.
                 pending = read_json(self.directory/'pending.json')
-                if not pending or not self.switch(pending): self.launch(self.active())
+                if (not pending or not self.switch(pending)) and not self.stopping: self.launch(self.active())
                 while not self.stopping:
                     code = self.child.wait()
                     if self.stopping: return 0

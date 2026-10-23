@@ -90,3 +90,7 @@ Arrêtez le service avant de sauvegarder l’ensemble de l’espace privé (regi
 Avant utilisation quotidienne, essayez sur le Mac cible : un mail texte, un mail HTML, un PDF joint, une image jointe, un format non imprimable, un classement en lot, un réveil après veille, puis une impression de quelques pages. Comparez les PDF aux mails originaux. Le service et ses adaptateurs sont testés automatiquement ; ce contrôle confirme les permissions, les formats du compte et le comportement réel de l’imprimante.
 
 Références techniques : [IMAP Python](https://docs.python.org/3/library/imaplib.html), [RFC 3501](https://datatracker.ietf.org/doc/html/rfc3501), [CUPS lp](https://www.cups.org/doc/man-lp.html), [CUPS lpstat](https://www.cups.org/doc/man-lpstat.html). Le dictionnaire Apple Mail du Mac a été inspecté et le script JXA compilé sans lire de messages personnels.
+
+## Mises à jour sans terminal
+
+Les lancements habituels utilisent désormais un superviseur local. Après une première installation de cette fonctionnalité, fermer puis relancer une fois le service. Configurer le dépôt et la branche dans **Mises à jour**. Voir [le guide des mises à jour](UPDATES.md) pour le bouton, les accès privés et les limites du retour automatique. Conserver le dossier d’installation initial et sa `.venv` : ils servent de lanceur stable.
