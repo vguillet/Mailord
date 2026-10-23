@@ -4,7 +4,7 @@ JSON français/UTF-8. Dates ISO. Réponses objets, erreurs `{detail: string}` av
 
 - `GET /api/state` → `{clients:[], messages:[], settings:{}, template:{id,version,folders:[string]}, templates:[], jobs:[], events:[], folders:[string], printers:[string], csrf_token, stats:{clients,messages,pending,errors}, last_scan, sync_error}`. `settings` contient uniquement la configuration sans mot de passe. Ne pas demander un secret au formulaire : utiliser variable d’environnement ou Trousseau documenté. `folders` et `printers` peuvent être vides avant le test de connexion.
 - Client: `{id,name,mailbox,folder,status:ready|error|provisioning,error,template_version,folders:[string],favorites:[string]}`.
-- Message: `{id,client_id,subject,sender,recipients,date,body,status:queued|ready|error,classification:pending|classified,destination,print_status:pending|submitted|simulated|uncertain|error|historical, historical:bool,error,documents:[Document]}`.
+- Message: `{id,client_id,subject,sender,recipients,date,body,status:queued|ready|error,classification:pending|classified,destination,print_status:pending|submitted|simulated|uncertain|error|historical, historical:bool,error,documents:[Document],print_jobs:[{id,document_id,status,job_id,error,created_at}]}`.
 - Document: `{id,kind:email|attachment,original_name,path,name,sha256,printable,inline,selected:bool}`. `path` absolu uniquement pour affichage ; utiliser ID pour fichiers/actions.
 - `POST /api/clients {name,mailbox?:str}` → client, `POST /api/clients/{id}/retry {}` reprend la création.
 - `GET /api/folders` → `{folders:[string]}` effectue la connexion et expose les erreurs.

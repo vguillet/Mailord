@@ -10,3 +10,7 @@ node_modules/
 .local/
 .mdse/pipeline/
 .mdse/exports/
+.pytest_cache/
+*.egg-info/
+build/
+dist/

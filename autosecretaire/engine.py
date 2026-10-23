@@ -353,6 +353,7 @@ class Engine:
             messages=self.store.all('message')
             for m in messages:
                 m['documents']=self._docs(m['id']);m['print_status']=self.print_status(m)
+                m['print_jobs']=[p for p in self.store.all('print') if p['message_id']==m['id']]
                 m.pop('spool',None);m.pop('sources',None)
             meta=self.store.get('meta','scan') or {}
             return dict(clients=clients,messages=sorted(messages,key=lambda m:m['date'],reverse=True),settings=self.settings,template=self.template(),templates=self.store.all('template'),jobs=self.store.all('job'),events=self.store.all('event')[-40:][::-1],folders=self.folders,printers=self.printers,last_scan=meta.get('date',''),sync_error=meta.get('error',''),stats={'clients':len(clients),'messages':len(messages),'pending':sum(m['classification']=='pending' for m in messages),'errors':sum(m['status']=='error' for m in messages)})

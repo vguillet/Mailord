@@ -118,3 +118,12 @@ def test_crash_submitting_is_uncertain(engine):
     engine.store.put('print','inflight',{'status':'submitting','message_id':'one','document_id':'one'})
     Engine(engine.settings,engine.store)
     assert engine.store.get('print','inflight')['status']=='uncertain'
+
+
+def test_print_failure_exposes_actionable_details(engine,monkeypatch):
+    from autosecretaire import printing
+    c=engine.create_client('Camille');engine.scan();add_mail(engine,c);engine.scan();engine.process();m=engine.state()['messages'][0]
+    monkeypatch.setattr(printing,'submit',lambda *a,**k: (_ for _ in ()).throw(printing.PrintError('Imprimante hors ligne')))
+    engine.print_messages([m['id']]);m=engine.state()['messages'][0]
+    assert m['print_jobs'][0]['error']=='Imprimante hors ligne'
+    assert m['print_jobs'][0]['document_id']==m['documents'][0]['id']
