@@ -4,7 +4,7 @@
   "id": "ARCH",
   "name": "Architecture initiale Auto-secretaire",
   "status": "current",
-  "revision": 4,
+  "revision": 5,
   "createdAt": "2026-10-23",
   "updatedAt": "2026-10-24",
   "style": "Service natif macOS modulaire, FastAPI sur boucle locale, interface HTML/CSS/JavaScript et registre SQLite.",
@@ -21,7 +21,7 @@
     },
     {
       "name": "GestionClients",
-      "responsibility": "Associer dossiers mail et dossiers locaux ; gérer les modèles versionnés et orchestrer la création reprenable des clients.",
+      "responsibility": "Associer dossiers mail et dossiers locaux ; gérer les modèles versionnés et orchestrer la création reprenable des clients. Fournir le modèle initial du cabinet, en préservant les versions personnalisées lors des mises à jour.",
       "state": "existing",
       "dependsOn": [
         "Messagerie",
@@ -215,6 +215,7 @@
   "workItems": [
     "WI-local-v1",
     "WI-one-click-updates",
-    "WI-print-preferences"
+    "WI-print-preferences",
+    "WI-cabinet-template"
   ]
 }

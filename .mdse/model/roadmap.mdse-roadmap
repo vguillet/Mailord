@@ -4,7 +4,7 @@
   "id": "ROADMAP",
   "name": "Feuille de route Auto-secretaire",
   "status": "current",
-  "revision": 5,
+  "revision": 6,
   "createdAt": "2026-10-23",
   "updatedAt": "2026-10-24",
   "milestones": [
@@ -97,6 +97,18 @@
       ],
       "deliveredDate": "2026-10-24",
       "notes": "154 tests et parcours navigateur ; imprimantes simulées explicitement."
+    },
+    {
+      "id": "MS-09",
+      "name": "Modèle de classement du cabinet",
+      "goal": "Intégrer la structure du PDF fourni au modèle de dossiers et à ses repères.",
+      "state": "delivered",
+      "order": 9,
+      "workItems": [
+        "WI-cabinet-template"
+      ],
+      "deliveredDate": "2026-10-24",
+      "notes": "37 dossiers ; inspection du PDF, création et préservation, 154 tests et parcours navigateur sur données fictives."
     }
   ],
   "backlog": [
