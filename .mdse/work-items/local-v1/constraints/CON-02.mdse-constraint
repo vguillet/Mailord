@@ -1,0 +1,14 @@
+{
+  "mdse": "2.3",
+  "kind": "Constraint",
+  "id": "CON-02",
+  "name": "Aucune réimpression implicite",
+  "status": "active",
+  "revision": 1,
+  "createdAt": "2026-10-23",
+  "updatedAt": "2026-10-23",
+  "workItem": "WI-local-v1",
+  "type": "prohibition",
+  "statement": "Le système SHALL NOT réimprimer automatiquement un résultat incertain ou un historique importé.",
+  "reason": "Éviter les doubles impressions."
+}

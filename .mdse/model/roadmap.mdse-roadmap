@@ -1,0 +1,103 @@
+{
+  "mdse": "2.3",
+  "kind": "Roadmap",
+  "id": "ROADMAP",
+  "name": "Feuille de route Auto-secretaire",
+  "status": "current",
+  "revision": 1,
+  "createdAt": "2026-10-23",
+  "updatedAt": "2026-10-23",
+  "milestones": [
+    {
+      "id": "MS-01",
+      "name": "Valider les intégrations du Mac",
+      "goal": "Déterminer où vivent les dossiers mail, prouver leur lecture et leur création ainsi que l'impression, puis choisir le mode de déploiement local.",
+      "notes": "Aucun accès à une boîte réelle ni impression n'a été effectué pendant l'initialisation.",
+      "state": "planned",
+      "order": 1,
+      "workItems": []
+    },
+    {
+      "id": "MS-02",
+      "name": "Créer les clients et éditer les modèles",
+      "goal": "Disposer du service local, du registre, de la navigation clients, du rattachement des dossiers existants et de la création coordonnée des dossiers mail et locaux.",
+      "notes": "Éditeur visuel d'arborescence, prévisualisation et évolution explicite des structures existantes.",
+      "state": "planned",
+      "order": 2,
+      "workItems": []
+    },
+    {
+      "id": "MS-03",
+      "name": "Surveiller les messages et produire les PDF",
+      "goal": "Détecter les messages manquants, générer les PDF et pièces jointes, appliquer les noms chronologiques et vérifier les fichiers via une file persistante.",
+      "notes": "Inclure les messages lus, déplacés et historiques ; définir le rapprochement des archives existantes.",
+      "state": "planned",
+      "order": 3,
+      "workItems": []
+    },
+    {
+      "id": "MS-04",
+      "name": "Classer rapidement depuis l'interface",
+      "goal": "Permettre la consultation des états et chemins, l'aperçu, la recherche de destination et le classement individuel ou par lots.",
+      "notes": "La colonne clients et le suivi par message constituent le parcours principal.",
+      "state": "planned",
+      "order": 4,
+      "workItems": []
+    },
+    {
+      "id": "MS-05",
+      "name": "Imprimer et reprendre les traitements",
+      "goal": "Gérer l'impression du mail et des pièces jointes compatibles, les interruptions et les résultats incertains sans duplication implicite.",
+      "notes": "Fixer le déclenchement de l'impression ; tester reprise, collision de noms et divergence entre registre et fichiers.",
+      "state": "planned",
+      "order": 5,
+      "workItems": []
+    },
+    {
+      "id": "MS-06",
+      "name": "Valider l'usage et préparer l'installation",
+      "goal": "Démontrer le parcours complet avec l'utilisatrice, reprendre un corpus historique et documenter l'installation, le démarrage et la synchronisation existante.",
+      "notes": "Aucun jalon n'est livré à l'initialisation ; objectifs d'ergonomie à mesurer sur les usages réels.",
+      "state": "planned",
+      "order": 6,
+      "workItems": []
+    }
+  ],
+  "backlog": [
+    {
+      "name": "integration-macos — accès messagerie, création de dossiers et impression",
+      "rationale": "Premier candidat à /mdse:requirements. Résoudre les inconnues qui conditionnent le choix Docker ou service natif, avec preuves sur un environnement d'essai autorisé.",
+      "priority": "high"
+    },
+    {
+      "name": "clients-et-modeles — création coordonnée et éditeur d'arborescence",
+      "rationale": "Fonction explicitement demandée : créer un client une fois et préparer sa messagerie et son arborescence locale personnalisable.",
+      "priority": "high"
+    },
+    {
+      "name": "surveillance-et-pdf — inventaire, conversion, nommage et contrôle",
+      "rationale": "Cœur automatique : chaque mail manquant rejoint une file persistante et produit un PDF vérifiable et correctement nommé.",
+      "priority": "high"
+    },
+    {
+      "name": "classement-ergonomique — interface clients, statuts et traitement par lots",
+      "rationale": "Réduire les gestes de classement tout en conservant le contrôle des destinations.",
+      "priority": "high"
+    },
+    {
+      "name": "impression-et-reprise — file d'impression et traitement des incidents",
+      "rationale": "Suivre les travaux indépendamment de l'archivage et éviter les réimpressions involontaires.",
+      "priority": "high"
+    },
+    {
+      "name": "reprise-historique-et-installation — archives existantes et validation utilisateur",
+      "rationale": "Rapprocher l'existant, mesurer le parcours réel et préparer une installation locale durable.",
+      "priority": "medium"
+    },
+    {
+      "name": "Suggestions de destinations et aide aux règles par correspondant",
+      "rationale": "Amélioration progressive à partir de règles explicites et des classements précédents, sans rendre l'IA nécessaire.",
+      "priority": "low"
+    }
+  ]
+}

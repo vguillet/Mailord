@@ -1,0 +1,33 @@
+{
+  "mdse": "2.3",
+  "kind": "Requirement",
+  "id": "REQ-03",
+  "name": "Modèles versionnés",
+  "status": "approved",
+  "revision": 1,
+  "createdAt": "2026-10-23",
+  "updatedAt": "2026-10-23",
+  "workItem": "WI-local-v1",
+  "keyword": "SHALL",
+  "statement": "L’utilisatrice SHALL éditer un modèle hiérarchique versionné et le compléter chez les clients existants sans suppression.",
+  "priority": "must",
+  "acceptanceCriteria": [
+    {
+      "id": "AC-01",
+      "kind": "happy-path",
+      "given": "un modèle et des clients existants",
+      "when": "un modèle est ajouté ou modifié",
+      "then": "les nouveaux clients utilisent la nouvelle version"
+    },
+    {
+      "id": "AC-02",
+      "kind": "failure-path",
+      "given": "un sous-dossier existant contient un document",
+      "when": "une nouvelle version est appliquée",
+      "then": "les données existantes sont conservées"
+    }
+  ],
+  "verifiedBy": [
+    "VM-03"
+  ]
+}

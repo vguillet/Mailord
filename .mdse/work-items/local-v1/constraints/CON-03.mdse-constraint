@@ -1,0 +1,14 @@
+{
+  "mdse": "2.3",
+  "kind": "Constraint",
+  "id": "CON-03",
+  "name": "Validation réelle distincte",
+  "status": "active",
+  "revision": 1,
+  "createdAt": "2026-10-23",
+  "updatedAt": "2026-10-23",
+  "workItem": "WI-local-v1",
+  "type": "prohibition",
+  "statement": "Le projet SHALL NOT présenter des essais simulés comme des essais sur le Mac et l’imprimante de la destinataire.",
+  "reason": "Aucun accès au matériel cible ni identifiants fournis."
+}

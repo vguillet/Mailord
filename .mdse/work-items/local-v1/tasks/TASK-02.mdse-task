@@ -1,0 +1,79 @@
+{
+  "mdse": "2.3",
+  "kind": "Task",
+  "id": "TASK-02",
+  "name": "Connecteurs et impression",
+  "status": "blocked",
+  "revision": 1,
+  "createdAt": "2026-10-23",
+  "updatedAt": "2026-10-23",
+  "workItem": "WI-local-v1",
+  "order": 2,
+  "type": "software",
+  "objective": "Connecteurs et impression avec tests et preuves réelles.",
+  "requirements": [
+    "REQ-04",
+    "REQ-09"
+  ],
+  "design": "DESIGN",
+  "decisions": [
+    "DEC-01",
+    "DEC-02",
+    "DEC-03",
+    "DEC-04"
+  ],
+  "constraints": [
+    "CON-01",
+    "CON-02",
+    "CON-03"
+  ],
+  "dependsOn": [
+    "TASK-01"
+  ],
+  "designReferences": [
+    {
+      "section": "components",
+      "item": "Connectors"
+    }
+  ],
+  "files": [
+    {
+      "path": "autosecretaire/connectors.py",
+      "action": "create"
+    },
+    {
+      "path": "autosecretaire/printing.py",
+      "action": "create"
+    },
+    {
+      "path": "tests/test_connectors.py",
+      "action": "create"
+    },
+    {
+      "path": "tests/test_printing.py",
+      "action": "create"
+    }
+  ],
+  "doneCriteria": [
+    {
+      "id": "DC-01",
+      "statement": "Les fichiers planifiés implémentent le contrat de conception et les critères des exigences associées."
+    },
+    {
+      "id": "DC-02",
+      "statement": "Les tests ciblés sont exécutés et réussissent ; les limites matérielles sont explicites."
+    }
+  ],
+  "priority": "high",
+  "plannedEffort": "2h",
+  "plannedStart": "2026-10-23",
+  "plannedEnd": "2026-10-23",
+  "milestone": "MS-02",
+  "outputs": [
+    {
+      "name": "Connecteurs et impression",
+      "kind": "source-code",
+      "deliverable": true
+    }
+  ]
+}

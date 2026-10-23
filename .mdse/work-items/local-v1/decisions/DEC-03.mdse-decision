@@ -1,0 +1,38 @@
+{
+  "mdse": "2.3",
+  "kind": "Decision",
+  "id": "DEC-03",
+  "name": "Registre et reprise",
+  "status": "accepted",
+  "revision": 1,
+  "createdAt": "2026-10-23",
+  "updatedAt": "2026-10-23",
+  "workItem": "WI-local-v1",
+  "requirements": [
+    "REQ-01",
+    "REQ-02",
+    "REQ-03",
+    "REQ-04",
+    "REQ-05",
+    "REQ-06",
+    "REQ-07",
+    "REQ-08",
+    "REQ-09",
+    "REQ-10",
+    "REQ-11",
+    "REQ-12"
+  ],
+  "context": "Les exports, déplacements et impressions ont des effets non transactionnels.",
+  "chosen": "SQLite journal WAL, table records(kind,id,payload JSON), spool privé, lock de processus, tâches et intentions persistées avant effets ; écritures atomiques et empreintes.",
+  "rationale": "Un petit service local peut sérialiser ses opérations et reprendre chaque étape.",
+  "rejected": [
+    {
+      "alternative": "Se fier aux noms de fichiers",
+      "reason": "Ne distingue pas réparation et nouvelle impression."
+    }
+  ],
+  "decidedBy": "agent",
+  "consequences": [
+    "Les essais du compte Orange et de l’imprimante cible restent une validation terrain distincte."
+  ]
+}

@@ -1,0 +1,33 @@
+{
+  "mdse": "2.3",
+  "kind": "Requirement",
+  "id": "REQ-10",
+  "name": "Interface ergonomique",
+  "status": "approved",
+  "revision": 1,
+  "createdAt": "2026-10-23",
+  "updatedAt": "2026-10-23",
+  "workItem": "WI-local-v1",
+  "keyword": "SHALL",
+  "statement": "L’utilisatrice SHALL disposer d’une navigation clients, états, aperçus, classement en lots et éditeur de modèle.",
+  "priority": "must",
+  "acceptanceCriteria": [
+    {
+      "id": "AC-01",
+      "kind": "happy-path",
+      "given": "plusieurs clients et messages de démonstration",
+      "when": "un client et un message sont sélectionnés",
+      "then": "la liste et le détail montrent fichiers destinations et impression avec actions de classement"
+    },
+    {
+      "id": "AC-02",
+      "kind": "failure-path",
+      "given": "une liste vide ou une erreur de service",
+      "when": "l’interface est affichée",
+      "then": "elle explique l’état et permet de réessayer sans fausse confirmation"
+    }
+  ],
+  "verifiedBy": [
+    "VM-10"
+  ]
+}

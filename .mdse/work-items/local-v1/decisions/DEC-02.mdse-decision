@@ -1,0 +1,38 @@
+{
+  "mdse": "2.3",
+  "kind": "Decision",
+  "id": "DEC-02",
+  "name": "Rendu documentaire",
+  "status": "accepted",
+  "revision": 1,
+  "createdAt": "2026-10-23",
+  "updatedAt": "2026-10-23",
+  "workItem": "WI-local-v1",
+  "requirements": [
+    "REQ-01",
+    "REQ-02",
+    "REQ-03",
+    "REQ-04",
+    "REQ-05",
+    "REQ-06",
+    "REQ-07",
+    "REQ-08",
+    "REQ-09",
+    "REQ-10",
+    "REQ-11",
+    "REQ-12"
+  ],
+  "context": "Les mails sont des entrées non fiables et les formats des pièces jointes varient.",
+  "chosen": "ReportLab pour PDF texte structuré Unicode, extraction HTML sans exécution ; originaux conservés ; PDF/images/texte imprimables et autres formats signalés.",
+  "rationale": "Rendu déterministe hors réseau avec pièces originales préservées.",
+  "rejected": [
+    {
+      "alternative": "Navigateur distant ou service cloud",
+      "reason": "Exposerait les mails et ajouterait des dépendances externes."
+    }
+  ],
+  "decidedBy": "agent",
+  "consequences": [
+    "Les essais du compte Orange et de l’imprimante cible restent une validation terrain distincte."
+  ]
+}

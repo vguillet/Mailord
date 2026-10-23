@@ -1,0 +1,37 @@
+{
+  "mdse": "2.3",
+  "kind": "Overview",
+  "id": "OVERVIEW",
+  "name": "Vue d'ensemble Auto-secretaire",
+  "status": "current",
+  "revision": 1,
+  "createdAt": "2026-10-23",
+  "updatedAt": "2026-10-23",
+  "summary": "Auto-secretaire est un projet de service local sur Mac destiné à une professionnelle utilisant une boîte Orange dans Apple Mail. Il vise à surveiller ses dossiers clients, générer et contrôler les PDF des messages et leurs pièces jointes, appliquer un nommage chronologique, faciliter le classement dans les dossiers locaux synchronisés et gérer l'impression. Une interface web locale doit aussi créer les clients et éditer leur modèle d'arborescence.",
+  "capabilities": [],
+  "entryPoints": [
+    {
+      "path": ".mdse/model/product.mdse-product",
+      "description": "Besoins issus du cadrage utilisateur."
+    },
+    {
+      "path": ".mdse/model/architecture.mdse-architecture",
+      "description": "Architecture de départ et frontières d'intégration encore à vérifier."
+    },
+    {
+      "path": ".mdse/model/roadmap.mdse-roadmap",
+      "description": "Étapes proposées pour le développement."
+    }
+  ],
+  "currentState": "Initialisation MDSE d'un dossier vide à partir de la conversation ; aucune application, aucun connecteur et aucun test applicatif n'existent encore. Le suivi léger a été choisi explicitement par l'utilisateur.",
+  "knownGaps": [
+    "Localisation des dossiers mail non confirmée : dossiers IMAP du compte Orange ou boîtes locales « Sur mon Mac ». Le stockage local des PDF ne tranche pas ce point.",
+    "Version de macOS, imprimante, connexion réseau ou USB, formats et volumes des messages non renseignés.",
+    "Emplacement documentaire racine, fournisseur de synchronisation et arborescence réelle à recueillir.",
+    "Docker est une piste initialement souhaitée ; service macOS natif ou Docker avec relais hôte à décider après essai de lecture/création de dossiers mail et d'impression.",
+    "Date de réception proposée pour le préfixe ; politique exacte de date, fuseau et horodatages manquants à préciser dans les exigences.",
+    "Moment du déclenchement de l'impression à préciser : immédiat après export ou après validation du classement ; l'impression après classement est une proposition, pas une décision acceptée.",
+    "Structure standard concrète à fournir par l'utilisatrice ; les exemples administratifs et de facturation de la conversation ne sont pas son modèle définitif.",
+    "Technologies, langages et commande de tests à choisir au stade de conception ; aucune pile logicielle n'est encore présentée comme installée."
+  ]
+}

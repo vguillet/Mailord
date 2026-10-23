@@ -1,0 +1,170 @@
+{
+  "mdse": "2.3",
+  "kind": "Architecture",
+  "id": "ARCH",
+  "name": "Architecture initiale Auto-secretaire",
+  "status": "current",
+  "revision": 1,
+  "createdAt": "2026-10-23",
+  "updatedAt": "2026-10-23",
+  "style": "Service local modulaire avec interface web, registre persistant et adaptateurs pour la messagerie, les fichiers et l'impression. Hypothèse de structure, aucune implémentation.",
+  "components": [
+    {
+      "name": "InterfaceLocale",
+      "responsibility": "Navigation par client, messages et états, aperçu, classement individuel ou en lots, création de clients, édition visuelle du modèle et des règles de nommage.",
+      "state": "new",
+      "dependsOn": [
+        "GestionClients",
+        "TraitementDocuments",
+        "Registre"
+      ]
+    },
+    {
+      "name": "GestionClients",
+      "responsibility": "Associer dossiers mail et dossiers locaux ; gérer les modèles versionnés et orchestrer la création reprenable des clients.",
+      "state": "new",
+      "dependsOn": [
+        "Messagerie",
+        "ArchivageLocal",
+        "Registre"
+      ]
+    },
+    {
+      "name": "Messagerie",
+      "responsibility": "Lister les dossiers et messages, relire les mouvements, récupérer le contenu et créer un dossier client via l'adaptateur confirmé par le jalon d'intégration.",
+      "state": "new"
+    },
+    {
+      "name": "TraitementDocuments",
+      "responsibility": "Détection des travaux, conversion PDF, extraction des pièces jointes, contrôle des exports, file persistante et reprises indépendantes du classement et de l'impression.",
+      "state": "new",
+      "dependsOn": [
+        "Messagerie",
+        "ArchivageLocal",
+        "Impression",
+        "Registre"
+      ]
+    },
+    {
+      "name": "ArchivageLocal",
+      "responsibility": "Créer les arborescences et enregistrer, nommer, contrôler et déplacer les documents dans la racine choisie, avec gestion des collisions et opérations reprenables.",
+      "state": "new"
+    },
+    {
+      "name": "Impression",
+      "responsibility": "Préparer et soumettre les documents compatibles, mémoriser les identifiants et retours disponibles et signaler une issue incertaine sans nouvelle soumission implicite.",
+      "state": "new"
+    },
+    {
+      "name": "Registre",
+      "responsibility": "Persister l'identité des clients et messages, les versions de modèles, les chemins, les états par étape, la file et l'historique des opérations.",
+      "state": "new"
+    }
+  ],
+  "dataFlows": [
+    {
+      "name": "Créer un client",
+      "steps": [
+        "Saisir le nom et prévisualiser les chemins.",
+        "Créer ou rattacher le dossier mail via Messagerie.",
+        "Créer le dossier local et instancier le modèle choisi.",
+        "Enregistrer l'association et rendre toute étape incomplète reprenable.",
+        "Surveiller le dossier client."
+      ]
+    },
+    {
+      "name": "Détecter et exporter",
+      "steps": [
+        "Inventorier les dossiers clients, y compris les messages lus et déplacés.",
+        "Comparer les messages au registre et contrôler les fichiers attendus.",
+        "Mettre en file les étapes manquantes.",
+        "Générer un PDF du mail et conserver les pièces jointes.",
+        "Appliquer le préfixe de date et le nom de base.",
+        "Enregistrer les fichiers et leur état dans une zone locale d'attente."
+      ]
+    },
+    {
+      "name": "Classer et imprimer",
+      "steps": [
+        "Afficher les messages et documents prêts par client.",
+        "Choisir les destinations et les documents à imprimer.",
+        "Ranger les fichiers et actualiser leurs chemins.",
+        "Soumettre l'impression au moment défini par la politique retenue.",
+        "Suivre l'impression indépendamment de l'archivage."
+      ]
+    },
+    {
+      "name": "Contrôle et reprise",
+      "steps": [
+        "Au démarrage et périodiquement, rapprocher registre, messages et fichiers.",
+        "Détecter les PDF absents, invalides ou déplacés.",
+        "Reprendre les étapes nécessaires sans réimprimer un travail déjà soumis.",
+        "Présenter les divergences et résultats incertains à l'utilisatrice."
+      ]
+    },
+    {
+      "name": "Synchronisation existante",
+      "steps": [
+        "Enregistrer les documents complets dans la racine locale choisie.",
+        "Laisser le fournisseur existant synchroniser cette racine.",
+        "Ne présenter la copie cloud comme confirmée que si une preuve de synchronisation est disponible."
+      ]
+    }
+  ],
+  "stack": [
+    {
+      "layer": "Exécution",
+      "technology": "macOS avec service local et interface web sur boucle locale",
+      "rationale": "Environnement demandé ; paquet natif ou conteneur à trancher par un essai."
+    },
+    {
+      "layer": "Messagerie",
+      "technology": "Adaptateur Orange IMAP ou Apple Mail local, à confirmer",
+      "rationale": "L'emplacement des dossiers messages détermine les opérations disponibles ; les PDF locaux ne prouvent pas que les boîtes mail sont locales."
+    },
+    {
+      "layer": "Persistance",
+      "technology": "Registre transactionnel local et fichiers Finder",
+      "rationale": "Les documents, la file et les historiques doivent survivre aux redémarrages ; le moteur exact sera choisi au stade design."
+    },
+    {
+      "layer": "Impression",
+      "technology": "Imprimante réseau compatible ou relais d'impression macOS, à confirmer",
+      "rationale": "L'intégration doit être prouvée sur l'environnement cible avant de figer Docker."
+    }
+  ],
+  "dependencyRules": [
+    "InterfaceLocale appelle GestionClients et TraitementDocuments ; elle ne pilote pas directement le système de fichiers ou l'imprimante.",
+    "GestionClients et TraitementDocuments utilisent les frontières Messagerie, ArchivageLocal, Impression et Registre.",
+    "Les adaptateurs ne dépendent pas de l'interface utilisateur.",
+    "Le fournisseur cloud observe les fichiers locaux ; il ne pilote pas le moteur de traitement.",
+    "Les opérations d'impression sont suivies séparément des exports et des déplacements de fichiers."
+  ],
+  "crossCuttingConcerns": [
+    {
+      "concern": "Identité et reprise",
+      "approach": "Utiliser un registre durable indépendant du nom de fichier et de l'état lu/non lu. Les mouvements de message ou renommages du client ne valent pas nouvelle demande d'impression."
+    },
+    {
+      "concern": "Nommage",
+      "approach": "Format initial proposé : AAAA-MM-JJ - nom de base.ext. Garder le nom original des pièces jointes et utiliser l'objet pour le PDF du mail. Définir la source de date et le fuseau dans les exigences."
+    },
+    {
+      "concern": "Modèles",
+      "approach": "Une nouvelle version sert aux nouveaux clients ; compléter ou réorganiser les clients existants est une opération distincte et traçable."
+    },
+    {
+      "concern": "Données locales",
+      "approach": "Racine documentaire choisie par l'utilisatrice, fichier de suivi persistant, secrets et données personnelles hors du dépôt de développement. Afficher la provenance et le résultat des étapes."
+    },
+    {
+      "concern": "Intégration réelle",
+      "approach": "Valider sur fixtures et copies de messages puis sur l'environnement cible autorisé ; ne pas manipuler directement la base interne d'Apple Mail sans contrat d'intégration démontré."
+    },
+    {
+      "concern": "Impression",
+      "approach": "Distinguer préparé, soumis, en attente, échec et résultat incertain ; une soumission ne prouve pas à elle seule que le papier a été imprimé."
+    }
+  ],
+  "workItems": []
+}

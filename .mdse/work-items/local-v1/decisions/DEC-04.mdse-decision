@@ -1,0 +1,38 @@
+{
+  "mdse": "2.3",
+  "kind": "Decision",
+  "id": "DEC-04",
+  "name": "Politiques initiales",
+  "status": "accepted",
+  "revision": 1,
+  "createdAt": "2026-10-23",
+  "updatedAt": "2026-10-23",
+  "workItem": "WI-local-v1",
+  "requirements": [
+    "REQ-01",
+    "REQ-02",
+    "REQ-03",
+    "REQ-04",
+    "REQ-05",
+    "REQ-06",
+    "REQ-07",
+    "REQ-08",
+    "REQ-09",
+    "REQ-10",
+    "REQ-11",
+    "REQ-12"
+  ],
+  "context": "La date et le déclenchement n’ont pas été fixés précisément.",
+  "chosen": "Date de réception Europe/Paris, repli date du mail puis première découverte ; préfixe YYYY-MM-DD - ; impression après classement par défaut, modes manuel ou après export configurables ; première découverte historique sans impression automatique.",
+  "rationale": "Préserve le rangement chronologique et limite la première synchronisation massive.",
+  "rejected": [
+    {
+      "alternative": "Impression de tout l’historique immédiatement",
+      "reason": "Risque de volume indésirable."
+    }
+  ],
+  "decidedBy": "agent",
+  "consequences": [
+    "Les essais du compte Orange et de l’imprimante cible restent une validation terrain distincte."
+  ]
+}

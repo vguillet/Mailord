@@ -1,0 +1,33 @@
+{
+  "mdse": "2.3",
+  "kind": "Requirement",
+  "id": "REQ-12",
+  "name": "Installation",
+  "status": "approved",
+  "revision": 1,
+  "createdAt": "2026-10-23",
+  "updatedAt": "2026-10-23",
+  "workItem": "WI-local-v1",
+  "keyword": "SHALL",
+  "statement": "L’utilisatrice SHALL disposer d’un lancement documenté sur Mac avec démonstration et configuration de sa messagerie.",
+  "priority": "must",
+  "acceptanceCriteria": [
+    {
+      "id": "AC-01",
+      "kind": "happy-path",
+      "given": "une installation locale et le guide",
+      "when": "le lancement de démonstration est exécuté",
+      "then": "des exemples apparaissent et le parcours fonctionne sans compte réel"
+    },
+    {
+      "id": "AC-02",
+      "kind": "failure-path",
+      "given": "des identifiants ou permissions macOS manquants",
+      "when": "une connexion réelle est demandée",
+      "then": "une erreur exploitable est affichée sans secrets ni déclaration de validation réelle"
+    }
+  ],
+  "verifiedBy": [
+    "VM-12"
+  ]
+}

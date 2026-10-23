@@ -1,0 +1,44 @@
+{
+  "mdse": "2.3",
+  "kind": "Project",
+  "id": "PROJ-auto-secretaire",
+  "name": "Auto-secretaire",
+  "status": "current",
+  "revision": 2,
+  "createdAt": "2026-10-23",
+  "updatedAt": "2026-10-23",
+  "description": "Service local sur Mac pour convertir les communications clients en PDF, les classer et les imprimer, avec une interface web locale et un suivi MDSE léger.",
+  "metaModelVersion": "2.3",
+  "root": ".",
+  "domains": [
+    "software"
+  ],
+  "governance": "light",
+  "workItems": [
+    "WI-local-v1"
+  ],
+  "workspaces": [],
+  "todos": [],
+  "actors": [
+    "person-project-owner",
+    "agent-codex"
+  ],
+  "interfaces": [],
+  "validations": [],
+  "elements": [],
+  "baselines": [],
+  "changes": [],
+  "risks": [],
+  "issues": [],
+  "assumptions": [],
+  "conventions": {
+    "defaultTestingApproach": "selective-TDD",
+    "commitFormat": "type(scope): description",
+    "branchFormat": "work-item/<slug>"
+  },
+  "pipeline": {
+    "mode": "hybrid",
+    "automationLevel": "autonomous",
+    "maxConcurrentAgents": 4
+  }
+}

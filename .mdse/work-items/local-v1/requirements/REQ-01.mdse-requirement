@@ -1,0 +1,33 @@
+{
+  "mdse": "2.3",
+  "kind": "Requirement",
+  "id": "REQ-01",
+  "name": "Service local",
+  "status": "approved",
+  "revision": 1,
+  "createdAt": "2026-10-23",
+  "updatedAt": "2026-10-23",
+  "workItem": "WI-local-v1",
+  "keyword": "SHALL",
+  "statement": "L’utilisatrice SHALL utiliser une interface web locale et conserver les fichiers dans une racine choisie.",
+  "priority": "must",
+  "acceptanceCriteria": [
+    {
+      "id": "AC-01",
+      "kind": "happy-path",
+      "given": "un espace de démonstration vierge",
+      "when": "le service démarre",
+      "then": "l’interface et les états persistent après redémarrage"
+    },
+    {
+      "id": "AC-02",
+      "kind": "failure-path",
+      "given": "une requête venant d’un autre site",
+      "when": "une modification est tentée",
+      "then": "elle est refusée"
+    }
+  ],
+  "verifiedBy": [
+    "VM-01"
+  ]
+}

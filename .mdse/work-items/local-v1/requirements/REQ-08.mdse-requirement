@@ -1,0 +1,33 @@
+{
+  "mdse": "2.3",
+  "kind": "Requirement",
+  "id": "REQ-08",
+  "name": "Classement",
+  "status": "approved",
+  "revision": 1,
+  "createdAt": "2026-10-23",
+  "updatedAt": "2026-10-23",
+  "workItem": "WI-local-v1",
+  "keyword": "SHALL",
+  "statement": "L’utilisatrice SHALL classer un ou plusieurs messages dans un sous-dossier du client avec suivi du chemin.",
+  "priority": "must",
+  "acceptanceCriteria": [
+    {
+      "id": "AC-01",
+      "kind": "happy-path",
+      "given": "des messages exportés sélectionnés",
+      "when": "un dossier est choisi",
+      "then": "les documents sont déplacés et leurs chemins actualisés"
+    },
+    {
+      "id": "AC-02",
+      "kind": "failure-path",
+      "given": "un dossier de destination extérieur ou une collision",
+      "when": "le classement est demandé",
+      "then": "la sortie de racine est refusée et les documents existants restent intacts"
+    }
+  ],
+  "verifiedBy": [
+    "VM-08"
+  ]
+}

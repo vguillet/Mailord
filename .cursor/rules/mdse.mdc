@@ -1,0 +1,73 @@
+---
+description: mdse Project model — how to read and evolve this repository's typed instance model
+globs:
+alwaysApply: true
+---
+
+<!-- mdse:start -->
+# This repository uses mdse
+
+This repository's engineering project is represented as a **Project model**: a set of
+strongly typed JSON instances under `.mdse/`, conforming to the mdse meta-model.
+Prefer reading the model over re-deriving context from source.
+Use `mdse context .mdse` (or `--work-item <slug>`) for a lean initial view,
+then open exact typed instances when an operation needs their full content.
+
+## Before answering questions about this project
+
+1. Read `.mdse/model/overview.mdse-overview` — what this repository is.
+2. Read `.mdse/model/architecture.mdse-architecture` — how it is built.
+3. For a specific work item, read `.mdse/work-items/<slug>/workitem.mdse-workitem` for its
+   `status`, then its `requirements/`, `design/`, `decisions/`, `tasks/` as needed.
+
+Every instance's `status` field tells you where it is in its lifecycle — do not infer
+progress from file existence alone.
+
+**Load the model before proposing anything new.** This project's model persists and
+accumulates — new work extends it, it does not start over. Before proposing a work item,
+requirement or design, check what the model already says: existing work items
+(`Project.workItems`), accepted decisions, active constraints, and `Product.nonGoals`.
+Extend what exists rather than duplicating it, and if a proposal contradicts something
+already recorded, say so and ask rather than writing over it silently.
+
+An instance marked `"provenance": "onboarded"` was reconstructed from this codebase by
+`/mdse-onboard`, not specified by a person — treat it as a reading of the code to verify,
+not as settled intent.
+
+## Before writing or editing code
+
+If the change relates to an existing work item, read that work item's `design.mdse-design`
+and the relevant `Task` instances first — they carry the contracts, conventions and
+constraints the implementation must respect (`.mdse/work-items/<slug>/constraints/`).
+
+All development in this repository MUST go through the mdse workflow — do not freehand
+it: `requirements → analysis → design → taskify → implement → verify → reconcile`.
+
+The only exception is a small, well-scoped edit to an existing work item — a bug fix, a
+copy change, a one-file tweak that changes no contract, requirement or architecture
+decision. That may be made directly, following the conventions already recorded for the
+relevant workspace at `.mdse/model/workspaces/`, without the full workflow. When in
+doubt whether an edit qualifies, it doesn't — run it through the workflow.
+
+Picking work back up after a break (pending or in-progress tasks left over from an
+earlier session)? Run `/mdse-resume` rather than manually finding and re-running
+`/mdse-implement` for each one — it drives every leftover task through to verify and
+reconcile in one pass.
+
+## After writing or editing code
+
+- Do not hand-edit files under `.mdse/` into an invalid shape.
+- If you changed something a `Task` or `Requirement` describes, update that instance's
+  `status` and, where one exists, record the change via an `Execution` instance rather
+  than leaving the model silently out of date.
+- Validate before considering the change complete: `mdse validate .mdse`.
+
+## Rules
+
+- SHALL NOT freehand development beyond a small, well-scoped edit (see above) — run it
+  through the mdse workflow instead of writing code or specs ad hoc.
+- SHALL NOT write prose documents into `.mdse/` — it holds typed instances only.
+- SHALL NOT delete an instance directly — set its lifecycle status, or use the
+  reviewed `/mdse-compact` workflow so the exact original enters cold history.
+- SHALL NOT invent fields outside an instance's schema.
+<!-- mdse:end -->
