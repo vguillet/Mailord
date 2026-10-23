@@ -1,0 +1,14 @@
+{
+  "mdse": "2.3",
+  "kind": "Constraint",
+  "id": "CON-01",
+  "name": "Préserver fichiers et périmètre",
+  "status": "active",
+  "revision": 1,
+  "createdAt": "2026-10-24",
+  "updatedAt": "2026-10-24",
+  "workItem": "WI-lazy-folders",
+  "type": "prohibition",
+  "statement": "Ne supprimer aucun fichier ni nettoyer globalement les anciens dossiers. Ne pas créer de sous-arborescence documentaire dans la messagerie. Ne pas déclencher de réimpression lors du changement de modèle.",
+  "reason": "Seules les branches locales nécessaires au rangement sont concernées ; le dossier mail doit exister pour être surveillé et les documents restent protégés."
+}

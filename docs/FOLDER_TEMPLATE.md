@@ -6,7 +6,7 @@ Empreinte SHA-256 : `c1a4239811645985a6e897100074ab2db5de9bd79a80fac199137a5a06f
 
 ## Arborescence fournie
 
-Le modèle initial contient 37 dossiers : les huit rubriques métier du PDF, leurs sous-dossiers et la zone d’attente de l’outil. Les étoiles des rubriques 05 et 07 et les annotations explicatives ne sont pas des caractères à inclure dans les noms. Les abréviations des actes figurent dans les repères ci-dessous. Le tiret typographique de « reçues du client – à trier » est normalisé en tiret simple.
+Le modèle initial propose 37 destinations : les huit rubriques métier du PDF, leurs sous-dossiers et la zone d’attente de l’outil. Les étoiles des rubriques 05 et 07 et les annotations explicatives ne sont pas des caractères à inclure dans les noms. Les abréviations des actes figurent dans les repères ci-dessous. Le tiret typographique de « reçues du client – à trier » est normalisé en tiret simple.
 
 ```text
 NOM CLIENT-NOM PARTIE ADVERSE (mention éventuelle)
@@ -55,7 +55,7 @@ Utiliser une entrée distincte pour chaque affaire. Saisir `NOM CLIENT-NOM PARTI
 
 Avant de créer l’affaire, adapter `[JURIDICTION + lieu]` dans **Modèle de dossiers** : TJ, TJ réf, CA, CAAA, JAF, JEX, JAP, JI, TC ou T Com selon le dossier, avec le lieu. Ce nom est un repère littéral, pas une variable déduite automatiquement. La commande **Dupliquer la branche** conserve ses 14 sous-dossiers pour une autre instance. Ne pas créer toutes les juridictions possibles systématiquement.
 
-L’éditeur reste libre et versionné. Enregistrer le modèle concerne les prochaines créations. **Compléter les dossiers** ajoute les rubriques manquantes à une affaire existante sans supprimer ni déplacer ses fichiers. Une mise à jour du logiciel ne remplace pas un modèle déjà enregistré ; dans la démonstration ouverte, le nouveau modèle a été enregistré explicitement à la demande de l’utilisateur.
+L’éditeur reste libre et versionné. Le modèle courant est proposé au classement pour toutes les affaires, même si les dossiers n’existent pas sur le Mac. La création d’une affaire réserve son chemin local sans créer son arborescence ; seuls le dossier qui reçoit un document et ses parents sont matérialisés. **Mémoriser le modèle** garde ces destinations pour une affaire même après un changement du modèle, sans écriture de répertoires. Les branches vidées par les déplacements de l’outil sont retirées si elles sont réellement vides ; les autres fichiers et branches sont conservés. Une mise à jour du logiciel ne remplace pas un modèle déjà enregistré ; dans la démonstration ouverte, le nouveau modèle a été enregistré explicitement à la demande de l’utilisateur.
 
 ## Repères de classement
 

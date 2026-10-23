@@ -3,16 +3,16 @@
 JSON français/UTF-8. Dates ISO. Réponses objets, erreurs `{detail: string}` avec HTTP 400/404/409/503. GET `/api/state` fournit `csrf_token`; toute mutation envoie `X-CSRF-Token`. Même origine obligatoire. Tous les chemins relatifs sont confinés à la racine documentaire ou au client.
 
 - `GET /api/state` → `{clients:[], messages:[], settings:{}, template:{id,version,folders:[string]}, templates:[], jobs:[], events:[], folders:[string], printers:[string], csrf_token, stats:{clients,messages,pending,errors}, last_scan, sync_error}`. `settings` contient uniquement la configuration sans mot de passe. Ne pas demander un secret au formulaire : utiliser variable d’environnement ou Trousseau documenté. `folders` et `printers` peuvent être vides avant le test de connexion.
-- Client: `{id,name,mailbox,folder,status:ready|error|provisioning,error,template_version,folders:[string],favorites:[string]}`.
+- Client (dans `/api/state`) : `{id,name,mailbox,folder,status:ready|error|provisioning,error,template_version,folders:[string],existing_folders:[string],favorites:[string]}`.
 - Message: `{id,client_id,subject,sender,recipients,date,body,status:queued|ready|error,classification:pending|classified,destination,print_status:pending|submitted|simulated|uncertain|error|historical, historical:bool,error,documents:[Document],print_jobs:[{id,document_id,status,job_id,error,created_at}]}`.
 - Document: `{id,kind:email|attachment,original_name,path,name,sha256,printable,inline,selected:bool}`. `path` absolu uniquement pour affichage ; utiliser ID pour fichiers/actions.
 - `POST /api/clients {name,mailbox?:str}` → client, `POST /api/clients/{id}/retry {}` reprend la création.
 - `GET /api/folders` → `{folders:[string]}` effectue la connexion et expose les erreurs.
 - `POST /api/sync {}` → `{ok:true}` synchronise et traite ; `POST /api/process {}` relance le contrôle/export.
 - `PUT /api/template {folders:[string]}` → template versionné ; chemins avec `/` représentent la hiérarchie ; doublons, `..`, chemins absolus et noms vides rejetés.
-- `POST /api/clients/{id}/template {}` → client, applique la version courante de façon additive.
+- `POST /api/clients/{id}/template {}` → client, mémorise la version courante de façon additive sans créer de dossiers.
 - `PUT /api/clients/{id}/favorites {folders:[string]}` → client.
-- `POST /api/classify {message_ids:[string],destination:string}` → `{ok:true}`. Dossier relatif au client, tous les messages du même client. Les documents restent associés ; aucun overwrite.
+- `POST /api/classify {message_ids:[string],destination:string}` → `{ok:true}`. Dossier relatif au client, tous les messages du même client. Les documents restent associés ; aucun overwrite. La destination peut être absente : les parents sont créés lors de la publication du premier fichier. Les branches source vidées sont retirées par `rmdir`, sans nettoyage global.
 - `POST /api/print {message_ids:[string]}` → `{ok:true}`. Ne réimprime jamais une soumission existante ; `POST /api/messages/{id}/reprint {confirm:true}` seule action explicite pour une nouvelle impression, après vérification par l’utilisatrice.
 - `PUT /api/documents/{id} {selected:bool}` → document, choix pièces à imprimer.
 - `GET /api/documents/{id}/file` → fichier, `?download=true` pour téléchargement. Inline uniquement PDF/image sûr ; pas HTML actif. `POST /api/documents/{id}/reveal {}` → ouvre Finder.
@@ -44,3 +44,9 @@ Mêmes protections Host, origine et CSRF que les autres mutations. Les routes pr
 Une valeur invalide retourne 400 sans enregistrer les autres champs de la demande. Le défaut `printer` préserve les options du pilote sans modifier ses préférences globales. Chaque nouvelle intention d’impression mémorise `options: {sides, color_mode}`, `printer` et `dry_run` dans les enregistrements `print_jobs`. Une reprise `preparing` garde cet instantané ; un nouvel essai après refus certain ou une réimpression explicite prend les réglages courants. Les travaux déjà soumis, simulés ou incertains ne sont pas resoumis à cause d’un changement de préférence.
 
 Les options s’appliquent à chaque document coché et imprimable : le PDF du mail et les pièces jointes sélectionnées. `print_attachments` définit la sélection initiale des prochaines pièces jointes exportées, sans changer les cases des documents déjà présents. La simulation ne consulte pas les imprimantes et ne soumet aucun travail.
+
+## Destinations et existence locale
+
+Dans `GET /api/state`, `client.folders` est le catalogue virtuel : modèle courant, destinations mémorisées, parents implicites, dossiers locaux et zone `00 - À classer`. `client.existing_folders` contient uniquement les dossiers présents sur le Mac (aucune écriture pendant cet inventaire). Les liens symboliques ne sont pas des dossiers locaux autorisés.
+
+La création/reprise d’un client crée le dossier mail nécessaire à la surveillance, mais réserve seulement son chemin documentaire. L’application du modèle et l’ajout de favoris n’effectuent aucun `mkdir`. Les réponses de mutation client conservent leur forme de registre (modèle mémorisé) : relire `/api/state` pour obtenir le catalogue complet. Un changement de modèle ne crée ni ne déplace de fichier et ne déclenche pas d’impression.

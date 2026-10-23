@@ -23,8 +23,8 @@ Choisissez la messagerie et le dossier des archives dans **Réglages avant de cr
 
 ## Ce que l’application fait
 
-- Crée un client et ses dossiers mail et locaux, ou rattache un dossier mail existant.
-- Édite un modèle hiérarchique de dossiers : ajout, renommage, déplacement, duplication, suppression et versions. L’application aux clients existants ajoute les dossiers manquants sans effacer leurs données.
+- Crée un client et son dossier mail, ou rattache un dossier mail existant. Son arborescence locale apparaît au premier document, branche par branche.
+- Édite un modèle hiérarchique de dossiers : ajout, renommage, déplacement, duplication, suppression et versions. Toutes les destinations sont proposées aux clients existants, même absentes du Mac ; seules les branches utilisées sont créées.
 - Surveille les messages lus comme non lus. Génère le PDF du mail, conserve les pièces jointes et préfixe les noms avec `AAAA-MM-JJ -`.
 - Contrôle les fichiers, reprend les étapes interrompues et répare les exports manquants ou corrompus. Une copie modifiée est conservée dans la quarantaine privée avant réparation.
 - Affiche les clients à gauche, les communications et leurs états, un aperçu et les fichiers. Classement individuel ou en lots, recherche, raccourcis, favoris et destinations récentes.

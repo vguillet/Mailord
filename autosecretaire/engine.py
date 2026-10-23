@@ -80,12 +80,24 @@ class Engine:
         if not c:raise KeyError('Client introuvable.')
         within(self.root,c['folder']);return c
 
-    def client_folders(self,c):
+    def existing_folders(self,c):
         root=within(self.root,c['folder'])
-        paths=set(c.get('folders',[]))
+        paths=set()
         if root.exists():
             for p in root.rglob('*'):
-                if p.is_dir() and not p.is_symlink() and p.resolve().is_relative_to(root):paths.add(str(p.relative_to(root)))
+                if p.is_dir():
+                    try:within(root,p)
+                    except ValueError:continue
+                    paths.add(str(p.relative_to(root)))
+        return sorted(paths,key=str.casefold)
+
+    def client_folders(self,c,existing=None):
+        paths=set(c.get('folders',[])) | set(self.template()['folders']) | {'00 - À classer'}
+        paths.update(self.existing_folders(c) if existing is None else existing)
+        # A template can store only leaves; every ancestor is also a destination.
+        for name in list(paths):
+            parts=name.split('/')
+            paths.update('/'.join(parts[:i]) for i in range(1,len(parts)))
         return sorted(paths,key=str.casefold)
 
     def create_client(self,name,mailbox=''):
@@ -107,17 +119,16 @@ class Engine:
         with self.lock:
             c=self.client(id)
             try:
+                root=within(self.root,c['folder'])
+                if root.exists() and not root.is_dir():raise ValueError('Le chemin du client est occupé par un fichier.')
                 self.connector.create_folder(c['mailbox'])
-                root=within(self.root,c['folder']);root.mkdir(parents=True,exist_ok=True)
-                for name in c['folders']:within(root,root/relative(name)).mkdir(parents=True,exist_ok=True)
                 c.update(status='ready',error='')
             except Exception as e:c.update(status='error',error=self.error_text(e))
             self.store.put('client',id,c);return self.client(id)
 
     def apply_template(self,id):
         with self.lock:
-            c=self.client(id);t=self.template();root=Path(c['folder'])
-            for name in t['folders']:within(root,root/relative(name)).mkdir(parents=True,exist_ok=True)
+            c=self.client(id);t=self.template()
             c['folders']=sorted(set(c['folders']+t['folders']));c['template_version']=t['version'];self.store.put('client',id,c);return c
 
     def favorites(self,id,folders):
@@ -171,7 +182,7 @@ class Engine:
     def _target(self,root,name,id,sha):
         target=within(root,root/name)
         # Case-insensitive collision handling also works on case-sensitive development disks.
-        occupied={p.name.casefold():p for p in root.iterdir()}
+        occupied={p.name.casefold():p for p in root.iterdir()} if root.exists() else {}
         found=occupied.get(target.name.casefold())
         if found is not None:target=found
         if target.exists():
@@ -181,15 +192,31 @@ class Engine:
                 target=within(root,root/(Path(name).stem+' - '+id[:10]+f' ({index})'+Path(name).suffix));index+=1
         return target
 
+    def _prune_empty(self,root,directory):
+        # rmdir never removes content (including hidden files), and no tree walk
+        # is performed: only ancestors of the directory involved are considered.
+        try:
+            root=Path(root)
+            if root!=self.root:root=within(self.root,root)
+            path=within(self.root,directory)
+            if not path.is_relative_to(root):return
+            while path!=root:
+                path.rmdir()
+                path=path.parent
+        except (OSError,ValueError):pass
+
     def _publish(self,source,target):
-        target=within(self.root,target);target.parent.mkdir(parents=True,exist_ok=True)
+        target=within(self.root,target)
         # Write complete data before linking into a synced directory; linking never overwrites.
         temporary=target.parent/('.auto-'+uid()+'.tmp')
         try:
+            target.parent.mkdir(parents=True,exist_ok=True)
             with open(temporary,'xb') as f:
                 f.write(Path(source).read_bytes());f.flush();os.fsync(f.fileno())
             os.link(temporary,target)
-        finally:temporary.unlink(missing_ok=True)
+        finally:
+            temporary.unlink(missing_ok=True)
+            self._prune_empty(self.root,target.parent)
 
     def process(self):
         with self.lock:
@@ -199,7 +226,7 @@ class Engine:
                 if m['status']=='ready' and ds and all(self._healthy(d) for d in ds):continue
                 self._queue(m['id']);self.store.put('job',m['id'],{'message_id':m['id'],'status':'running','error':''})
                 try:
-                    c=self.client(m['client_id']);dest=Path(c['folder']) if m['destination']=='.' else within(Path(c['folder']),Path(c['folder'])/relative(m['destination']));dest.mkdir(parents=True,exist_ok=True)
+                    c=self.client(m['client_id']);dest=Path(c['folder']) if m['destination']=='.' else within(Path(c['folder']),Path(c['folder'])/relative(m['destination']))
                     # Render into a unique private directory. Failed attempts never pollute exports.
                     stage=self.runtime/'staging'/uid();stage.mkdir()
                     exports=documents.export_message(Path(m['spool']).read_bytes(),stage,received_at=m['received_at'],date_source=self.settings['date_source'],prefix_format=self.settings['prefix_format'],identity=m['id'])
@@ -239,6 +266,7 @@ class Engine:
                 if src.exists() and src!=dst:
                     if digest(src)!=d['sha256']:raise ValueError('Source modifiée pendant le classement ; original conservé.')
                     src.unlink()
+                if src.parent!=dst.parent:self._prune_empty(self.root,src.parent)
                 d.update(path=str(dst),name=dst.name);d.pop('move_to');self.store.put('document',d['id'],d)
             except (OSError,ValueError) as e:self.event(self.error_text(e),'error')
         # Finalize messages only when every document has completed its intent.
@@ -251,7 +279,10 @@ class Engine:
             destination=relative(destination);ms=self._messages(ids)
             if len({m['client_id'] for m in ms})!=1:raise ValueError('Sélectionnez des messages du même client.')
             if any(m['status']!='ready' for m in ms):raise ValueError('Attendez que tous les documents soient exportés.')
-            c=self.client(ms[0]['client_id']);root=Path(c['folder']);dest=within(root,root/destination);dest.mkdir(parents=True,exist_ok=True)
+            c=self.client(ms[0]['client_id']);root=Path(c['folder']);dest=within(root,root/destination)
+            for m in ms:
+                for d in self._docs(m['id']):
+                    if not self._healthy(d):raise ValueError('Un fichier manque ou a changé. Lancez le contrôle avant classement.')
             for m in ms:
                 with self.store.transaction():
                     for d in self._docs(m['id']):
@@ -360,7 +391,9 @@ class Engine:
     def state(self):
         with self.lock:
             clients=self.store.all('client')
-            for c in clients:c['folders']=self.client_folders(c)
+            for c in clients:
+                c['existing_folders']=self.existing_folders(c)
+                c['folders']=self.client_folders(c,c['existing_folders'])
             messages=self.store.all('message')
             for m in messages:
                 m['documents']=self._docs(m['id']);m['print_status']=self.print_status(m)
