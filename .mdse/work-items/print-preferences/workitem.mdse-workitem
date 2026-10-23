@@ -1,0 +1,48 @@
+{
+  "mdse": "2.3",
+  "kind": "WorkItem",
+  "id": "WI-print-preferences",
+  "name": "Préférences d’impression",
+  "status": "reconciled",
+  "revision": 1,
+  "createdAt": "2026-10-24",
+  "updatedAt": "2026-10-24",
+  "slug": "print-preferences",
+  "purpose": "Compléter l’impression de la version locale réconciliée par des préférences recto verso et couleur, et clarifier le périmètre mail/pièces jointes.",
+  "userStories": [
+    {
+      "id": "US-01",
+      "role": "utilisatrice",
+      "capability": "choisir les faces et le mode couleur dans les réglages",
+      "benefit": "adapter mes impressions sans terminal"
+    }
+  ],
+  "testingApproach": "selective-TDD",
+  "requirements": [
+    "REQ-01",
+    "REQ-02"
+  ],
+  "constraints": [
+    "CON-01"
+  ],
+  "methods": [
+    "VM-01",
+    "VM-02"
+  ],
+  "decisions": [
+    "DEC-01"
+  ],
+  "tasks": [
+    "TASK-01"
+  ],
+  "executions": [
+    "TASK-01-E01"
+  ],
+  "verifications": [
+    "VER-01"
+  ],
+  "deliverables": [
+    "DLV-01"
+  ],
+  "design": "DESIGN"
+}

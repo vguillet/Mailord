@@ -1,0 +1,34 @@
+{
+  "mdse": "2.3",
+  "kind": "Decision",
+  "id": "DEC-01",
+  "name": "Options par travail CUPS",
+  "status": "accepted",
+  "revision": 1,
+  "createdAt": "2026-10-24",
+  "updatedAt": "2026-10-24",
+  "workItem": "WI-print-preferences",
+  "requirements": [
+    "REQ-01",
+    "REQ-02"
+  ],
+  "context": "Le service utilise déjà CUPS et sélectionne le PDF du mail et les pièces jointes compatibles ; les travaux sont suivis individuellement.",
+  "chosen": "Étendre les réglages JSON avec print_sides et print_color_mode, tous deux printer par défaut ; transmettre sides et print-color-mode à lp, et une correspondance ColorModel/Duplex annoncée par lpoptions si disponible ; ne pas changer les valeurs globales du Mac. Mémoriser options, imprimante et simulation dans chaque nouvelle intention ; conserver cette intention sur reprise preparing, utiliser les réglages courants pour une nouvelle demande ou un nouvel essai après refus certain.",
+  "rationale": "Préserve les préférences existantes, applique les choix à tous les documents sélectionnés, réutilise le moteur et l’adaptateur sans nouveau service.",
+  "rejected": [
+    {
+      "alternative": "Convertir les archives en noir et blanc",
+      "reason": "Altérerait les originaux et la synchronisation cloud."
+    },
+    {
+      "alternative": "Changer les préférences système",
+      "reason": "Affecterait les impressions provenant des autres applications."
+    }
+  ],
+  "decidedBy": "agent",
+  "consequences": [
+    "Le support physique dépend du pilote et de l’imprimante ; un mode identifié comme absent dans les options du pilote est refusé avant soumission. Sans description disponible, utiliser les options standard CUPS.",
+    "Les changements ne relancent pas les impressions déjà soumises. Les pièces jointes non compatibles restent archivées et exclues.",
+    "La sélection par défaut des pièces jointes concerne les prochains exports ; les cases par document contrôlent les messages existants."
+  ]
+}

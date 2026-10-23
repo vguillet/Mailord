@@ -4,7 +4,7 @@
   "id": "ROADMAP",
   "name": "Feuille de route Auto-secretaire",
   "status": "current",
-  "revision": 4,
+  "revision": 5,
   "createdAt": "2026-10-23",
   "updatedAt": "2026-10-24",
   "milestones": [
@@ -85,6 +85,18 @@
       ],
       "deliveredDate": "2026-10-24",
       "notes": "136 tests et mise à jour depuis Chrome sur dépôt de test ; source distante finale à configurer."
+    },
+    {
+      "id": "MS-08",
+      "name": "Préférences d’impression",
+      "goal": "Choisir recto verso et couleur dans les réglages locaux.",
+      "state": "delivered",
+      "order": 8,
+      "workItems": [
+        "WI-print-preferences"
+      ],
+      "deliveredDate": "2026-10-24",
+      "notes": "154 tests et parcours navigateur ; imprimantes simulées explicitement."
     }
   ],
   "backlog": [

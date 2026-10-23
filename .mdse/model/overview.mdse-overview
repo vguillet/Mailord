@@ -4,7 +4,7 @@
   "id": "OVERVIEW",
   "name": "Vue d'ensemble Auto-secretaire",
   "status": "current",
-  "revision": 3,
+  "revision": 4,
   "createdAt": "2026-10-23",
   "updatedAt": "2026-10-24",
   "summary": "Auto-secrétaire automatise localement sur Mac les dossiers de communications clients : PDF, pièces jointes, nommage chronologique, classement et impression avec interface web française.",
@@ -26,7 +26,7 @@
     },
     {
       "name": "Impression et reprise",
-      "description": "Simulation, politiques configurables, intentions persistées, diagnostics par document et incertitudes explicites.",
+      "description": "Simulation, recto/recto verso, couleur/noir et blanc, sélection mail et pièces jointes, intentions avec options persistées et reprise sans doublons.",
       "state": "implemented"
     },
     {
@@ -66,7 +66,7 @@
       "description": "Configurer la source et publier des versions compatibles ; fonctionnement du bouton et limites de reprise."
     }
   ],
-  "currentState": "Version locale et mises à jour implémentées, vérifiées et réconciliées ; 136 tests réussis sous Python 3.11 et 3.14, bascule et reconnexion réelles depuis Chrome sur données fictives. Essai utilisateur avec messagerie, imprimante et dépôt définitifs encore attendu.",
+  "currentState": "Version locale, mises à jour et préférences d’impression implémentées, vérifiées et réconciliées ; 154 tests réussis et contrôle navigateur en simulation. Intégration physique à la messagerie et à l’imprimante cible encore attendue.",
   "knownGaps": [
     "Les intégrations Orange, Apple Mail et imprimante cible sont testées sur transports simulés ; validation terrain non réalisée.",
     "Rendu HTML en texte structuré et formats Office conservés sans conversion imprimable.",

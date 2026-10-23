@@ -1,0 +1,48 @@
+{
+  "mdse": "2.3",
+  "kind": "Design",
+  "id": "DESIGN",
+  "name": "Préférences de sortie par document",
+  "status": "approved",
+  "revision": 1,
+  "createdAt": "2026-10-24",
+  "updatedAt": "2026-10-24",
+  "workItem": "WI-print-preferences",
+  "requirements": [
+    "REQ-01",
+    "REQ-02"
+  ],
+  "decisions": [
+    "DEC-01"
+  ],
+  "components": [
+    {
+      "name": "Impression",
+      "state": "modified",
+      "path": "autosecretaire/printing.py",
+      "responsibility": "Valider et traduire des choix bornés vers les options CUPS, sans shell ni modification des paramètres globaux."
+    },
+    {
+      "name": "TraitementDocuments",
+      "state": "modified",
+      "path": "autosecretaire/engine.py",
+      "responsibility": "Persister les préférences, prendre un instantané des nouvelles intentions et conserver sélection et idempotence."
+    },
+    {
+      "name": "InterfaceLocale",
+      "state": "modified",
+      "path": "autosecretaire/static/app.js",
+      "responsibility": "Deux listes explicites dans Impression et explication du périmètre mail/pièces jointes."
+    }
+  ],
+  "internalInterfaces": [
+    {
+      "signature": "printing.submit(path, printer, dry_run=False, *, sides=\"printer\", color_mode=\"printer\") -> str",
+      "purpose": "Enum sides printer|one-sided|two-sided-long-edge|two-sided-short-edge ; color_mode printer|monochrome|color. Validation avant simulation ; aucun appel système en dry_run. Options explicites sous forme arguments -o bornés ; lpoptions -p printer -l en lecture seule pour options standard du pilote ColorModel/Duplex ; erreurs connues PrintError avant soumission."
+    },
+    {
+      "signature": "Engine.update_settings(values); Engine.print_messages(ids,...)",
+      "purpose": "Deux champs supplémentaires dans la configuration ; validation atomique. Chaque print record stocke options {sides,color_mode}, printer,dry_run avant soumission. preparing conserve instantané si présent ; ancienne intention sans champs utilise réglages courants. Les travaux soumis/simulés/incertains ne sont pas relancés."
+    }
+  ]
+}

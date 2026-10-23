@@ -4,7 +4,7 @@
   "id": "ARCH",
   "name": "Architecture initiale Auto-secretaire",
   "status": "current",
-  "revision": 3,
+  "revision": 4,
   "createdAt": "2026-10-23",
   "updatedAt": "2026-10-24",
   "style": "Service natif macOS modulaire, FastAPI sur boucle locale, interface HTML/CSS/JavaScript et registre SQLite.",
@@ -52,7 +52,7 @@
     },
     {
       "name": "Impression",
-      "responsibility": "Préparer et soumettre les documents compatibles, mémoriser les identifiants et retours disponibles et signaler une issue incertaine sans nouvelle soumission implicite.",
+      "responsibility": "Préparer et soumettre les documents compatibles, mémoriser les identifiants et retours disponibles et signaler une issue incertaine sans nouvelle soumission implicite. Transmettre les préférences recto verso et couleur par document avec traduction des options de pilote reconnues.",
       "state": "existing"
     },
     {
@@ -206,10 +206,15 @@
     {
       "concern": "Mises à jour et compatibilité",
       "approach": "Protocole et schéma version 1 déclarés dans update.json ; accès Git de confiance configuré une fois ; rollback uniquement avant activation ; aucune réinitialisation du dépôt utilisateur."
+    },
+    {
+      "concern": "Préférences d’impression",
+      "approach": "Réglages persistants print_sides/print_color_mode, défauts du pilote préservés ; instantané par intention, reprise preparing stable, pas de réimpression implicite ni altération des archives."
     }
   ],
   "workItems": [
     "WI-local-v1",
-    "WI-one-click-updates"
+    "WI-one-click-updates",
+    "WI-print-preferences"
   ]
 }

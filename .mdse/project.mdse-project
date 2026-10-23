@@ -4,9 +4,9 @@
   "id": "PROJ-auto-secretaire",
   "name": "Auto-secretaire",
   "status": "current",
-  "revision": 4,
+  "revision": 5,
   "createdAt": "2026-10-23",
-  "updatedAt": "2026-10-23",
+  "updatedAt": "2026-10-24",
   "description": "Service local sur Mac pour convertir les communications clients en PDF, les classer et les imprimer, avec une interface web locale et un suivi MDSE léger.",
   "metaModelVersion": "2.3",
   "root": ".",
@@ -16,7 +16,8 @@
   "governance": "light",
   "workItems": [
     "WI-local-v1",
-    "WI-one-click-updates"
+    "WI-one-click-updates",
+    "WI-print-preferences"
   ],
   "workspaces": [],
   "todos": [],

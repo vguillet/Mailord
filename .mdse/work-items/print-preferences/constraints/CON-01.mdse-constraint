@@ -1,0 +1,14 @@
+{
+  "mdse": "2.3",
+  "kind": "Constraint",
+  "id": "CON-01",
+  "name": "Préserver documents et impressions existantes",
+  "status": "active",
+  "revision": 1,
+  "createdAt": "2026-10-24",
+  "updatedAt": "2026-10-24",
+  "workItem": "WI-print-preferences",
+  "type": "prohibition",
+  "statement": "Ne pas modifier les fichiers archivés pour changer la couleur ; ne pas lancer une impression matérielle de test ni changer la sélection des documents existants ou relancer un travail soumis.",
+  "reason": "Les préférences concernent les nouvelles soumissions, sans consommation de papier ni altération des originaux pendant le développement."
+}

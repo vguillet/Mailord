@@ -1,0 +1,92 @@
+{
+  "mdse": "2.3",
+  "kind": "Execution",
+  "id": "TASK-01-E01",
+  "name": "Préférences d’impression et contrôles",
+  "status": "succeeded",
+  "revision": 1,
+  "createdAt": "2026-10-24",
+  "updatedAt": "2026-10-24",
+  "workItem": "WI-print-preferences",
+  "task": "TASK-01",
+  "attempt": 1,
+  "participants": [
+    {
+      "actor": "agent-codex",
+      "roles": [
+        "performer"
+      ]
+    },
+    {
+      "actor": "person-project-owner",
+      "roles": [
+        "initiator"
+      ]
+    }
+  ],
+  "startedAt": "2026-10-24",
+  "completedAt": "2026-10-24",
+  "summary": "Préférences persistantes, transmission par travail et explication mail/pièces jointes ; TDD rouge puis vert et contrôle navigateur en simulation.",
+  "commits": [
+    {
+      "hash": "4540f3afe7d7cd8557f44e7de1e48cf13c2dd348",
+      "message": "feat(print): add duplex and colour preferences for selected documents (REQ-01, REQ-02)",
+      "type": "feat"
+    }
+  ],
+  "filesChanged": [
+    {
+      "path": "autosecretaire/config.py",
+      "action": "update"
+    },
+    {
+      "path": "autosecretaire/printing.py",
+      "action": "update"
+    },
+    {
+      "path": "autosecretaire/engine.py",
+      "action": "update"
+    },
+    {
+      "path": "autosecretaire/static/app.js",
+      "action": "update"
+    },
+    {
+      "path": "tests/test_print_preferences.py",
+      "action": "create"
+    },
+    {
+      "path": "tests/test_engine.py",
+      "action": "update"
+    },
+    {
+      "path": "docs/API.md",
+      "action": "update"
+    },
+    {
+      "path": "docs/INSTALLATION.md",
+      "action": "update"
+    },
+    {
+      "path": "docs/VALIDATION.md",
+      "action": "update"
+    }
+  ],
+  "testing": {
+    "approach": "selective-TDD",
+    "passed": 154,
+    "failed": 0,
+    "skipped": 0
+  },
+  "implementationDeviations": [],
+  "doneCriteria": [
+    {
+      "id": "DC-01",
+      "met": true
+    },
+    {
+      "id": "DC-02",
+      "met": true
+    }
+  ]
+}

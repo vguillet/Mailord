@@ -1,0 +1,33 @@
+{
+  "mdse": "2.3",
+  "kind": "Requirement",
+  "id": "REQ-01",
+  "name": "Préférences persistantes",
+  "status": "verified",
+  "revision": 2,
+  "createdAt": "2026-10-24",
+  "updatedAt": "2026-10-24",
+  "workItem": "WI-print-preferences",
+  "keyword": "SHALL",
+  "statement": "L’utilisatrice SHALL pouvoir enregistrer le choix recto seul ou recto verso (bord long ou court) et noir et blanc ou couleur, avec une option conservant le réglage de l’imprimante.",
+  "priority": "must",
+  "acceptanceCriteria": [
+    {
+      "id": "AC-01",
+      "kind": "happy-path",
+      "given": "des réglages valides",
+      "when": "l’utilisatrice les enregistre puis relance le service",
+      "then": "les deux choix restent visibles et conservés"
+    },
+    {
+      "id": "AC-02",
+      "kind": "failure-path",
+      "given": "une valeur inconnue ou un type incorrect",
+      "when": "une modification est soumise",
+      "then": "elle est refusée sans modifier les réglages enregistrés"
+    }
+  ],
+  "verifiedBy": [
+    "VM-01"
+  ]
+}
