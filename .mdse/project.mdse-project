@@ -4,7 +4,7 @@
   "id": "PROJ-auto-secretaire",
   "name": "Auto-secretaire",
   "status": "current",
-  "revision": 2,
+  "revision": 3,
   "createdAt": "2026-10-23",
   "updatedAt": "2026-10-23",
   "description": "Service local sur Mac pour convertir les communications clients en PDF, les classer et les imprimer, avec une interface web locale et un suivi MDSE léger.",
@@ -21,7 +21,10 @@
   "todos": [],
   "actors": [
     "person-project-owner",
-    "agent-codex"
+    "agent-codex",
+    "agent-connectors",
+    "agent-documents",
+    "agent-interface"
   ],
   "interfaces": [],
   "validations": [],

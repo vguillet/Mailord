@@ -1,0 +1,25 @@
+{
+  "mdse": "2.3",
+  "kind": "Method",
+  "id": "VM-13",
+  "name": "Revue du parcours navigateur",
+  "status": "approved",
+  "revision": 1,
+  "createdAt": "2026-10-23",
+  "updatedAt": "2026-10-23",
+  "workItem": "WI-local-v1",
+  "class": "verification",
+  "method": "review",
+  "automated": false,
+  "requirements": [
+    "REQ-10"
+  ],
+  "passCriteria": [
+    {
+      "id": "PC-01",
+      "statement": "Création, relève, classement individuel et groupé, édition/application du modèle et aperçu fonctionnent dans le navigateur ; aucune erreur console sur le parcours."
+    }
+  ],
+  "evidenceKind": "browser-review",
+  "procedure": "Exécuter le parcours décrit dans docs/VALIDATION.md sur une instance réelle en démonstration ; inspecter l’interface, les réponses API, les fichiers et la console."
+}

@@ -1,0 +1,24 @@
+{
+  "mdse": "2.3",
+  "kind": "Deliverable",
+  "id": "DLV-02",
+  "name": "Connecteurs et impression",
+  "status": "conditional",
+  "revision": 2,
+  "createdAt": "2026-10-23",
+  "updatedAt": "2026-10-23",
+  "workItem": "WI-local-v1",
+  "type": "source-code",
+  "producedBy": "TASK-02-E01",
+  "task": "TASK-02",
+  "version": "9f6b6469afec180ff92a30d22b8823b9be571d9f",
+  "location": "autosecretaire/connectors.py",
+  "requirements": [
+    "REQ-04",
+    "REQ-09"
+  ],
+  "verifications": [
+    "VER-01"
+  ],
+  "acceptanceNote": "Vérifié logiciellement ; essai sur le Mac, le compte et l’imprimante cible encore requis. Aucune acceptation humaine n’est attribuée."
+}

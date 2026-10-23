@@ -1,0 +1,26 @@
+{
+  "mdse": "2.3",
+  "kind": "Deliverable",
+  "id": "DLV-06",
+  "name": "Intégration et installation",
+  "status": "conditional",
+  "revision": 2,
+  "createdAt": "2026-10-23",
+  "updatedAt": "2026-10-23",
+  "workItem": "WI-local-v1",
+  "type": "source-code",
+  "producedBy": "TASK-06-E01",
+  "task": "TASK-06",
+  "version": "912d5c22f7df75faacd8238a9c44ecbe7a5c4d1a",
+  "location": "autosecretaire/__main__.py",
+  "requirements": [
+    "REQ-01",
+    "REQ-10",
+    "REQ-12",
+    "REQ-09"
+  ],
+  "verifications": [
+    "VER-01"
+  ],
+  "acceptanceNote": "Vérifié logiciellement ; essai sur le Mac, le compte et l’imprimante cible encore requis. Aucune acceptation humaine n’est attribuée."
+}

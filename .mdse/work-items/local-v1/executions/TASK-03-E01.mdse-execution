@@ -1,0 +1,64 @@
+{
+  "mdse": "2.3",
+  "kind": "Execution",
+  "id": "TASK-03-E01",
+  "name": "Réalisation Conversion documentaire",
+  "status": "succeeded",
+  "revision": 1,
+  "createdAt": "2026-10-23",
+  "updatedAt": "2026-10-23",
+  "workItem": "WI-local-v1",
+  "task": "TASK-03",
+  "attempt": 1,
+  "participants": [
+    {
+      "actor": "agent-documents",
+      "roles": [
+        "performer"
+      ]
+    },
+    {
+      "actor": "person-project-owner",
+      "roles": [
+        "initiator"
+      ]
+    }
+  ],
+  "startedAt": "2026-10-23",
+  "completedAt": "2026-10-23",
+  "summary": "Implémentation du contrat et exécution des tests ciblés. Tests matériels remplacés par simulations explicitement.",
+  "commits": [
+    {
+      "hash": "f0679b38693d4921be87fbb3b88d7d2ee520439c",
+      "message": "feat(local-v1): export passive email PDFs and original attachments (REQ-05, REQ-06)",
+      "type": "feat"
+    }
+  ],
+  "filesChanged": [
+    {
+      "path": "autosecretaire/documents.py",
+      "action": "create"
+    },
+    {
+      "path": "tests/test_documents.py",
+      "action": "create"
+    }
+  ],
+  "testing": {
+    "approach": "selective-TDD",
+    "passed": 24,
+    "failed": 0,
+    "skipped": 0
+  },
+  "implementationDeviations": [],
+  "doneCriteria": [
+    {
+      "id": "DC-01",
+      "met": true
+    },
+    {
+      "id": "DC-02",
+      "met": true
+    }
+  ]
+}

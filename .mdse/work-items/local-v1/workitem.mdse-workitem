@@ -3,8 +3,8 @@
   "kind": "WorkItem",
   "id": "WI-local-v1",
   "name": "Version locale complète",
-  "status": "taskified",
-  "revision": 1,
+  "status": "reconciled",
+  "revision": 12,
   "createdAt": "2026-10-23",
   "updatedAt": "2026-10-23",
   "slug": "local-v1",
@@ -56,7 +56,11 @@
     "VM-09",
     "VM-10",
     "VM-11",
-    "VM-12"
+    "VM-12",
+    "VM-13",
+    "VM-14",
+    "VM-15",
+    "VM-16"
   ],
   "decisions": [
     "DEC-01",
@@ -72,8 +76,24 @@
     "TASK-05",
     "TASK-06"
   ],
-  "executions": [],
-  "verifications": [],
-  "deliverables": [],
+  "executions": [
+    "TASK-01-E01",
+    "TASK-03-E01",
+    "TASK-02-E01",
+    "TASK-05-E01",
+    "TASK-04-E01",
+    "TASK-06-E01"
+  ],
+  "verifications": [
+    "VER-01"
+  ],
+  "deliverables": [
+    "DLV-01",
+    "DLV-03",
+    "DLV-02",
+    "DLV-05",
+    "DLV-04",
+    "DLV-06"
+  ],
   "design": "DESIGN"
 }

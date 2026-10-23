@@ -1,0 +1,23 @@
+{
+  "mdse": "2.3",
+  "kind": "Deliverable",
+  "id": "DLV-04",
+  "name": "Interface locale",
+  "status": "conditional",
+  "revision": 2,
+  "createdAt": "2026-10-23",
+  "updatedAt": "2026-10-23",
+  "workItem": "WI-local-v1",
+  "type": "source-code",
+  "producedBy": "TASK-04-E01",
+  "task": "TASK-04",
+  "version": "2fd1cd417cfd66ecc545cd0298c706959a0a9848",
+  "location": "autosecretaire/static/index.html",
+  "requirements": [
+    "REQ-10"
+  ],
+  "verifications": [
+    "VER-01"
+  ],
+  "acceptanceNote": "Vérifié logiciellement ; essai sur le Mac, le compte et l’imprimante cible encore requis. Aucune acceptation humaine n’est attribuée."
+}

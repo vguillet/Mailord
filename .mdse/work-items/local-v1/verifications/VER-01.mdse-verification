@@ -1,0 +1,303 @@
+{
+  "mdse": "2.3",
+  "kind": "Verification",
+  "id": "VER-01",
+  "name": "Vérification de la version locale",
+  "status": "pass",
+  "revision": 1,
+  "createdAt": "2026-10-23",
+  "updatedAt": "2026-10-23",
+  "workItem": "WI-local-v1",
+  "requirements": [
+    "REQ-01",
+    "REQ-02",
+    "REQ-03",
+    "REQ-04",
+    "REQ-05",
+    "REQ-06",
+    "REQ-07",
+    "REQ-08",
+    "REQ-09",
+    "REQ-10",
+    "REQ-11",
+    "REQ-12"
+  ],
+  "executions": [
+    "TASK-01-E01",
+    "TASK-03-E01",
+    "TASK-02-E01",
+    "TASK-05-E01",
+    "TASK-04-E01",
+    "TASK-06-E01"
+  ],
+  "tasks": [],
+  "testRun": {
+    "runner": "pytest",
+    "command": "python3 -m pytest -q",
+    "passed": 99,
+    "failed": 0,
+    "skipped": 0
+  },
+  "results": [
+    {
+      "requirement": "REQ-01",
+      "result": "pass",
+      "methods": [
+        "VM-01"
+      ],
+      "acceptanceCriteria": [
+        {
+          "id": "AC-01",
+          "covered": true,
+          "test": "test_local_api_csrf_config_and_files"
+        },
+        {
+          "id": "AC-02",
+          "covered": true,
+          "test": "test_host_rebinding_blocked"
+        }
+      ]
+    },
+    {
+      "requirement": "REQ-02",
+      "result": "pass",
+      "methods": [
+        "VM-02"
+      ],
+      "acceptanceCriteria": [
+        {
+          "id": "AC-01",
+          "covered": true,
+          "test": "test_provision_template_version_and_safe_additive"
+        },
+        {
+          "id": "AC-02",
+          "covered": true,
+          "test": "test_provision_failure_resumes_same_client"
+        }
+      ]
+    },
+    {
+      "requirement": "REQ-03",
+      "result": "pass",
+      "methods": [
+        "VM-03"
+      ],
+      "acceptanceCriteria": [
+        {
+          "id": "AC-01",
+          "covered": true,
+          "test": "test_provision_template_version_and_safe_additive"
+        },
+        {
+          "id": "AC-02",
+          "covered": true,
+          "test": "test_provision_template_version_and_safe_additive"
+        }
+      ]
+    },
+    {
+      "requirement": "REQ-04",
+      "result": "pass",
+      "methods": [
+        "VM-04"
+      ],
+      "acceptanceCriteria": [
+        {
+          "id": "AC-01",
+          "covered": true,
+          "test": "test_imap_searches_all_uses_uidvalidity_and_never_marks_read"
+        },
+        {
+          "id": "AC-02",
+          "covered": true,
+          "test": "test_imap_failed_response_not_an_empty_mailbox"
+        }
+      ]
+    },
+    {
+      "requirement": "REQ-05",
+      "result": "pass",
+      "methods": [
+        "VM-05"
+      ],
+      "acceptanceCriteria": [
+        {
+          "id": "AC-01",
+          "covered": true,
+          "test": "test_pdf_contains_unicode_headers_and_paginated_long_body"
+        },
+        {
+          "id": "AC-02",
+          "covered": true,
+          "test": "test_pdf_attachment_content_and_inline_choice_are_explicit"
+        }
+      ]
+    },
+    {
+      "requirement": "REQ-06",
+      "result": "pass",
+      "methods": [
+        "VM-06"
+      ],
+      "acceptanceCriteria": [
+        {
+          "id": "AC-01",
+          "covered": true,
+          "test": "test_filename_preserves_basename_and_single_prefix"
+        },
+        {
+          "id": "AC-02",
+          "covered": true,
+          "test": "test_export_keeps_originals_collision_safe_and_idempotent"
+        }
+      ]
+    },
+    {
+      "requirement": "REQ-07",
+      "result": "pass",
+      "methods": [
+        "VM-07"
+      ],
+      "acceptanceCriteria": [
+        {
+          "id": "AC-01",
+          "covered": true,
+          "test": "test_scan_export_repair_and_restart_idempotent"
+        },
+        {
+          "id": "AC-02",
+          "covered": true,
+          "test": "test_new_mail_prints_once_and_repair_never_reprints"
+        }
+      ]
+    },
+    {
+      "requirement": "REQ-08",
+      "result": "pass",
+      "methods": [
+        "VM-08",
+        "VM-16"
+      ],
+      "acceptanceCriteria": [
+        {
+          "id": "AC-01",
+          "covered": true,
+          "test": "test_classify_bulk_confined_and_no_overwrite"
+        },
+        {
+          "id": "AC-02",
+          "covered": true,
+          "test": "test_same_name_existing_destination_is_preserved"
+        }
+      ]
+    },
+    {
+      "requirement": "REQ-09",
+      "result": "pass",
+      "methods": [
+        "VM-14"
+      ],
+      "acceptanceCriteria": [
+        {
+          "id": "AC-01",
+          "covered": true,
+          "test": "test_submit_uses_arguments_and_retains_spool_id"
+        },
+        {
+          "id": "AC-02",
+          "covered": true,
+          "test": "test_uncertain_submission_never_auto_retries"
+        }
+      ]
+    },
+    {
+      "requirement": "REQ-10",
+      "result": "pass",
+      "methods": [
+        "VM-10",
+        "VM-13"
+      ],
+      "acceptanceCriteria": [
+        {
+          "id": "AC-01",
+          "covered": true,
+          "test": "docs/VALIDATION.md — parcours navigateur, tests/test_ui.py"
+        },
+        {
+          "id": "AC-02",
+          "covered": true,
+          "test": "docs/VALIDATION.md — client vide, erreur de connexion"
+        }
+      ]
+    },
+    {
+      "requirement": "REQ-11",
+      "result": "pass",
+      "methods": [
+        "VM-11"
+      ],
+      "acceptanceCriteria": [
+        {
+          "id": "AC-01",
+          "covered": true,
+          "test": "test_history_explicit_validation"
+        },
+        {
+          "id": "AC-02",
+          "covered": true,
+          "test": "test_history_explicit_validation"
+        }
+      ]
+    },
+    {
+      "requirement": "REQ-12",
+      "result": "pass",
+      "methods": [
+        "VM-12",
+        "VM-15"
+      ],
+      "acceptanceCriteria": [
+        {
+          "id": "AC-01",
+          "covered": true,
+          "test": "test_demo_seed_and_http_document_workflow"
+        },
+        {
+          "id": "AC-02",
+          "covered": true,
+          "test": "test_imap_requires_secret_before_network"
+        }
+      ]
+    }
+  ],
+  "evidence": [
+    {
+      "kind": "test-output",
+      "reference": "docs/method-results.json",
+      "description": "Exécution de chaque commande distincte des méthodes automatisées, plus suite complète."
+    },
+    {
+      "kind": "browser-review",
+      "reference": "docs/VALIDATION.md",
+      "description": "Parcours Chrome sur service réellement lancé en démonstration ; PDF, création, relève, lots et modèle."
+    }
+  ],
+  "deviationReview": [
+    {
+      "execution": "TASK-05-E01",
+      "summary": "Corrections de reprise, verrou et symlinks couvertes par les tests de non-régression.",
+      "state": "resolved"
+    },
+    {
+      "execution": "TASK-06-E01",
+      "summary": "Les diagnostics et identifiants d’impression sont désormais présentés par document.",
+      "state": "resolved"
+    }
+  ],
+  "warnings": [
+    "Les intégrations Orange, Apple Mail et imprimante cible sont testées sur transports simulés ; validation terrain non réalisée.",
+    "Rendu HTML en texte structuré et formats Office conservés sans conversion imprimable.",
+    "Avertissement de dépréciation du client de test Starlette/httpx sous Python 3.14 ; tests réussis."
+  ]
+}

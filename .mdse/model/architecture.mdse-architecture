@@ -4,15 +4,15 @@
   "id": "ARCH",
   "name": "Architecture initiale Auto-secretaire",
   "status": "current",
-  "revision": 1,
+  "revision": 2,
   "createdAt": "2026-10-23",
   "updatedAt": "2026-10-23",
-  "style": "Service local modulaire avec interface web, registre persistant et adaptateurs pour la messagerie, les fichiers et l'impression. Hypothèse de structure, aucune implémentation.",
+  "style": "Service natif macOS modulaire, FastAPI sur boucle locale, interface HTML/CSS/JavaScript et registre SQLite.",
   "components": [
     {
       "name": "InterfaceLocale",
       "responsibility": "Navigation par client, messages et états, aperçu, classement individuel ou en lots, création de clients, édition visuelle du modèle et des règles de nommage.",
-      "state": "new",
+      "state": "existing",
       "dependsOn": [
         "GestionClients",
         "TraitementDocuments",
@@ -22,7 +22,7 @@
     {
       "name": "GestionClients",
       "responsibility": "Associer dossiers mail et dossiers locaux ; gérer les modèles versionnés et orchestrer la création reprenable des clients.",
-      "state": "new",
+      "state": "existing",
       "dependsOn": [
         "Messagerie",
         "ArchivageLocal",
@@ -32,12 +32,12 @@
     {
       "name": "Messagerie",
       "responsibility": "Lister les dossiers et messages, relire les mouvements, récupérer le contenu et créer un dossier client via l'adaptateur confirmé par le jalon d'intégration.",
-      "state": "new"
+      "state": "existing"
     },
     {
       "name": "TraitementDocuments",
       "responsibility": "Détection des travaux, conversion PDF, extraction des pièces jointes, contrôle des exports, file persistante et reprises indépendantes du classement et de l'impression.",
-      "state": "new",
+      "state": "existing",
       "dependsOn": [
         "Messagerie",
         "ArchivageLocal",
@@ -48,17 +48,17 @@
     {
       "name": "ArchivageLocal",
       "responsibility": "Créer les arborescences et enregistrer, nommer, contrôler et déplacer les documents dans la racine choisie, avec gestion des collisions et opérations reprenables.",
-      "state": "new"
+      "state": "existing"
     },
     {
       "name": "Impression",
       "responsibility": "Préparer et soumettre les documents compatibles, mémoriser les identifiants et retours disponibles et signaler une issue incertaine sans nouvelle soumission implicite.",
-      "state": "new"
+      "state": "existing"
     },
     {
       "name": "Registre",
       "responsibility": "Persister l'identité des clients et messages, les versions de modèles, les chemins, les états par étape, la file et l'historique des opérations.",
-      "state": "new"
+      "state": "existing"
     }
   ],
   "dataFlows": [
@@ -114,23 +114,33 @@
   "stack": [
     {
       "layer": "Exécution",
-      "technology": "macOS avec service local et interface web sur boucle locale",
-      "rationale": "Environnement demandé ; paquet natif ou conteneur à trancher par un essai."
+      "technology": "Python 3.11+ natif macOS, Uvicorn, LaunchAgent optionnel",
+      "rationale": "Accès aux services Apple Mail et CUPS sans relais Docker."
+    },
+    {
+      "layer": "Interface",
+      "technology": "HTML, CSS, JavaScript local et FastAPI",
+      "rationale": "Interface en français sans dépendance à un service externe ni compilation frontend."
     },
     {
       "layer": "Messagerie",
-      "technology": "Adaptateur Orange IMAP ou Apple Mail local, à confirmer",
-      "rationale": "L'emplacement des dossiers messages détermine les opérations disponibles ; les PDF locaux ne prouvent pas que les boîtes mail sont locales."
+      "technology": "Dossiers .eml de démonstration, IMAP TLS stdlib, JXA via osascript",
+      "rationale": "Dossiers serveur ou Sur mon Mac via adaptateurs distincts, sans base interne de Mail."
+    },
+    {
+      "layer": "Documents",
+      "technology": "ReportLab, pypdf, Pillow",
+      "rationale": "PDF texte passif, originaux préservés, validation et conversion locale des formats compatibles."
     },
     {
       "layer": "Persistance",
-      "technology": "Registre transactionnel local et fichiers Finder",
-      "rationale": "Les documents, la file et les historiques doivent survivre aux redémarrages ; le moteur exact sera choisi au stade design."
+      "technology": "SQLite WAL records(kind,id,payload JSON), spool privé et fichiers ordinaires",
+      "rationale": "Identités, file, intentions, empreintes et reprise indépendante par étape."
     },
     {
       "layer": "Impression",
-      "technology": "Imprimante réseau compatible ou relais d'impression macOS, à confirmer",
-      "rationale": "L'intégration doit être prouvée sur l'environnement cible avant de figer Docker."
+      "technology": "CUPS lp/lpstat via appels sans shell",
+      "rationale": "Soumissions tracées, simulation et résultats incertains sans relance implicite."
     }
   ],
   "dependencyRules": [
@@ -164,7 +174,13 @@
     {
       "concern": "Impression",
       "approach": "Distinguer préparé, soumis, en attente, échec et résultat incertain ; une soumission ne prouve pas à elle seule que le papier a été imprimé."
+    },
+    {
+      "concern": "Vérification et limites",
+      "approach": "VER-01 : 99 tests et parcours navigateur. Essais matériels réels en attente ; PDF textuel, formats pris en charge explicites, fichiers déplacés manuellement rapprochés explicitement."
     }
   ],
-  "workItems": []
+  "workItems": [
+    "WI-local-v1"
+  ]
 }

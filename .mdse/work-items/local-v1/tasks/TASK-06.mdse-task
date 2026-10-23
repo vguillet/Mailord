@@ -3,8 +3,8 @@
   "kind": "Task",
   "id": "TASK-06",
   "name": "Intégration et installation",
-  "status": "blocked",
-  "revision": 1,
+  "status": "done",
+  "revision": 7,
   "createdAt": "2026-10-23",
   "updatedAt": "2026-10-23",
   "workItem": "WI-local-v1",
@@ -14,7 +14,8 @@
   "requirements": [
     "REQ-01",
     "REQ-10",
-    "REQ-12"
+    "REQ-12",
+    "REQ-09"
   ],
   "design": "DESIGN",
   "decisions": [
@@ -29,7 +30,8 @@
     "CON-03"
   ],
   "dependsOn": [
-    "TASK-04",
+    "TASK-02",
+    "TASK-03",
     "TASK-05"
   ],
   "designReferences": [
@@ -78,6 +80,34 @@
     {
       "path": "tests/test_api.py",
       "action": "update"
+    },
+    {
+      "path": "uv.lock",
+      "action": "create"
+    },
+    {
+      "path": "requirements.lock",
+      "action": "create"
+    },
+    {
+      "path": "autosecretaire/engine.py",
+      "action": "update"
+    },
+    {
+      "path": "autosecretaire/static/app.js",
+      "action": "update"
+    },
+    {
+      "path": "tests/test_engine.py",
+      "action": "update"
+    },
+    {
+      "path": "docs/API.md",
+      "action": "update"
+    },
+    {
+      "path": ".gitignore",
+      "action": "update"
     }
   ],
   "doneCriteria": [
@@ -101,5 +131,8 @@
       "kind": "source-code",
       "deliverable": true
     }
+  ],
+  "readinessCriteria": [
+    "Packaging après le moteur ; tests navigateur terminés après intégration TASK-04."
   ]
 }

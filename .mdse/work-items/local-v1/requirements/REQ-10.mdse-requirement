@@ -3,8 +3,8 @@
   "kind": "Requirement",
   "id": "REQ-10",
   "name": "Interface ergonomique",
-  "status": "approved",
-  "revision": 1,
+  "status": "verified",
+  "revision": 3,
   "createdAt": "2026-10-23",
   "updatedAt": "2026-10-23",
   "workItem": "WI-local-v1",
@@ -28,6 +28,7 @@
     }
   ],
   "verifiedBy": [
-    "VM-10"
+    "VM-10",
+    "VM-13"
   ]
 }

@@ -22,6 +22,8 @@ Service réellement lancé sur `127.0.0.1:8765`, espace de démonstration tempor
 6. Ouverture de l’aperçu PDF dans l’interface. Aucun avertissement ni erreur de console constaté pendant ces parcours.
 7. Contrôle de la largeur de page : aucun débordement horizontal à 500 px de largeur effective ni à la largeur de bureau. Le navigateur a imposé un minimum de 500 px au redimensionnement ; aucun essai physique sur téléphone n’est revendiqué.
 
+Un arrêt volontaire du service a également été testé : l’interface a affiché « Le service local ne répond pas » sans confirmer la relève.
+
 Les API sont aussi exercées automatiquement : protection d’origine et de session, paramètres, création de client, fichiers PDF, classement, impression simulée et refus d’une réimpression non confirmée.
 
 ## Reprise et sécurité des documents

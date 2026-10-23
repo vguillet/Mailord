@@ -4,34 +4,66 @@
   "id": "OVERVIEW",
   "name": "Vue d'ensemble Auto-secretaire",
   "status": "current",
-  "revision": 1,
+  "revision": 2,
   "createdAt": "2026-10-23",
   "updatedAt": "2026-10-23",
-  "summary": "Auto-secretaire est un projet de service local sur Mac destiné à une professionnelle utilisant une boîte Orange dans Apple Mail. Il vise à surveiller ses dossiers clients, générer et contrôler les PDF des messages et leurs pièces jointes, appliquer un nommage chronologique, faciliter le classement dans les dossiers locaux synchronisés et gérer l'impression. Une interface web locale doit aussi créer les clients et éditer leur modèle d'arborescence.",
-  "capabilities": [],
-  "entryPoints": [
+  "summary": "Auto-secrétaire automatise localement sur Mac les dossiers de communications clients : PDF, pièces jointes, nommage chronologique, classement et impression avec interface web française.",
+  "capabilities": [
     {
-      "path": ".mdse/model/product.mdse-product",
-      "description": "Besoins issus du cadrage utilisateur."
+      "name": "Clients et modèles",
+      "description": "Création reprenable, rattachement mail/local, modèle hiérarchique versionné et application additive.",
+      "state": "implemented"
     },
     {
-      "path": ".mdse/model/architecture.mdse-architecture",
-      "description": "Architecture de départ et frontières d'intégration encore à vérifier."
+      "name": "Surveillance et PDF",
+      "description": "Mails lus/non lus, exports PDF passifs, originaux, préfixes de date, collisions et contrôle des fichiers.",
+      "state": "implemented"
     },
     {
-      "path": ".mdse/model/roadmap.mdse-roadmap",
-      "description": "Étapes proposées pour le développement."
+      "name": "Classement ergonomique",
+      "description": "Navigation clients, états et aperçu, lots, recherche, favoris et raccourcis.",
+      "state": "implemented"
+    },
+    {
+      "name": "Impression et reprise",
+      "description": "Simulation, politiques configurables, intentions persistées, diagnostics par document et incertitudes explicites.",
+      "state": "implemented"
+    },
+    {
+      "name": "Installation et historique",
+      "description": "Démonstration, guide Mac, LaunchAgent facultatif, rapprochement explicite des PDF existants.",
+      "state": "implemented"
     }
   ],
-  "currentState": "Initialisation MDSE d'un dossier vide à partir de la conversation ; aucune application, aucun connecteur et aucun test applicatif n'existent encore. Le suivi léger a été choisi explicitement par l'utilisateur.",
+  "entryPoints": [
+    {
+      "path": "README.md",
+      "description": "Démarrage et portée."
+    },
+    {
+      "path": "scripts/start.command",
+      "description": "Démonstration locale."
+    },
+    {
+      "path": "autosecretaire/__main__.py",
+      "description": "Service natif et options de lancement."
+    },
+    {
+      "path": "docs/INSTALLATION.md",
+      "description": "Compte, racine documentaire, impression et sauvegarde."
+    },
+    {
+      "path": "docs/VALIDATION.md",
+      "description": "Preuves de vérification et essais terrain restants."
+    }
+  ],
+  "currentState": "Version 0.1.0 implémentée, vérifiée et réconciliée ; 99 tests réussis, parcours navigateur en démonstration validé par l’agent. Installation native fournie ; validation par l’utilisatrice sur son environnement réel encore attendue.",
   "knownGaps": [
-    "Localisation des dossiers mail non confirmée : dossiers IMAP du compte Orange ou boîtes locales « Sur mon Mac ». Le stockage local des PDF ne tranche pas ce point.",
-    "Version de macOS, imprimante, connexion réseau ou USB, formats et volumes des messages non renseignés.",
-    "Emplacement documentaire racine, fournisseur de synchronisation et arborescence réelle à recueillir.",
-    "Docker est une piste initialement souhaitée ; service macOS natif ou Docker avec relais hôte à décider après essai de lecture/création de dossiers mail et d'impression.",
-    "Date de réception proposée pour le préfixe ; politique exacte de date, fuseau et horodatages manquants à préciser dans les exigences.",
-    "Moment du déclenchement de l'impression à préciser : immédiat après export ou après validation du classement ; l'impression après classement est une proposition, pas une décision acceptée.",
-    "Structure standard concrète à fournir par l'utilisatrice ; les exemples administratifs et de facturation de la conversation ne sont pas son modèle définitif.",
-    "Technologies, langages et commande de tests à choisir au stade de conception ; aucune pile logicielle n'est encore présentée comme installée."
+    "Les intégrations Orange, Apple Mail et imprimante cible sont testées sur transports simulés ; validation terrain non réalisée.",
+    "Rendu HTML en texte structuré et formats Office conservés sans conversion imprimable.",
+    "Localisation exacte des dossiers mail, autorisations du Mac cible et contenu intégral des pièces Apple Mail à confirmer.",
+    "Racine cloud et modèle définitif à configurer par l’utilisatrice.",
+    "Copies MIME modifiées par un serveur et messages présents chez plusieurs clients nécessitent revue ; déplacements Finder rapprochés explicitement.",
+    "Pas de paquet Docker ni application Mac signée dans cette version."
   ]
 }
