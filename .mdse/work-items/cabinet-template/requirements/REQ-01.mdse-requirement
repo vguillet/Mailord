@@ -1,0 +1,40 @@
+{
+  "mdse": "2.3",
+  "kind": "Requirement",
+  "id": "REQ-01",
+  "name": "Arborescence du cabinet",
+  "status": "approved",
+  "revision": 1,
+  "createdAt": "2026-10-24",
+  "updatedAt": "2026-10-24",
+  "workItem": "WI-cabinet-template",
+  "keyword": "SHALL",
+  "statement": "Le modèle initial SHALL proposer les huit rubriques et sous-rubriques du PDF fourni, avec la branche de juridiction personnalisable et une zone d’attente À classer.",
+  "priority": "must",
+  "acceptanceCriteria": [
+    {
+      "id": "AC-01",
+      "kind": "happy-path",
+      "given": "un espace neuf",
+      "when": "une affaire est créée",
+      "then": "les huit rubriques, sept catégories de correspondances et quatorze sous-rubriques de procédure sont présentes dans la hiérarchie prévue"
+    },
+    {
+      "id": "AC-02",
+      "kind": "happy-path",
+      "given": "le modèle affiché dans l’éditeur",
+      "when": "l’utilisatrice consulte les repères",
+      "then": "le nom client-partie adverse, la personnalisation de la juridiction et les règles de rangement sont expliqués"
+    },
+    {
+      "id": "AC-03",
+      "kind": "failure-path",
+      "given": "un chemin sortant du dossier client",
+      "when": "le modèle est modifié",
+      "then": "le chemin est refusé sans altérer le modèle valide"
+    }
+  ],
+  "verifiedBy": [
+    "VM-01"
+  ]
+}

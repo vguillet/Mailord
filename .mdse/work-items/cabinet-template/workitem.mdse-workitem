@@ -1,0 +1,42 @@
+{
+  "mdse": "2.3",
+  "kind": "WorkItem",
+  "id": "WI-cabinet-template",
+  "name": "Modèle documentaire du cabinet",
+  "status": "taskified",
+  "revision": 1,
+  "createdAt": "2026-10-24",
+  "updatedAt": "2026-10-24",
+  "slug": "cabinet-template",
+  "purpose": "Configurer le modèle métier fourni dans le PDF, en réutilisant l’éditeur et la création de clients déjà livrés par WI-local-v1.",
+  "userStories": [
+    {
+      "id": "US-01",
+      "role": "utilisatrice du cabinet",
+      "capability": "créer une affaire avec la structure du document fourni",
+      "benefit": "retrouver mes rubriques et les consignes de classement"
+    }
+  ],
+  "testingApproach": "selective-TDD",
+  "requirements": [
+    "REQ-01",
+    "REQ-02"
+  ],
+  "constraints": [
+    "CON-01"
+  ],
+  "methods": [
+    "VM-01",
+    "VM-02"
+  ],
+  "decisions": [
+    "DEC-01"
+  ],
+  "tasks": [
+    "TASK-01"
+  ],
+  "executions": [],
+  "verifications": [],
+  "deliverables": [],
+  "design": "DESIGN"
+}

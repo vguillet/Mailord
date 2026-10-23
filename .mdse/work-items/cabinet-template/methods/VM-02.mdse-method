@@ -1,0 +1,25 @@
+{
+  "mdse": "2.3",
+  "kind": "Method",
+  "id": "VM-02",
+  "name": "Vérifier préservation et parcours existants",
+  "status": "approved",
+  "revision": 1,
+  "createdAt": "2026-10-24",
+  "updatedAt": "2026-10-24",
+  "workItem": "WI-cabinet-template",
+  "class": "verification",
+  "method": "test",
+  "automated": true,
+  "requirements": [
+    "REQ-02"
+  ],
+  "command": "python -m pytest -q",
+  "passCriteria": [
+    {
+      "id": "PC-01",
+      "statement": "Suite existante sans échec ; inspection complémentaire d’un registre personnalisé redémarré puis complété sans perte."
+    }
+  ],
+  "evidenceKind": "test-output"
+}

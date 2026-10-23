@@ -40,15 +40,15 @@ def test_scan_export_repair_and_restart_idempotent(engine):
 def test_classify_bulk_confined_and_no_overwrite(engine):
     c=engine.create_client('Camille');add_mail(engine,c);engine.scan();engine.process();m=engine.state()['messages'][0]
     with pytest.raises(ValueError):engine.classify([m['id']],'../escape')
-    engine.classify([m['id']],'03 - Documents');m=engine.state()['messages'][0];assert m['classification']=='classified'
-    assert all('03 - Documents' in d['path'] for d in m['documents'])
-    engine.classify([m['id']],'04 - Facturation');assert len(engine.store.all('print'))==0
+    engine.classify([m['id']],'03 MAILS (PDF)');m=engine.state()['messages'][0];assert m['classification']=='classified'
+    assert all('03 MAILS (PDF)' in d['path'] for d in m['documents'])
+    engine.classify([m['id']],'07 FACTURES');assert len(engine.store.all('print'))==0
 
 
 def test_new_mail_prints_once_and_repair_never_reprints(engine):
     c=engine.create_client('Camille');engine.scan();add_mail(engine,c);engine.scan();engine.process();m=engine.state()['messages'][0]
-    engine.classify([m['id']],'03 - Documents');assert engine.state()['messages'][0]['print_status']=='simulated'
-    count=len(engine.store.all('print'));engine.process();engine.classify([m['id']],'04 - Facturation');engine.print_messages([m['id']]);assert len(engine.store.all('print'))==count
+    engine.classify([m['id']],'03 MAILS (PDF)');assert engine.state()['messages'][0]['print_status']=='simulated'
+    count=len(engine.store.all('print'));engine.process();engine.classify([m['id']],'07 FACTURES');engine.print_messages([m['id']]);assert len(engine.store.all('print'))==count
     Path(engine.state()['messages'][0]['documents'][0]['path']).write_bytes(b'broken');engine.process();assert len(engine.store.all('print'))==count
 
 
@@ -90,14 +90,14 @@ def test_preparing_print_resumes_without_new_generation(engine):
 
 def test_same_name_existing_destination_is_preserved(engine):
     c=engine.create_client('Camille');add_mail(engine,c);engine.scan();engine.process();m=engine.state()['messages'][0]
-    target=Path(c['folder'])/'03 - Documents'/m['documents'][0]['name'];target.write_bytes(b'precious')
-    engine.classify([m['id']],'03 - Documents');assert target.read_bytes()==b'precious'
+    target=Path(c['folder'])/'03 MAILS (PDF)'/m['documents'][0]['name'];target.write_bytes(b'precious')
+    engine.classify([m['id']],'03 MAILS (PDF)');assert target.read_bytes()==b'precious'
     assert engine.state()['messages'][0]['documents'][0]['path']!=str(target)
 
 
 def test_resume_partial_move_intent(engine):
     c=engine.create_client('Camille');add_mail(engine,c);engine.scan();engine.process();m=engine.state()['messages'][0];d=m['documents'][0]
-    dst=Path(c['folder'])/'03 - Documents'/d['name'];dst.write_bytes(Path(d['path']).read_bytes())
+    dst=Path(c['folder'])/'03 MAILS (PDF)'/d['name'];dst.write_bytes(Path(d['path']).read_bytes())
     record=engine.store.get('document',d['id']);record['move_to']=str(dst);engine.store.put('document',d['id'],record)
     engine.process();assert not Path(d['path']).exists();assert engine.store.get('document',d['id'])['path']==str(dst)
 

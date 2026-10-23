@@ -1,0 +1,24 @@
+{
+  "mdse": "2.3",
+  "kind": "Method",
+  "id": "VM-01",
+  "name": "Confronter le modèle au PDF et à l’interface",
+  "status": "approved",
+  "revision": 1,
+  "createdAt": "2026-10-24",
+  "updatedAt": "2026-10-24",
+  "workItem": "WI-cabinet-template",
+  "class": "verification",
+  "method": "inspection",
+  "automated": false,
+  "requirements": [
+    "REQ-01"
+  ],
+  "passCriteria": [
+    {
+      "id": "PC-01",
+      "statement": "Comparer les quatre pages du PDF au modèle, créer une affaire de test isolée et contrôler l’arbre et les repères dans le navigateur."
+    }
+  ],
+  "evidenceKind": "inspection-report"
+}

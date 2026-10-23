@@ -1,0 +1,42 @@
+{
+  "mdse": "2.3",
+  "kind": "Design",
+  "id": "DESIGN",
+  "name": "Configuration du modèle de cabinet",
+  "status": "approved",
+  "revision": 1,
+  "createdAt": "2026-10-24",
+  "updatedAt": "2026-10-24",
+  "workItem": "WI-cabinet-template",
+  "requirements": [
+    "REQ-01",
+    "REQ-02"
+  ],
+  "decisions": [
+    "DEC-01"
+  ],
+  "components": [
+    {
+      "name": "GestionClients",
+      "state": "modified",
+      "path": "autosecretaire/config.py",
+      "responsibility": "Fournir la hiérarchie initiale du cabinet sans migration des versions persistées."
+    },
+    {
+      "name": "InterfaceLocale",
+      "state": "modified",
+      "path": "autosecretaire/static/app.js",
+      "responsibility": "Rappeler le nom d’affaire, la branche de juridiction et les principales règles dans les formulaires existants."
+    }
+  ],
+  "internalInterfaces": [
+    {
+      "signature": "DEFAULT_FOLDERS: list[str]",
+      "purpose": "37 chemins relatifs : 8 rubriques, 7 catégories de correspondances, 2 branches de procédure dont un modèle de juridiction avec 14 enfants, 3 dossiers de pièces, 2 de projets, 1 zone d’attente. Le moteur de versions reste inchangé."
+    },
+    {
+      "signature": "PUT /api/template {folders}; POST /api/clients/{id}/template",
+      "purpose": "Réutilisation sans modification des routes existantes : enregistrement explicite du modèle courant puis application additive facultative."
+    }
+  ]
+}
