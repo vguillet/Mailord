@@ -4,7 +4,7 @@
   "id": "ROADMAP",
   "name": "Feuille de route Auto-secretaire",
   "status": "current",
-  "revision": 7,
+  "revision": 8,
   "createdAt": "2026-10-23",
   "updatedAt": "2026-10-24",
   "milestones": [
@@ -121,6 +121,18 @@
       ],
       "deliveredDate": "2026-10-24",
       "notes": "174 tests et parcours Chrome : destinations virtuelles, classement dans une branche absente, nettoyage borné et sélection initiale conservée."
+    },
+    {
+      "id": "MS-11",
+      "name": "Correspondances et pièces jointes indépendantes",
+      "goal": "Configurer les présélections et archiver les PDF de mails dans Correspondances en répartissant les pièces jointes.",
+      "state": "delivered",
+      "order": 11,
+      "workItems": [
+        "WI-correspondence-filing"
+      ],
+      "deliveredDate": "2026-10-24",
+      "notes": "191 tests, formulaire et classement séparé contrôlés dans Chrome ; adaptation des PDF suivis et impressions préservées."
     }
   ],
   "backlog": [

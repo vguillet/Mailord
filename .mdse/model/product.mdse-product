@@ -4,7 +4,7 @@
   "id": "PRODUCT",
   "name": "Définition du produit Auto-secretaire",
   "status": "current",
-  "revision": 3,
+  "revision": 4,
   "createdAt": "2026-10-23",
   "updatedAt": "2026-10-24",
   "problem": "La professionnelle classe les communications de ses clients dans des dossiers de messagerie, puis télécharge, renomme, range et imprime manuellement les mails et leurs pièces jointes. Elle doit vérifier ce qui a déjà été enregistré et reproduire une structure de dossiers pour chaque nouveau client.",
@@ -39,7 +39,7 @@
     },
     {
       "id": "NEED-03",
-      "statement": "Créer un client avec son dossier mail et choisir facultativement les dossiers locaux à préparer même vides ; proposer toute l’arborescence standard au classement et créer les autres branches au premier document, avec reprise des créations incomplètes.",
+      "statement": "Créer un client avec son dossier mail et ajuster les présélections du modèle (Correspondances initialement) pour les dossiers locaux à préparer même vides ; les autres branches sont créées au premier document, avec reprise des créations incomplètes.",
       "persona": "Professionnelle qui gère les communications de ses clients dans Apple Mail sur Mac",
       "priority": "must"
     },
@@ -57,7 +57,7 @@
     },
     {
       "id": "NEED-06",
-      "statement": "Obtenir automatiquement un PDF lisible de chaque mail avec ses en-têtes utiles, ainsi que ses pièces jointes conservées localement et préparées pour l'impression lorsque leur format le permet.",
+      "statement": "Obtenir automatiquement un PDF lisible de chaque mail avec ses en-têtes utiles, ainsi que ses pièces jointes conservées localement et préparées pour l'impression lorsque leur format le permet. Archiver automatiquement le PDF du mail dans Correspondances, indépendamment des pièces jointes.",
       "persona": "Professionnelle qui gère les communications de ses clients dans Apple Mail sur Mac",
       "priority": "must"
     },
@@ -81,7 +81,7 @@
     },
     {
       "id": "NEED-10",
-      "statement": "Choisir rapidement les sous-dossiers de destination, individuellement ou par lot, avec recherche, destinations récentes, aperçu et navigation au clavier.",
+      "statement": "Choisir rapidement la destination de chaque pièce jointe ou d’un groupe de pièces, avec recherche, favoris et clavier, en gardant le PDF du mail dans Correspondances.",
       "persona": "Professionnelle qui gère les communications de ses clients dans Apple Mail sur Mac",
       "priority": "must"
     },

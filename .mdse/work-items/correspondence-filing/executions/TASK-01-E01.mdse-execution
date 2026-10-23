@@ -1,0 +1,138 @@
+{
+  "mdse": "2.3",
+  "kind": "Execution",
+  "id": "TASK-01-E01",
+  "name": "Routage Correspondances et pièces jointes indépendantes",
+  "status": "succeeded",
+  "revision": 1,
+  "createdAt": "2026-10-24",
+  "updatedAt": "2026-10-24",
+  "workItem": "WI-correspondence-filing",
+  "task": "TASK-01",
+  "attempt": 1,
+  "participants": [
+    {
+      "actor": "agent-codex",
+      "roles": [
+        "performer"
+      ]
+    },
+    {
+      "actor": "person-project-owner",
+      "roles": [
+        "initiator"
+      ]
+    }
+  ],
+  "startedAt": "2026-10-24",
+  "completedAt": "2026-10-24",
+  "summary": "Présélections du modèle versionnées, PDF fixes, adaptation des archives suivies, classement par pièce et agrégation des statuts ; tests et parcours Chrome isolé.",
+  "commits": [
+    {
+      "hash": "3658a135df63b87fc205e708dc98ce3c7fc96786",
+      "message": "feat(correspondence-filing): keep mail PDFs fixed and file attachments separately (REQ-01, REQ-02, REQ-03)",
+      "type": "feat"
+    }
+  ],
+  "filesChanged": [
+    {
+      "path": "autosecretaire/config.py",
+      "action": "update"
+    },
+    {
+      "path": "autosecretaire/engine.py",
+      "action": "update"
+    },
+    {
+      "path": "autosecretaire/app.py",
+      "action": "update"
+    },
+    {
+      "path": "autosecretaire/demo.py",
+      "action": "update"
+    },
+    {
+      "path": "autosecretaire/static/app.js",
+      "action": "update"
+    },
+    {
+      "path": "autosecretaire/static/index.html",
+      "action": "update"
+    },
+    {
+      "path": "tests/test_correspondence_filing.py",
+      "action": "create"
+    },
+    {
+      "path": "tests/test_lazy_folders.py",
+      "action": "update"
+    },
+    {
+      "path": "tests/test_engine.py",
+      "action": "update"
+    },
+    {
+      "path": "docs/API.md",
+      "action": "update"
+    },
+    {
+      "path": "docs/FOLDER_TEMPLATE.md",
+      "action": "update"
+    },
+    {
+      "path": "docs/INSTALLATION.md",
+      "action": "update"
+    },
+    {
+      "path": "docs/VALIDATION.md",
+      "action": "update"
+    },
+    {
+      "path": "README.md",
+      "action": "update"
+    },
+    {
+      "path": "tests/test_update_integration.py",
+      "action": "update"
+    }
+  ],
+  "testing": {
+    "approach": "selective-TDD",
+    "passed": 191,
+    "failed": 0,
+    "skipped": 0
+  },
+  "doneCriteria": [
+    {
+      "id": "DC-01",
+      "met": true
+    },
+    {
+      "id": "DC-02",
+      "met": true
+    }
+  ],
+  "implementationDeviations": [
+    {
+      "rule": 1,
+      "type": "bug",
+      "found": "Les cibles planifiées simultanément pouvaient se heurter pour deux pièces de même nom.",
+      "action": "Réservation des noms dans le lot, contrôle de collision et test de conservation de deux documents.",
+      "resolved": true
+    },
+    {
+      "rule": 1,
+      "type": "bug",
+      "found": "L’association historique d’un PDF marquait toutes les pièces en attente comme classées.",
+      "action": "Statut agrégé depuis les pièces et destination du PDF actualisée ; test ciblé rouge puis vert.",
+      "resolved": true
+    },
+    {
+      "rule": 3,
+      "type": "blocking",
+      "found": "Une fixture de Message-ID non ASCII empêchait l’exécution du cas de collisions ; les fixtures historiques supposaient absence de dossier par défaut et déplacement du PDF.",
+      "action": "Message-ID fictif corrigé ; fixtures adaptées à la demande avec conservation des assertions de protection et reprise.",
+      "resolved": true
+    }
+  ]
+}

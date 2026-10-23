@@ -3,7 +3,7 @@
   "kind": "Requirement",
   "id": "REQ-02",
   "name": "PDF en Correspondances",
-  "status": "approved",
+  "status": "verified",
   "revision": 1,
   "createdAt": "2026-10-24",
   "updatedAt": "2026-10-24",

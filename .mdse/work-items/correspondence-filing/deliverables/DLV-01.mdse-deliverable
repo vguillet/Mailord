@@ -1,0 +1,25 @@
+{
+  "mdse": "2.3",
+  "kind": "Deliverable",
+  "id": "DLV-01",
+  "name": "Classement Correspondances et pièces jointes",
+  "status": "conditional",
+  "revision": 2,
+  "createdAt": "2026-10-24",
+  "updatedAt": "2026-10-24",
+  "workItem": "WI-correspondence-filing",
+  "type": "source-code",
+  "producedBy": "TASK-01-E01",
+  "task": "TASK-01",
+  "version": "3658a135df63b87fc205e708dc98ce3c7fc96786",
+  "location": "autosecretaire/engine.py",
+  "requirements": [
+    "REQ-01",
+    "REQ-02",
+    "REQ-03"
+  ],
+  "verifications": [
+    "VER-01"
+  ],
+  "acceptanceNote": "Vérifié par tests et parcours navigateur fictif ; aucune acceptation humaine ni validation du matériel cible enregistrée."
+}

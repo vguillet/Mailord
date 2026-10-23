@@ -4,14 +4,14 @@
   "id": "ARCH",
   "name": "Architecture initiale Auto-secretaire",
   "status": "current",
-  "revision": 6,
+  "revision": 7,
   "createdAt": "2026-10-23",
   "updatedAt": "2026-10-24",
   "style": "Service natif macOS modulaire, FastAPI sur boucle locale, interface HTML/CSS/JavaScript et registre SQLite.",
   "components": [
     {
       "name": "InterfaceLocale",
-      "responsibility": "Navigation par client, messages et états, aperçu, classement individuel ou en lots, création de clients, édition visuelle du modèle et des règles de nommage. Arborescence complète sélectionnable, distinction Sur le Mac/Créé au classement, choix initial facultatif par cases indépendantes.",
+      "responsibility": "Navigation par client, messages et états, aperçu, classement individuel ou en lots, création de clients, édition visuelle du modèle et des règles de nommage. Arborescence complète sélectionnable, distinction Sur le Mac/Créé au classement, choix initial facultatif par cases indépendantes. Cases de présélection dans le modèle, dossier des PDF configurable et emplacements/statuts et actions de classement par pièce.",
       "state": "existing",
       "dependsOn": [
         "GestionClients",
@@ -21,7 +21,7 @@
     },
     {
       "name": "GestionClients",
-      "responsibility": "Associer dossiers mail et dossiers locaux ; gérer les modèles versionnés et orchestrer la création reprenable des clients. Fournir le modèle initial du cabinet, en préservant les versions personnalisées lors des mises à jour. Proposer le modèle courant et les destinations mémorisées sans créer les branches ; persister et reprendre les dossiers initiaux explicitement sélectionnés.",
+      "responsibility": "Associer dossiers mail et dossiers locaux ; gérer les modèles versionnés et orchestrer la création reprenable des clients. Fournir le modèle initial du cabinet, en préservant les versions personnalisées lors des mises à jour. Proposer le modèle courant et les destinations mémorisées sans créer les branches ; persister et reprendre les dossiers initiaux explicitement sélectionnés. Gérer les présélections initiales et le rôle Correspondances versionnés ; préserver les choix par client.",
       "state": "existing",
       "dependsOn": [
         "Messagerie",
@@ -36,7 +36,7 @@
     },
     {
       "name": "TraitementDocuments",
-      "responsibility": "Détection des travaux, conversion PDF, extraction des pièces jointes, contrôle des exports, file persistante et reprises indépendantes du classement et de l'impression.",
+      "responsibility": "Détection des travaux, conversion PDF, extraction des pièces jointes, contrôle des exports, file persistante et reprises indépendantes du classement et de l'impression. Exporter les PDF vers Correspondances et les pièces jointes en attente ; adapter les anciens PDF suivis en préservant les impressions.",
       "state": "existing",
       "dependsOn": [
         "Messagerie",
@@ -47,7 +47,7 @@
     },
     {
       "name": "ArchivageLocal",
-      "responsibility": "Créer uniquement les parents nécessaires à la publication ou les dossiers initiaux choisis ; enregistrer, nommer, contrôler et déplacer sans collision. Retirer les seuls ancêtres vides d’une branche source, en protégeant les choix initiaux et sans nettoyage global.",
+      "responsibility": "Créer uniquement les parents nécessaires à la publication ou les dossiers initiaux choisis ; enregistrer, nommer, contrôler et déplacer sans collision. Retirer les seuls ancêtres vides d’une branche source, en protégeant les choix initiaux et sans nettoyage global. Classer les pièces indépendamment avec intentions persistées et cibles réservées contre les collisions dans un même lot.",
       "state": "existing"
     },
     {
@@ -79,7 +79,7 @@
     {
       "name": "Créer un client",
       "steps": [
-        "Saisir le nom, prévisualiser les chemins et choisir facultativement des dossiers vides.",
+        "Saisir le nom, prévisualiser les chemins et ajuster les présélections du modèle (Correspondances initialement).",
         "Valider les choix dans le modèle courant et les persister avec l’association client.",
         "Créer ou rattacher le dossier mail via Messagerie.",
         "Créer seulement les dossiers cochés et leurs parents ; les autres destinations restent virtuelles.",
@@ -94,18 +94,18 @@
         "Mettre en file les étapes manquantes.",
         "Générer un PDF du mail et conserver les pièces jointes.",
         "Appliquer le préfixe de date et le nom de base.",
-        "Enregistrer les fichiers et leur état dans une zone locale d'attente."
+        "Enregistrer le PDF dans Correspondances et les pièces jointes dans la zone d’attente, avec destination et statut par document."
       ]
     },
     {
       "name": "Classer et imprimer",
       "steps": [
-        "Afficher les messages et documents prêts par client.",
-        "Choisir parmi toutes les destinations, présentes ou absentes, et les documents à imprimer.",
-        "Créer la seule branche nécessaire pendant la publication, déplacer et actualiser les chemins.",
-        "Retirer les ancêtres source réellement vides en préservant les dossiers initialement choisis.",
-        "Soumettre l'impression au moment défini par la politique retenue.",
-        "Suivre l'impression indépendamment de l'archivage."
+        "Afficher le PDF du mail dans Correspondances et la destination de chaque pièce jointe.",
+        "Choisir une ou plusieurs pièces et leur destination dans l’arborescence complète.",
+        "Persister leurs intentions puis créer uniquement la branche nécessaire, déplacer et mettre à jour les chemins.",
+        "Retirer les ancêtres vides de la source en préservant les dossiers initialement choisis.",
+        "Marquer le mail classé lorsque toutes ses pièces le sont, ou dès export s’il n’en a pas.",
+        "Soumettre l’impression selon la politique ; après classement attend toutes les pièces, sans relancer les travaux existants."
       ]
     },
     {
@@ -186,7 +186,7 @@
     },
     {
       "concern": "Modèles",
-      "approach": "Le modèle courant est proposé à tous les clients avec les destinations mémorisées, réelles et leurs parents. Mémoriser une version ne crée aucun dossier. Les choix initiaux persistent indépendamment du modèle et restent protégés même vides."
+      "approach": "Le modèle courant est proposé à tous les clients avec les destinations mémorisées, réelles et leurs parents. Mémoriser une version ne crée aucun dossier. Les choix initiaux persistent indépendamment du modèle et restent protégés même vides. initial_folders et email_folder définissent les présélections et le rôle Correspondances ; lecture des anciennes versions avec défauts compatibles sans réécriture. Renommer une branche conserve ces références dans l’éditeur."
     },
     {
       "concern": "Données locales",
@@ -202,7 +202,7 @@
     },
     {
       "concern": "Vérification et limites",
-      "approach": "174 tests passent et parcours Chrome sur données fictives ; essais matériels distincts. Création, échecs, collisions, reprise et conservation des fichiers et dossiers initiaux vérifiés."
+      "approach": "191 tests passent et parcours Chrome fictif : présélections, classement indépendant, collisions, reprise, adaptation des PDF et absence de réimpression ; validation matérielle distincte."
     },
     {
       "concern": "Mises à jour et compatibilité",
@@ -211,6 +211,10 @@
     {
       "concern": "Préférences d’impression",
       "approach": "Réglages persistants print_sides/print_color_mode, défauts du pilote préservés ; instantané par intention, reprise preparing stable, pas de réimpression implicite ni altération des archives."
+    },
+    {
+      "concern": "Séparation des archives",
+      "approach": "Message.filing_version=2 et email_destination mémorisé ; adaptation ponctuelle des PDF suivis via intentions. Pièces jointes et impressions existantes conservées. Document.destination/classification et move_destination portent le classement individuel ; message.classification est agrégé."
     }
   ],
   "workItems": [
@@ -218,6 +222,7 @@
     "WI-one-click-updates",
     "WI-print-preferences",
     "WI-cabinet-template",
-    "WI-lazy-folders"
+    "WI-lazy-folders",
+    "WI-correspondence-filing"
   ]
 }

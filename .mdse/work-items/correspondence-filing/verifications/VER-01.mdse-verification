@@ -1,0 +1,105 @@
+{
+  "mdse": "2.3",
+  "kind": "Verification",
+  "id": "VER-01",
+  "name": "Présélections, PDF et pièces indépendantes vérifiés",
+  "status": "pass",
+  "revision": 1,
+  "createdAt": "2026-10-24",
+  "updatedAt": "2026-10-24",
+  "workItem": "WI-correspondence-filing",
+  "requirements": [
+    "REQ-01",
+    "REQ-02",
+    "REQ-03"
+  ],
+  "executions": [
+    "TASK-01-E01"
+  ],
+  "tasks": [],
+  "testRun": {
+    "runner": "pytest",
+    "command": "/Users/vguillet/Documents/Repos/Auto-secretaire/.venv/bin/python -c 'import pytest; raise SystemExit(pytest.main([\"-q\",\"--tb=short\"]))'",
+    "passed": 191,
+    "failed": 0,
+    "skipped": 0
+  },
+  "results": [
+    {
+      "requirement": "REQ-01",
+      "result": "pass",
+      "methods": [
+        "VM-01"
+      ],
+      "acceptanceCriteria": [
+        {
+          "id": "AC-01",
+          "covered": true,
+          "test": "test_default_choices_and_explicit_opt_out_survive_restart ; test_old_template_read_is_pure_and_new_defaults_do_not_create_old_client_folders ; Chrome cases du modèle reprises et décochées par client"
+        },
+        {
+          "id": "AC-02",
+          "covered": true,
+          "test": "test_invalid_template_options_are_atomic ; test_api_defaults_opt_out_template_and_document_selection ; Chrome renommage de Factures conserve sa présélection"
+        }
+      ]
+    },
+    {
+      "requirement": "REQ-02",
+      "result": "pass",
+      "methods": [
+        "VM-02"
+      ],
+      "acceptanceCriteria": [
+        {
+          "id": "AC-01",
+          "covered": true,
+          "test": "test_export_routes_mail_even_if_correspondence_unchecked ; test_mail_without_attachment_is_already_filed ; Chrome réception après décochage de Correspondances"
+        },
+        {
+          "id": "AC-02",
+          "covered": true,
+          "test": "test_legacy_pdf_moves_without_changing_attachments_or_printing ; test_legacy_adaptation_preserves_filed_attachments_and_print_intents ; test_associating_a_pdf_does_not_mark_pending_attachments_filed"
+        }
+      ]
+    },
+    {
+      "requirement": "REQ-03",
+      "result": "pass",
+      "methods": [
+        "VM-03"
+      ],
+      "acceptanceCriteria": [
+        {
+          "id": "AC-01",
+          "covered": true,
+          "test": "test_independent_attachment_destinations_and_print_after_all ; Chrome Facture puis Contrat dans deux destinations distinctes, PDF fixe"
+        },
+        {
+          "id": "AC-02",
+          "covered": true,
+          "test": "test_partial_attachment_move_resumes_without_filing_other_pieces ; test_rejected_document_selection_leaves_all_files_in_place ; test_pending_move_cannot_be_overwritten ; test_bulk_same_names_never_share_a_target ; tests/test_lazy_folders.py"
+        }
+      ]
+    }
+  ],
+  "evidence": [
+    {
+      "kind": "test-output",
+      "reference": "docs/VALIDATION.md",
+      "description": "17 cas ciblés, 191 tests au total, contrôles visuels et mutations Chrome sur espace temporaire 8879 ; empreintes et emplacements distincts contrôlés."
+    }
+  ],
+  "deviationReview": [
+    {
+      "execution": "TASK-01-E01",
+      "state": "resolved",
+      "summary": "Collisions de lot réservées, association historique corrigée et fixtures adaptées ; tests correspondants passent."
+    }
+  ],
+  "warnings": [
+    "Validation sur compte Orange, Apple Mail et imprimante cible non réalisée ; seule la démonstration fictive et les transports de test sont utilisés.",
+    "Les changements ultérieurs du rôle Correspondances s’appliquent aux prochains mails ; les anciennes destinations déjà adaptées restent mémorisées.",
+    "Copies dans plusieurs dossiers et renommage métier des pièces restent manuels."
+  ]
+}
