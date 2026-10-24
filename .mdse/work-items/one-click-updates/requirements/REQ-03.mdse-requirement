@@ -1,0 +1,33 @@
+{
+  "mdse": "2.3",
+  "kind": "Requirement",
+  "id": "REQ-03",
+  "name": "Redémarrer et reprendre",
+  "status": "verified",
+  "revision": 2,
+  "createdAt": "2026-10-23",
+  "updatedAt": "2026-10-24",
+  "workItem": "WI-one-click-updates",
+  "keyword": "SHALL",
+  "statement": "Le lanceur SHALL arrêter proprement le service, sauvegarder le registre, tester le démarrage de la version candidate avant tout traitement et relancer la version précédente si ce démarrage échoue.",
+  "priority": "must",
+  "acceptanceCriteria": [
+    {
+      "id": "AC-01",
+      "kind": "happy-path",
+      "given": "une version préparée",
+      "when": "le service redémarre",
+      "then": "le même port, les réglages et les documents sont conservés"
+    },
+    {
+      "id": "AC-02",
+      "kind": "failure-path",
+      "given": "une candidate ne démarre pas ou une coupure interrompt la bascule",
+      "when": "le lanceur reprend",
+      "then": "le registre sauvegardé et la version précédente sont restaurés sans traitement ni impression pendant la probation"
+    }
+  ],
+  "verifiedBy": [
+    "VM-03"
+  ]
+}

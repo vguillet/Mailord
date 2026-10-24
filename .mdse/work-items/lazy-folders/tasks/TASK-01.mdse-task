@@ -1,0 +1,114 @@
+{
+  "mdse": "2.3",
+  "kind": "Task",
+  "id": "TASK-01",
+  "name": "Créer les dossiers uniquement au besoin",
+  "status": "done",
+  "revision": 2,
+  "createdAt": "2026-10-24",
+  "updatedAt": "2026-10-24",
+  "workItem": "WI-lazy-folders",
+  "order": 1,
+  "type": "software",
+  "objective": "Mettre en place le catalogue virtuel, la création tardive, le nettoyage borné et leur présentation ; vérifier les reprises.",
+  "requirements": [
+    "REQ-01",
+    "REQ-02",
+    "REQ-03",
+    "REQ-04"
+  ],
+  "design": "DESIGN",
+  "decisions": [
+    "DEC-01",
+    "DEC-02"
+  ],
+  "constraints": [
+    "CON-01"
+  ],
+  "dependsOn": [],
+  "designReferences": [
+    {
+      "section": "components",
+      "item": "GestionClients"
+    },
+    {
+      "section": "components",
+      "item": "ArchivageLocal"
+    },
+    {
+      "section": "components",
+      "item": "InterfaceLocale"
+    }
+  ],
+  "files": [
+    {
+      "path": "mailord/engine.py",
+      "action": "update"
+    },
+    {
+      "path": "mailord/static/app.js",
+      "action": "update"
+    },
+    {
+      "path": "tests/test_engine.py",
+      "action": "update"
+    },
+    {
+      "path": "tests/test_update_integration.py",
+      "action": "update"
+    },
+    {
+      "path": "tests/test_lazy_folders.py",
+      "action": "create"
+    },
+    {
+      "path": "docs/API.md",
+      "action": "update"
+    },
+    {
+      "path": "docs/INSTALLATION.md",
+      "action": "update"
+    },
+    {
+      "path": "docs/FOLDER_TEMPLATE.md",
+      "action": "update"
+    },
+    {
+      "path": "docs/VALIDATION.md",
+      "action": "update"
+    },
+    {
+      "path": "README.md",
+      "action": "update"
+    },
+    {
+      "path": "mailord/app.py",
+      "action": "update"
+    }
+  ],
+  "doneCriteria": [
+    {
+      "id": "DC-01",
+      "statement": "Tests de création, catalogue, classement imbriqué, refus, nettoyage et reprise passés."
+    },
+    {
+      "id": "DC-02",
+      "statement": "Sélecteur réel validé pour une branche absente, documents conservés ; documentation alignée."
+    },
+    {
+      "id": "DC-03",
+      "statement": "Sélection initiale facultative dans le formulaire, validation, conservation et reprise des dossiers cochés vérifiées."
+    }
+  ],
+  "priority": "high",
+  "plannedEffort": "1h",
+  "plannedStart": "2026-10-24",
+  "plannedEnd": "2026-10-24",
+  "outputs": [
+    {
+      "name": "Création des dossiers à la demande",
+      "kind": "source-code",
+      "deliverable": true
+    }
+  ]
+}

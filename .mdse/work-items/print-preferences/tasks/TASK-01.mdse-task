@@ -1,0 +1,99 @@
+{
+  "mdse": "2.3",
+  "kind": "Task",
+  "id": "TASK-01",
+  "name": "Préférences, interface et vérification",
+  "status": "done",
+  "revision": 2,
+  "createdAt": "2026-10-24",
+  "updatedAt": "2026-10-24",
+  "workItem": "WI-print-preferences",
+  "order": 1,
+  "type": "software",
+  "objective": "Implémenter les préférences et clarifier le périmètre des pièces jointes avec tests et contrôle navigateur.",
+  "requirements": [
+    "REQ-01",
+    "REQ-02"
+  ],
+  "design": "DESIGN",
+  "decisions": [
+    "DEC-01"
+  ],
+  "constraints": [
+    "CON-01"
+  ],
+  "dependsOn": [],
+  "designReferences": [
+    {
+      "section": "components",
+      "item": "Impression"
+    },
+    {
+      "section": "components",
+      "item": "TraitementDocuments"
+    },
+    {
+      "section": "components",
+      "item": "InterfaceLocale"
+    }
+  ],
+  "files": [
+    {
+      "path": "mailord/config.py",
+      "action": "update"
+    },
+    {
+      "path": "mailord/printing.py",
+      "action": "update"
+    },
+    {
+      "path": "mailord/engine.py",
+      "action": "update"
+    },
+    {
+      "path": "mailord/static/app.js",
+      "action": "update"
+    },
+    {
+      "path": "tests/test_print_preferences.py",
+      "action": "create"
+    },
+    {
+      "path": "tests/test_engine.py",
+      "action": "update"
+    },
+    {
+      "path": "docs/API.md",
+      "action": "update"
+    },
+    {
+      "path": "docs/INSTALLATION.md",
+      "action": "update"
+    },
+    {
+      "path": "docs/VALIDATION.md",
+      "action": "update"
+    }
+  ],
+  "doneCriteria": [
+    {
+      "id": "DC-01",
+      "statement": "Préférences persistantes et propagation à tous les documents sélectionnés vérifiées, aucun doublon ni appel matériel en simulation."
+    },
+    {
+      "id": "DC-02",
+      "statement": "Réglages visibles dans le navigateur, périmètre et dépendance au pilote documentés."
+    }
+  ],
+  "priority": "high",
+  "plannedEffort": "1h",
+  "plannedStart": "2026-10-24",
+  "plannedEnd": "2026-10-24",
+  "outputs": [
+    {
+      "name": "Préférences d’impression",
+      "kind": "source-code",
+      "deliverable": true
+    }
+  ]
+}

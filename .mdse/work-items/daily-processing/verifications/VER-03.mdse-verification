@@ -1,0 +1,162 @@
+{
+  "mdse": "2.3",
+  "kind": "Verification",
+  "id": "VER-03",
+  "name": "Mail et commandes vérifiés après corrections visuelles",
+  "status": "pass",
+  "revision": 1,
+  "createdAt": "2026-10-24",
+  "updatedAt": "2026-10-24",
+  "workItem": "WI-daily-processing",
+  "requirements": [
+    "REQ-01",
+    "REQ-02",
+    "REQ-03",
+    "REQ-04",
+    "REQ-05"
+  ],
+  "executions": [
+    "TASK-01-E01",
+    "TASK-02-E01",
+    "TASK-03-E01"
+  ],
+  "tasks": [],
+  "testRun": {
+    "runner": "pytest",
+    "command": "python -m pytest tests/test_daily_upgrade.py tests/test_ui.py -q --tb=short",
+    "passed": 43,
+    "failed": 0,
+    "skipped": 0,
+    "durationSeconds": 4.62
+  },
+  "results": [
+    {
+      "requirement": "REQ-01",
+      "result": "pass",
+      "methods": [
+        "VM-01"
+      ],
+      "acceptanceCriteria": [
+        {
+          "id": "AC-01",
+          "covered": true,
+          "test": "tests/test_ui.py::test_print_badges_distinguish_pending_submitted_simulated_and_uncertain et test_partial_print_and_latest_attempt_resolve_old_error ; IAB 8883 : À imprimer 1/2 et Simulation 1/2, main 8765 : À imprimer 2/2.",
+          "note": "Tests ciblés exécutés à nouveau. Pour les parcours non touchés, preuve de démonstration antérieure de VER-01/VER-02 conservée explicitement ; aucun essai matériel revendiqué."
+        },
+        {
+          "id": "AC-02",
+          "covered": true,
+          "test": "test_partial_print_and_latest_attempt_resolve_old_error ; test_ordinary_print_does_not_retry_a_superseded_initial_failure ; test_ordinary_retry_uses_latest_failed_intent_not_an_older_generation.",
+          "note": "Tests ciblés exécutés à nouveau. Pour les parcours non touchés, preuve de démonstration antérieure de VER-01/VER-02 conservée explicitement ; aucun essai matériel revendiqué."
+        },
+        {
+          "id": "AC-03",
+          "covered": true,
+          "test": "test_unselected_attempts_still_need_attention_and_empty_is_not_complete ; test_real_and_simulated_counts_are_distinct. Neuf scénarios UI distinguent attente, soumission, simulation, mixte, en cours, vide, incertitude et attente d’export.",
+          "note": "Tests ciblés exécutés à nouveau. Pour les parcours non touchés, preuve de démonstration antérieure de VER-01/VER-02 conservée explicitement ; aucun essai matériel revendiqué."
+        }
+      ]
+    },
+    {
+      "requirement": "REQ-02",
+      "result": "pass",
+      "methods": [
+        "VM-02"
+      ],
+      "acceptanceCriteria": [
+        {
+          "id": "AC-01",
+          "covered": true,
+          "test": "IAB 8883 et 8765 : sujet/en-têtes/corps puis pied PDF sauge, pièces jointes seules ; titre de même largeur que son conteneur, actions alignées avec badges et destination dessous. Sélecteur, classement, annulation, simulation ciblée et confirmation de réimpression démontrés. Suppressions demandées constatées après dernier rechargement. design-qa.md : passed.",
+          "note": "Rendu final comparé au concept et aux corrections explicites. Préférences persistées et archives principales inchangées."
+        },
+        {
+          "id": "AC-02",
+          "covered": true,
+          "test": "IAB 8883 : 6 mails et 11 documents à classer. IAB 8884 : titre Votre espace documentaire, zéro mail/document et créer le premier client.",
+          "note": "Tests ciblés exécutés à nouveau. Pour les parcours non touchés, preuve de démonstration antérieure de VER-01/VER-02 conservée explicitement ; aucun essai matériel revendiqué."
+        }
+      ]
+    },
+    {
+      "requirement": "REQ-03",
+      "result": "pass",
+      "methods": [
+        "VM-03"
+      ],
+      "acceptanceCriteria": [
+        {
+          "id": "AC-01",
+          "covered": true,
+          "test": "tests/test_ui.py recherche noms originaux/exportés et destinations, casse/accents ; IAB liste des documents trouve trois mails.",
+          "note": "Tests ciblés exécutés à nouveau. Pour les parcours non touchés, preuve de démonstration antérieure de VER-01/VER-02 conservée explicitement ; aucun essai matériel revendiqué."
+        },
+        {
+          "id": "AC-02",
+          "covered": true,
+          "test": "IAB : recherche sous Camille Moreau donne un seul mail ; terme inexistant affiche Rien à afficher ici. Test helper : recherche vide et inconnue.",
+          "note": "Tests ciblés exécutés à nouveau. Pour les parcours non touchés, preuve de démonstration antérieure de VER-01/VER-02 conservée explicitement ; aucun essai matériel revendiqué."
+        }
+      ]
+    },
+    {
+      "requirement": "REQ-04",
+      "result": "pass",
+      "methods": [
+        "VM-04"
+      ],
+      "acceptanceCriteria": [
+        {
+          "id": "AC-01",
+          "covered": true,
+          "test": "IAB : ouvrir Correspondances, rechercher Expertise, parents révélés ; effacer conserve Correspondances ouvert. Capture 02-template-search.png.",
+          "note": "Tests ciblés exécutés à nouveau. Pour les parcours non touchés, preuve de démonstration antérieure de VER-01/VER-02 conservée explicitement ; aucun essai matériel revendiqué."
+        },
+        {
+          "id": "AC-02",
+          "covered": true,
+          "test": "IAB : sauvegarder avec Correspondances masqué, relire modèle : 37 dossiers et initial_folders=[02 CORRESPONDANCES]. Nouveau client : 1 sélectionné.",
+          "note": "Tests ciblés exécutés à nouveau. Pour les parcours non touchés, preuve de démonstration antérieure de VER-01/VER-02 conservée explicitement ; aucun essai matériel revendiqué."
+        }
+      ]
+    },
+    {
+      "requirement": "REQ-05",
+      "result": "pass",
+      "methods": [
+        "VM-05"
+      ],
+      "acceptanceCriteria": [
+        {
+          "id": "AC-01",
+          "covered": true,
+          "test": "test_undo_filing_restores_pending_survives_restart_and_is_idempotent ; test_undo_to_classified_location_does_not_activate_automatic_print ; IAB classement puis annulation et progression inchangée.",
+          "note": "Tests ciblés exécutés à nouveau. Pour les parcours non touchés, preuve de démonstration antérieure de VER-01/VER-02 conservée explicitement ; aucun essai matériel revendiqué."
+        },
+        {
+          "id": "AC-02",
+          "covered": true,
+          "test": "test_undo_refuses_conflicts_without_touching_files (4 cas) ; test_interrupted_undo_recovers_pending_state_without_printing ; protection CSRF dans test_undo_filing_restores_pending_survives_restart_and_is_idempotent.",
+          "note": "Tests ciblés exécutés à nouveau. Pour les parcours non touchés, preuve de démonstration antérieure de VER-01/VER-02 conservée explicitement ; aucun essai matériel revendiqué."
+        }
+      ]
+    }
+  ],
+  "evidence": [
+    {
+      "kind": "test-output",
+      "reference": "docs/VALIDATION.md",
+      "description": "9 scénarios de badges rouges avant implémentation puis 43 tests ciblés verts ; parcours PDF, simulation, réimpression annulée et conservation des données."
+    },
+    {
+      "kind": "test-output",
+      "reference": "design-qa.md",
+      "description": "Comparaisons du concept et des corrections utilisateur avec rendu navigateur ; 1280, 720 et 390 px CSS ; captures et vérification des icônes dans le paquet."
+    }
+  ],
+  "deviationReview": [],
+  "warnings": [
+    "Dernière suite complète : 224 tests du lot initial. Ce lot exécute 43 tests ciblés, dont neuf nouveaux.",
+    "REQ-02 AC-02 et les parcours de recherche/modèle non modifiés conservent leur preuve antérieure explicite. Les essais UI utilisent des documents fictifs et une impression simulée."
+  ]
+}

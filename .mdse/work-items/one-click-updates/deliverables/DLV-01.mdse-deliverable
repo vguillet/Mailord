@@ -1,0 +1,25 @@
+{
+  "mdse": "2.3",
+  "kind": "Deliverable",
+  "id": "DLV-01",
+  "name": "Préparation et superviseur",
+  "status": "conditional",
+  "revision": 2,
+  "createdAt": "2026-10-24",
+  "updatedAt": "2026-10-24",
+  "workItem": "WI-one-click-updates",
+  "type": "source-code",
+  "producedBy": "TASK-01-E01",
+  "task": "TASK-01",
+  "version": "388ff89b08b4829cbb3960d1a22e5bb1d6a3a473",
+  "location": "autosecretaire/updates.py",
+  "requirements": [
+    "REQ-01",
+    "REQ-02",
+    "REQ-03"
+  ],
+  "verifications": [
+    "VER-01"
+  ],
+  "acceptanceNote": "Vérifié sur dépôts et données de test ; configuration et validation du dépôt définitif encore attendues. Aucune acceptation humaine attribuée."
+}

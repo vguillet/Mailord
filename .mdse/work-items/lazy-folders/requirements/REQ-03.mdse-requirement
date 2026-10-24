@@ -1,0 +1,33 @@
+{
+  "mdse": "2.3",
+  "kind": "Requirement",
+  "id": "REQ-03",
+  "name": "Nettoyage des branches vidées par le classement",
+  "status": "verified",
+  "revision": 1,
+  "createdAt": "2026-10-24",
+  "updatedAt": "2026-10-24",
+  "workItem": "WI-lazy-folders",
+  "keyword": "SHALL",
+  "statement": "Le service SHALL retirer les répertoires devenus vides sur la branche source après ses déplacements, en conservant les répertoires contenant encore un fichier et les branches sans rapport avec le déplacement. Les dossiers explicitement choisis à la création et leurs parents sont conservés même vides.",
+  "priority": "must",
+  "acceptanceCriteria": [
+    {
+      "id": "AC-01",
+      "kind": "happy-path",
+      "given": "la dernière communication d’une branche",
+      "when": "elle est reclassée ailleurs",
+      "then": "la branche vide est retirée mais reste proposée si elle appartient au modèle"
+    },
+    {
+      "id": "AC-02",
+      "kind": "failure-path",
+      "given": "une interruption ou un autre fichier dans la branche",
+      "when": "le classement reprend",
+      "then": "les documents sont conservés, les branches non vides ne sont pas retirées et aucune réimpression implicite ne se produit"
+    }
+  ],
+  "verifiedBy": [
+    "VM-03"
+  ]
+}

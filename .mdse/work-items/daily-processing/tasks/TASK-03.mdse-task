@@ -1,0 +1,86 @@
+{
+  "mdse": "2.3",
+  "revision": 3,
+  "createdAt": "2026-10-24",
+  "updatedAt": "2026-10-24",
+  "workItem": "WI-daily-processing",
+  "kind": "Task",
+  "id": "TASK-03",
+  "name": "Rattacher l’archivage PDF au pied du mail",
+  "status": "done",
+  "order": 3,
+  "type": "software",
+  "objective": "Implémenter l’option visuelle 2 avec un pied de mail pour les commandes PDF et une section réservée aux pièces jointes. Intégrer les précisions successives de disposition, icônes et suivi d’impression.",
+  "requirements": [
+    "REQ-01",
+    "REQ-02"
+  ],
+  "design": "DESIGN",
+  "decisions": [
+    "DEC-03"
+  ],
+  "constraints": [
+    "CON-01"
+  ],
+  "dependsOn": [
+    "TASK-02"
+  ],
+  "capabilities": [
+    "write-code",
+    "run-tests"
+  ],
+  "eligibleActors": [
+    "agent-codex"
+  ],
+  "files": [
+    {
+      "path": "mailord/static/app.js",
+      "action": "update"
+    },
+    {
+      "path": "mailord/static/style.css",
+      "action": "update"
+    },
+    {
+      "path": "README.md",
+      "action": "update"
+    },
+    {
+      "path": "docs/DAILY_UPGRADE.md",
+      "action": "update"
+    },
+    {
+      "path": "docs/VALIDATION.md",
+      "action": "update"
+    },
+    {
+      "path": "design-qa.md",
+      "action": "create"
+    },
+    {
+      "path": "pyproject.toml",
+      "action": "update"
+    },
+    {
+      "path": "tests/test_ui.py",
+      "action": "update"
+    },
+    {
+      "path": "mailord/static/icons",
+      "action": "create"
+    }
+  ],
+  "doneCriteria": [
+    {
+      "id": "DC-01",
+      "statement": "Navigateur : mail unifié, actions PDF dans son pied, pièces jointes seules dans leur section ; repli, sélecteur inline, classement/annulation et impression ciblée vérifiés sur démonstration. QA visuelle, syntaxe et tests existants réussis."
+    }
+  ],
+  "outputs": [
+    {
+      "name": "Mail avec pied d’archivage PDF et pièces jointes distinctes",
+      "kind": "source-code",
+      "deliverable": true
+    }
+  ]
+}

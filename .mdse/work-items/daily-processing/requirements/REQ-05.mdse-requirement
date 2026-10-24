@@ -1,0 +1,33 @@
+{
+  "mdse": "2.3",
+  "kind": "Requirement",
+  "id": "REQ-05",
+  "name": "Annulation ciblée du dernier classement",
+  "status": "verified",
+  "revision": 2,
+  "createdAt": "2026-10-24",
+  "updatedAt": "2026-10-24",
+  "workItem": "WI-daily-processing",
+  "keyword": "SHALL",
+  "statement": "L’utilisatrice SHALL pouvoir annuler le dernier classement de chaque document sans provoquer d’impression ni écrasement.",
+  "priority": "must",
+  "acceptanceCriteria": [
+    {
+      "id": "AC-01",
+      "kind": "happy-path",
+      "given": "un fichier classé depuis une zone d’attente ou une autre destination",
+      "when": "son dernier classement est annulé",
+      "then": "son emplacement et son état précédents sont rétablis ; l’action reste disponible après redémarrage et répéter la même annulation ne déplace pas à nouveau le fichier"
+    },
+    {
+      "id": "AC-02",
+      "kind": "failure-path",
+      "given": "un fichier modifié, une destination occupée, un jeton obsolète ou un déplacement interrompu",
+      "when": "une annulation est demandée",
+      "then": "la demande est refusée sans écrasement, ou la reprise de son intention persiste jusqu’à réussite ; aucune impression n’est déclenchée"
+    }
+  ],
+  "verifiedBy": [
+    "VM-05"
+  ]
+}

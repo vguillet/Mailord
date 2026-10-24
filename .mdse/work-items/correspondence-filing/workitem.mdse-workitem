@@ -1,0 +1,50 @@
+{
+  "mdse": "2.3",
+  "kind": "WorkItem",
+  "id": "WI-correspondence-filing",
+  "name": "Correspondances et classement des pièces jointes",
+  "status": "reconciled",
+  "revision": 1,
+  "createdAt": "2026-10-24",
+  "updatedAt": "2026-10-24",
+  "slug": "correspondence-filing",
+  "purpose": "Évolution explicitement demandée après WI-lazy-folders : présélections du modèle et séparation mail/PJ, remplaçant le classement groupé de WI-local-v1 sans reprendre ses livraisons historiques.",
+  "testingApproach": "selective-TDD",
+  "userStories": [
+    {
+      "id": "US-01",
+      "role": "utilisatrice",
+      "capability": "archiver automatiquement mes mails en Correspondances et répartir leurs pièces jointes",
+      "benefit": "classer rapidement sans déplacer les PDF des mails"
+    }
+  ],
+  "requirements": [
+    "REQ-01",
+    "REQ-02",
+    "REQ-03"
+  ],
+  "constraints": [
+    "CON-01"
+  ],
+  "methods": [
+    "VM-01",
+    "VM-02",
+    "VM-03"
+  ],
+  "decisions": [
+    "DEC-01"
+  ],
+  "tasks": [
+    "TASK-01"
+  ],
+  "executions": [
+    "TASK-01-E01"
+  ],
+  "verifications": [
+    "VER-01"
+  ],
+  "deliverables": [
+    "DLV-01"
+  ],
+  "design": "DESIGN"
+}

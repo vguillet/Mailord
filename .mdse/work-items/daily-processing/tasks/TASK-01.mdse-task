@@ -1,0 +1,113 @@
+{
+  "mdse": "2.3",
+  "kind": "Task",
+  "id": "TASK-01",
+  "name": "Améliorer le traitement quotidien",
+  "status": "done",
+  "revision": 3,
+  "createdAt": "2026-10-24",
+  "updatedAt": "2026-10-24",
+  "workItem": "WI-daily-processing",
+  "order": 1,
+  "type": "software",
+  "objective": "Livrer la progression fiable, le poste de classement compact, la recherche documentaire, le modèle navigable et une annulation sûre.",
+  "requirements": [
+    "REQ-01",
+    "REQ-02",
+    "REQ-03",
+    "REQ-04",
+    "REQ-05"
+  ],
+  "design": "DESIGN",
+  "decisions": [
+    "DEC-01"
+  ],
+  "constraints": [
+    "CON-01"
+  ],
+  "dependsOn": [],
+  "capabilities": [
+    "write-code",
+    "run-tests"
+  ],
+  "eligibleActors": [
+    "agent-codex"
+  ],
+  "designReferences": [
+    {
+      "section": "components",
+      "item": "InterfaceLocale"
+    },
+    {
+      "section": "components",
+      "item": "ArchivageLocal"
+    }
+  ],
+  "files": [
+    {
+      "path": "mailord/engine.py",
+      "action": "update"
+    },
+    {
+      "path": "mailord/app.py",
+      "action": "update"
+    },
+    {
+      "path": "mailord/static/app.js",
+      "action": "update"
+    },
+    {
+      "path": "mailord/static/style.css",
+      "action": "update"
+    },
+    {
+      "path": "mailord/static/index.html",
+      "action": "update"
+    },
+    {
+      "path": "tests/test_ui.py",
+      "action": "update"
+    },
+    {
+      "path": "docs/API.md",
+      "action": "update"
+    },
+    {
+      "path": "docs/VALIDATION.md",
+      "action": "update"
+    },
+    {
+      "path": "README.md",
+      "action": "update"
+    },
+    {
+      "path": "tests/test_daily_upgrade.py",
+      "action": "create"
+    },
+    {
+      "path": "docs/DAILY_UPGRADE.md",
+      "action": "create"
+    }
+  ],
+  "doneCriteria": [
+    {
+      "id": "DC-01",
+      "statement": "Tests ciblés puis suite complète verts : états partiels, derniers essais, sélection vide, recherche et annulation/reprise/collisions sans impression."
+    },
+    {
+      "id": "DC-02",
+      "statement": "Navigateur : documents visibles à 1280×720, corps repliable, cases libellées, compteurs mails/documents, recherche pièces, modèle repliable/recherchable et annulation visible ; guides à jour."
+    }
+  ],
+  "priority": "high",
+  "plannedEffort": "2h",
+  "plannedStart": "2026-10-24",
+  "plannedEnd": "2026-10-24",
+  "outputs": [
+    {
+      "name": "Amélioration du traitement quotidien",
+      "kind": "source-code",
+      "deliverable": true
+    }
+  ]
+}

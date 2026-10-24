@@ -1,0 +1,33 @@
+{
+  "mdse": "2.3",
+  "kind": "Requirement",
+  "id": "REQ-01",
+  "name": "Impression individuelle explicite",
+  "status": "verified",
+  "revision": 2,
+  "createdAt": "2026-10-24",
+  "updatedAt": "2026-10-24",
+  "workItem": "WI-document-client-actions",
+  "keyword": "SHALL",
+  "statement": "L’interface SHALL proposer une impression individuelle sur chaque document à côté de l’aperçu et du Finder, en remplaçant la commande globale du bas du détail.",
+  "priority": "must",
+  "acceptanceCriteria": [
+    {
+      "id": "AC-01",
+      "kind": "happy-path",
+      "given": "un mail avec PDF et pièces jointes imprimables, même décochées",
+      "when": "une impression individuelle est demandée",
+      "then": "seul le fichier ciblé est soumis avec les préférences courantes, sans modifier les cases ni les autres documents ; le résultat est visible par document"
+    },
+    {
+      "id": "AC-02",
+      "kind": "failure-path",
+      "given": "un fichier non imprimable, absent, modifié ou déjà soumis",
+      "when": "son action est utilisée ou répétée",
+      "then": "les formats incompatibles et fichiers invalides sont refusés ; aucune soumission initiale doublée, une réimpression exige confirmation explicite, les erreurs et résultats incertains restent visibles"
+    }
+  ],
+  "verifiedBy": [
+    "VM-01"
+  ]
+}

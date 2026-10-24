@@ -1,0 +1,14 @@
+{
+  "mdse": "2.3",
+  "kind": "Constraint",
+  "id": "CON-01",
+  "name": "Conservation des données et impressions",
+  "status": "active",
+  "revision": 1,
+  "createdAt": "2026-10-24",
+  "updatedAt": "2026-10-24",
+  "workItem": "WI-document-client-actions",
+  "type": "prohibition",
+  "statement": "Ne pas imprimer les documents voisins, modifier les cases ou les préférences lors d’une impression individuelle, effacer les intentions existantes, déplacer les archives à la mise à jour ou confondre favoris clients et dossiers.",
+  "reason": "Les actions doivent être ciblées, persistantes et compatibles avec les protections existantes."
+}

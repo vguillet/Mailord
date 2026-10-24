@@ -1,0 +1,25 @@
+{
+  "mdse": "2.3",
+  "kind": "Method",
+  "id": "VM-02",
+  "name": "Contexte et erreurs inline",
+  "status": "approved",
+  "revision": 2,
+  "createdAt": "2026-10-24",
+  "updatedAt": "2026-10-24",
+  "workItem": "WI-inline-document-filing",
+  "class": "verification",
+  "method": "review",
+  "automated": true,
+  "requirements": [
+    "REQ-02"
+  ],
+  "command": "node --check mailord/static/app.js",
+  "passCriteria": [
+    {
+      "id": "PC-01",
+      "statement": "Syntaxe valide ; Chrome : actualisation conserve saisie/focus/choix, refus affiché inline sans déplacement, navigation pendant requête et clavier sans dialogue."
+    }
+  ],
+  "evidenceKind": "inspection-report"
+}

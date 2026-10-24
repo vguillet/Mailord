@@ -1,0 +1,25 @@
+{
+  "mdse": "2.3",
+  "kind": "Method",
+  "id": "VM-01",
+  "name": "Vérifier classement manuel du pdf et des pièces",
+  "status": "approved",
+  "revision": 1,
+  "createdAt": "2026-10-24",
+  "updatedAt": "2026-10-24",
+  "workItem": "WI-manual-document-filing",
+  "class": "verification",
+  "method": "test",
+  "automated": true,
+  "requirements": [
+    "REQ-01"
+  ],
+  "command": "python -m pytest tests/test_manual_document_filing.py -q",
+  "passCriteria": [
+    {
+      "id": "PC-01",
+      "statement": "Tests métier passent, notamment classement du PDF seul, agrégation, conservation et reprise."
+    }
+  ],
+  "evidenceKind": "test-output"
+}

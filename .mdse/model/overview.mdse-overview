@@ -1,0 +1,88 @@
+{
+  "mdse": "2.3",
+  "kind": "Overview",
+  "id": "OVERVIEW",
+  "name": "Vue d'ensemble Mailord",
+  "status": "current",
+  "revision": 15,
+  "createdAt": "2026-10-23",
+  "updatedAt": "2026-10-24",
+  "summary": "Mailord automatise localement sur Mac les dossiers de communications clients : PDF, pièces jointes, nommage chronologique, classement et impression avec interface web française.",
+  "capabilities": [
+    {
+      "name": "Clients et modèles",
+      "description": "Création reprenable, rattachement mail/local, modèle hiérarchique versionné et application additive. Modèle initial de cabinet issu du PDF fourni : huit rubriques, 37 dossiers avec zone d’attente, repères et branche de juridiction personnalisable. Catalogue complet virtuel, création à la demande, choix initial facultatif de dossiers vides persisté et protégé. Présélections configurables, Correspondances coché initialement et décochable par client. Modèle recherchable et repliable ; les présélections masquées restent conservées.",
+      "state": "implemented"
+    },
+    {
+      "name": "Surveillance et PDF",
+      "description": "Mails lus/non lus, exports PDF passifs, originaux, préfixes de date, collisions et contrôle des fichiers. Tous les nouveaux documents restent en attente du choix de destination ; anciennes archives conservées à leur emplacement et réparées sans réimpression.",
+      "state": "implemented"
+    },
+    {
+      "name": "Classement ergonomique",
+      "description": "Navigation clients, états et aperçu. Sélecteur individuel sous chaque PDF ou pièce jointe, sans dialogue : recherche dans toute l’arborescence, favoris, récents et clavier. Chevrons lisibles de 20 px, zones cliquables de 32 px ; destinations absentes sélectionnables. Contexte conservé au rafraîchissement, erreurs sous le document et requêtes liées à leur document initial. Badges À CLASSER contrastés. Clients favoris étoilés et persistés, regroupés en tête de navigation sans changer le mail actif. Espace compact : champs De/À/Reçu/Client puis corps ouvert et repliable, avant PDF et pièces jointes, progression séparée, recherche sur noms de pièces et destinations. Annuler le dernier classement par document, même après redémarrage, sans écrasement ni impression. Mail et PDF réunis avec pied sauge ; seules les pièces jointes restent en cartes. Titre pleine largeur, badges et icônes Lucide alignés, destination dessous. Contrôle auto/groupé et labels fixes retirés ; préférences persistées conservées.",
+      "state": "implemented"
+    },
+    {
+      "name": "Impression et reprise",
+      "description": "Simulation, recto/recto verso, couleur/noir et blanc, sélection mail et pièces jointes, intentions avec options persistées et reprise sans doublons. Impression ciblée par icône sur chaque PDF/pièce, indépendamment des cases, état par document et confirmation pour un nouvel exemplaire. Agrégation du dernier essai avec état partiel et comptes réel/simulation distincts ; ancienne erreur conservée dans l’historique seulement et reprise limitée à la dernière intention. Liste et détail : badges À imprimer, Transmis à l’imprimante et Simulation, jamais un envoi de mail implicite.",
+      "state": "implemented"
+    },
+    {
+      "name": "Installation et historique",
+      "description": "Démonstration, guide Mac, LaunchAgent facultatif, rapprochement explicite des PDF existants.",
+      "state": "implemented"
+    },
+    {
+      "name": "Mises à jour en un clic",
+      "description": "Détection horaire, bouton, progression, préparation séparée, redémarrage supervisé et retour en cas d’échec avant activation.",
+      "state": "implemented"
+    }
+  ],
+  "entryPoints": [
+    {
+      "path": "README.md",
+      "description": "Démarrage et portée."
+    },
+    {
+      "path": "scripts/start.command",
+      "description": "Démonstration locale."
+    },
+    {
+      "path": "mailord/__main__.py",
+      "description": "Service natif et options de lancement."
+    },
+    {
+      "path": "docs/INSTALLATION.md",
+      "description": "Compte, racine documentaire, impression et sauvegarde."
+    },
+    {
+      "path": "docs/VALIDATION.md",
+      "description": "Preuves de vérification et essais terrain restants."
+    },
+    {
+      "path": "docs/UPDATES.md",
+      "description": "Configurer la source et publier des versions compatibles ; fonctionnement du bouton et limites de reprise."
+    },
+    {
+      "path": "docs/FOLDER_TEMPLATE.md",
+      "description": "Hiérarchie du cabinet, repères et limites de la configuration."
+    },
+    {
+      "path": "docs/DAILY_UPGRADE.md",
+      "description": "Plan livré, périmètre quotidien et pistes différées après revue."
+    }
+  ],
+  "currentState": "Traitement quotidien vérifié : dernière suite complète 224 tests ; dernière évolution visuelle 43 tests ciblés, neuf nouveaux scénarios de badges, QA navigateur et contrôle de 13 archives inchangées. Service local 8765 actualisé. Intégrations matérielles et acceptation d’usage encore à valider.",
+  "knownGaps": [
+    "Les intégrations Orange, Apple Mail et imprimante cible sont testées sur transports simulés ; validation terrain non réalisée.",
+    "Rendu HTML en texte structuré et formats Office conservés sans conversion imprimable.",
+    "Localisation exacte des dossiers mail, autorisations du Mac cible et contenu intégral des pièces Apple Mail à confirmer.",
+    "Racine cloud à configurer ; juridictions à adapter à chaque affaire depuis le modèle fourni.",
+    "Copies MIME modifiées par un serveur et messages présents chez plusieurs clients nécessitent revue ; déplacements Finder rapprochés explicitement.",
+    "Pas de paquet Docker ni application Mac signée dans cette version.",
+    "Dépôt Git distant définitif et accès privé non fournis ; nettoyage des anciennes versions manuel ; changements incompatibles exclus des updates automatiques.",
+    "Les doubles classements et règles rédactionnelles du PDF fourni restent manuels."
+  ]
+}

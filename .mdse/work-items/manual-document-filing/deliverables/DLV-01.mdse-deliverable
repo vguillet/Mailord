@@ -1,0 +1,24 @@
+{
+  "mdse": "2.3",
+  "kind": "Deliverable",
+  "id": "DLV-01",
+  "name": "Classement manuel et visibilité des documents",
+  "status": "conditional",
+  "revision": 2,
+  "createdAt": "2026-10-24",
+  "updatedAt": "2026-10-24",
+  "workItem": "WI-manual-document-filing",
+  "type": "source-code",
+  "producedBy": "TASK-01-E01",
+  "task": "TASK-01",
+  "version": "eb65de49c3120276ca915305dba221fa2a82d994",
+  "location": "autosecretaire/engine.py",
+  "requirements": [
+    "REQ-01",
+    "REQ-02"
+  ],
+  "verifications": [
+    "VER-01"
+  ],
+  "acceptanceNote": "Vérifié par tests et parcours Chrome fictif ; aucune acceptation humaine ni validation du matériel cible enregistrée."
+}

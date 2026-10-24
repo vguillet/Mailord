@@ -1,0 +1,33 @@
+{
+  "mdse": "2.3",
+  "kind": "Requirement",
+  "id": "REQ-11",
+  "name": "Reprise historique",
+  "status": "verified",
+  "revision": 2,
+  "createdAt": "2026-10-23",
+  "updatedAt": "2026-10-23",
+  "workItem": "WI-local-v1",
+  "keyword": "SHALL",
+  "statement": "L’utilisatrice SHALL consulter et associer des PDF historiques candidats avant de les considérer archivés.",
+  "priority": "must",
+  "acceptanceCriteria": [
+    {
+      "id": "AC-01",
+      "kind": "happy-path",
+      "given": "un PDF existant dans le dossier client",
+      "when": "une recherche de candidats est demandée",
+      "then": "les fichiers candidats sont présentés avec choix explicite"
+    },
+    {
+      "id": "AC-02",
+      "kind": "failure-path",
+      "given": "plusieurs candidats ou un PDF invalide",
+      "when": "l’association est proposée",
+      "then": "aucune association ambiguë ni impression historique automatique n’est effectuée"
+    }
+  ],
+  "verifiedBy": [
+    "VM-11"
+  ]
+}

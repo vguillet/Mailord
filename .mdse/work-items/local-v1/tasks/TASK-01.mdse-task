@@ -1,0 +1,85 @@
+{
+  "mdse": "2.3",
+  "kind": "Task",
+  "id": "TASK-01",
+  "name": "Socle et contrat",
+  "status": "done",
+  "revision": 3,
+  "createdAt": "2026-10-23",
+  "updatedAt": "2026-10-24",
+  "workItem": "WI-local-v1",
+  "order": 1,
+  "type": "software",
+  "objective": "Socle et contrat avec tests et preuves réelles.",
+  "requirements": [
+    "REQ-01",
+    "REQ-12"
+  ],
+  "design": "DESIGN",
+  "decisions": [
+    "DEC-01",
+    "DEC-02",
+    "DEC-03",
+    "DEC-04"
+  ],
+  "constraints": [
+    "CON-01",
+    "CON-02",
+    "CON-03"
+  ],
+  "dependsOn": [],
+  "designReferences": [
+    {
+      "section": "components",
+      "item": "Foundation"
+    }
+  ],
+  "files": [
+    {
+      "path": "pyproject.toml",
+      "action": "create"
+    },
+    {
+      "path": "mailord/__init__.py",
+      "action": "create"
+    },
+    {
+      "path": "mailord/store.py",
+      "action": "create"
+    },
+    {
+      "path": "mailord/config.py",
+      "action": "create"
+    },
+    {
+      "path": "docs/API.md",
+      "action": "create"
+    },
+    {
+      "path": "tests/test_store.py",
+      "action": "create"
+    }
+  ],
+  "doneCriteria": [
+    {
+      "id": "DC-01",
+      "statement": "Les fichiers planifiés implémentent le contrat de conception et les critères des exigences associées."
+    },
+    {
+      "id": "DC-02",
+      "statement": "Les tests ciblés sont exécutés et réussissent ; les limites matérielles sont explicites."
+    }
+  ],
+  "priority": "high",
+  "plannedEffort": "2h",
+  "plannedStart": "2026-10-23",
+  "plannedEnd": "2026-10-23",
+  "milestone": "MS-01",
+  "outputs": [
+    {
+      "name": "Socle et contrat",
+      "kind": "source-code",
+      "deliverable": true
+    }
+  ]
+}

@@ -1,0 +1,71 @@
+{
+  "mdse": "2.3",
+  "kind": "Task",
+  "id": "TASK-02",
+  "name": "Interface de mise à jour",
+  "status": "done",
+  "revision": 2,
+  "createdAt": "2026-10-23",
+  "updatedAt": "2026-10-24",
+  "workItem": "WI-one-click-updates",
+  "order": 2,
+  "type": "software",
+  "objective": "Interface de mise à jour",
+  "requirements": [
+    "REQ-04"
+  ],
+  "design": "DESIGN",
+  "decisions": [
+    "DEC-01"
+  ],
+  "constraints": [
+    "CON-01"
+  ],
+  "dependsOn": [],
+  "designReferences": [
+    {
+      "section": "components",
+      "item": "InterfaceLocale"
+    }
+  ],
+  "files": [
+    {
+      "path": "mailord/static/app.js",
+      "action": "update"
+    },
+    {
+      "path": "mailord/static/index.html",
+      "action": "update"
+    },
+    {
+      "path": "mailord/static/style.css",
+      "action": "update"
+    },
+    {
+      "path": "tests/test_update_ui.py",
+      "action": "create"
+    }
+  ],
+  "doneCriteria": [
+    {
+      "id": "DC-01",
+      "statement": "Contrats implémentés et tests ciblés réussis."
+    },
+    {
+      "id": "DC-02",
+      "statement": "Échecs et limites documentés, aucune validation matérielle inventée."
+    }
+  ],
+  "priority": "high",
+  "plannedEffort": "2h",
+  "plannedStart": "2026-10-23",
+  "plannedEnd": "2026-10-23",
+  "milestone": "MS-07",
+  "outputs": [
+    {
+      "name": "Interface de mise à jour",
+      "kind": "source-code",
+      "deliverable": true
+    }
+  ]
+}

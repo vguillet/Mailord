@@ -1,0 +1,48 @@
+{
+  "mdse": "2.3",
+  "kind": "WorkItem",
+  "id": "WI-inline-document-filing",
+  "name": "Sélecteur de classement sous chaque document",
+  "status": "reconciled",
+  "revision": 4,
+  "createdAt": "2026-10-24",
+  "updatedAt": "2026-10-24",
+  "slug": "inline-document-filing",
+  "purpose": "Suite explicite au classement manuel livré : remplacer le dialogue et les actions de classement groupé de l’interface par un sélecteur individuel dépliable sous chaque document, uniquement. Le moteur et le contrat API de classement restent réutilisés.",
+  "testingApproach": "selective-TDD",
+  "userStories": [
+    {
+      "id": "US-01",
+      "role": "utilisatrice",
+      "capability": "choisir le dossier directement sous chaque PDF ou pièce jointe",
+      "benefit": "classer en gardant les autres documents visibles"
+    }
+  ],
+  "requirements": [
+    "REQ-01",
+    "REQ-02"
+  ],
+  "methods": [
+    "VM-01",
+    "VM-02"
+  ],
+  "constraints": [
+    "CON-01"
+  ],
+  "decisions": [
+    "DEC-01"
+  ],
+  "tasks": [
+    "TASK-01"
+  ],
+  "executions": [
+    "TASK-01-E01"
+  ],
+  "verifications": [
+    "VER-01"
+  ],
+  "deliverables": [
+    "DLV-01"
+  ],
+  "design": "DESIGN"
+}

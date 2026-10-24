@@ -1,0 +1,87 @@
+{
+  "mdse": "2.3",
+  "kind": "Execution",
+  "id": "TASK-05-E01",
+  "name": "Réalisation Moteur et API",
+  "status": "succeeded",
+  "revision": 1,
+  "createdAt": "2026-10-23",
+  "updatedAt": "2026-10-23",
+  "workItem": "WI-local-v1",
+  "task": "TASK-05",
+  "attempt": 1,
+  "participants": [
+    {
+      "actor": "agent-codex",
+      "roles": [
+        "performer"
+      ]
+    },
+    {
+      "actor": "person-project-owner",
+      "roles": [
+        "initiator"
+      ]
+    }
+  ],
+  "startedAt": "2026-10-23",
+  "completedAt": "2026-10-23",
+  "summary": "Implémentation du contrat et exécution des tests ciblés. Tests matériels remplacés par simulations explicitement.",
+  "commits": [
+    {
+      "hash": "63cdb6b90a8ec85d841d4911a66ad4d8386f117f",
+      "message": "feat(local-v1): orchestrate durable archive workflows and API (REQ-01, REQ-02, REQ-03, REQ-07, REQ-08, REQ-09, REQ-11)",
+      "type": "feat"
+    }
+  ],
+  "filesChanged": [
+    {
+      "path": "autosecretaire/engine.py",
+      "action": "create"
+    },
+    {
+      "path": "autosecretaire/app.py",
+      "action": "create"
+    },
+    {
+      "path": "tests/test_engine.py",
+      "action": "create"
+    },
+    {
+      "path": "tests/test_api.py",
+      "action": "create"
+    }
+  ],
+  "testing": {
+    "approach": "selective-TDD",
+    "passed": 16,
+    "failed": 0,
+    "skipped": 0
+  },
+  "implementationDeviations": [
+    {
+      "rule": 1,
+      "type": "bug",
+      "found": "La revue de reprise a identifié une impression en préparation ignorée, une reprise globale des échecs et une récupération avant verrouillage.",
+      "action": "Reprise ciblée des échecs confirmés, statut incertain conservé, verrou pris avant toute récupération et libéré après arrêt effectif ; tests de non-régression.",
+      "resolved": true
+    },
+    {
+      "rule": 2,
+      "type": "missing-critical",
+      "found": "Un lien symbolique interne remplaçant un fichier suivi pouvait rediriger une réparation.",
+      "action": "Refuser les liens symboliques sur tous les composants du chemin avant réparation, classement ou ouverture.",
+      "resolved": true
+    }
+  ],
+  "doneCriteria": [
+    {
+      "id": "DC-01",
+      "met": true
+    },
+    {
+      "id": "DC-02",
+      "met": true
+    }
+  ]
+}

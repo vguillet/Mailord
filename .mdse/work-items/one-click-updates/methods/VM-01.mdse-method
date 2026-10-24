@@ -1,0 +1,25 @@
+{
+  "mdse": "2.3",
+  "kind": "Method",
+  "id": "VM-01",
+  "name": "Vérifier Détecter les versions publiées",
+  "status": "approved",
+  "revision": 1,
+  "createdAt": "2026-10-23",
+  "updatedAt": "2026-10-23",
+  "workItem": "WI-one-click-updates",
+  "class": "verification",
+  "method": "test",
+  "automated": true,
+  "requirements": [
+    "REQ-01"
+  ],
+  "command": "python3 -m pytest tests/test_updates.py -q",
+  "passCriteria": [
+    {
+      "id": "PC-01",
+      "statement": "Tous les scénarios passent ; les doublures et limites sont explicites."
+    }
+  ],
+  "evidenceKind": "test-output"
+}

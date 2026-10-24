@@ -1,0 +1,25 @@
+{
+  "mdse": "2.3",
+  "kind": "Method",
+  "id": "VM-01",
+  "name": "Vérifier Préférences persistantes",
+  "status": "approved",
+  "revision": 1,
+  "createdAt": "2026-10-24",
+  "updatedAt": "2026-10-24",
+  "workItem": "WI-print-preferences",
+  "class": "verification",
+  "method": "test",
+  "automated": true,
+  "requirements": [
+    "REQ-01"
+  ],
+  "command": "python3 -m pytest tests/test_print_preferences.py -q",
+  "passCriteria": [
+    {
+      "id": "PC-01",
+      "statement": "Préférences, persistance, commandes de soumission simulées et sélection passent sans échec ni test sauté."
+    }
+  ],
+  "evidenceKind": "test-output"
+}

@@ -1,0 +1,127 @@
+{
+  "mdse": "2.3",
+  "kind": "Design",
+  "id": "DESIGN",
+  "name": "Architecture locale v1",
+  "status": "approved",
+  "revision": 2,
+  "createdAt": "2026-10-23",
+  "updatedAt": "2026-10-24",
+  "workItem": "WI-local-v1",
+  "requirements": [
+    "REQ-01",
+    "REQ-02",
+    "REQ-03",
+    "REQ-04",
+    "REQ-05",
+    "REQ-06",
+    "REQ-07",
+    "REQ-08",
+    "REQ-09",
+    "REQ-10",
+    "REQ-11",
+    "REQ-12"
+  ],
+  "decisions": [
+    "DEC-01",
+    "DEC-02",
+    "DEC-03",
+    "DEC-04"
+  ],
+  "components": [
+    {
+      "name": "Foundation",
+      "responsibility": "Configuration, registre générique transactionnel et installation Python",
+      "state": "new",
+      "path": "mailord/store.py"
+    },
+    {
+      "name": "Connectors",
+      "responsibility": "Adaptateurs démonstration IMAP et Apple Mail, impression macOS",
+      "state": "new",
+      "path": "mailord/connectors.py"
+    },
+    {
+      "name": "Documents",
+      "responsibility": "Parsing MIME, noms sûrs, rendu PDF, contrôles et formats imprimables",
+      "state": "new",
+      "path": "mailord/documents.py"
+    },
+    {
+      "name": "InterfaceLocale",
+      "responsibility": "Navigation clients, liste, aperçu, classement, modèles et réglages",
+      "state": "new",
+      "path": "mailord/static/app.js"
+    },
+    {
+      "name": "Engine",
+      "responsibility": "Orchestration clients, templates, exports, classement, historique et impression",
+      "state": "new",
+      "path": "mailord/engine.py"
+    },
+    {
+      "name": "API",
+      "responsibility": "Contrat HTTP local, sécurité, tâches de fond, fichiers et configuration",
+      "state": "new",
+      "path": "mailord/app.py"
+    }
+  ],
+  "internalInterfaces": [
+    {
+      "signature": "Connector.list_folders() -> list[str]; create_folder(name:str) -> str; list_messages(folder:str) -> list[SourceMessage]; fetch(folder, source_id) -> bytes",
+      "purpose": "SourceMessage dataclass source_id:str, received_at:str ISO, message_id:str=\"\". Connectors selected make_connector(settings:dict, runtime:Path). Demo root runtime/mailboxes; IMAP config imap_host,imap_port,imap_user,imap_password_env; Apple Mail mail_account (empty=On My Mac), folders slash separated. No mark read. create_folder idempotent."
+    },
+    {
+      "signature": "documents.parse_message(raw:bytes, received_at:str|None=None) -> dict",
+      "purpose": "Return subject,sender,recipients,date (ISO),body,attachments list{name,content bytes,content_type,inline bool}. Decode charset and HTML as plain paragraphs. No remote content."
+    },
+    {
+      "signature": "documents.export_message(raw:bytes, directory:Path, received_at:str|None=None, date_source:str=\"received\", prefix_format:str=\"%Y-%m-%d\", identity:str=\"\") -> list[dict]",
+      "purpose": "Returns kind(email|attachment),original_name,path (str absolute),sha256,printable(bool),inline(bool). Write PDF plus original attachments collision-safe; safe_path(root,relative), valid_pdf(path), filename(original,date,prefix_format), render_pdf(parsed,path) exported for engine/tests. Unicode and long text wrapping."
+    },
+    {
+      "signature": "printing.submit(path:Path, printer:str, dry_run:bool=False) -> str; printing.status(job_id:str) -> str; printing.list_printers() -> list[str]",
+      "purpose": "submit returns spool ID or raises PrintUncertain for timeout/ambiguous result, PrintError for confirmed rejection. No retry in adapter; engine records intent and identity first. status submitted|completed|unknown (completed is spool-reported only)."
+    },
+    {
+      "signature": "Store(path:Path).all(kind),get(kind,id),put(kind,id,payload),delete(kind,id); Store.transaction()",
+      "purpose": "SQLite records table; put upsert, JSON payloads with id. RLock and context transaction; app owns single-process lock outside sync folder. Engine serializes operations."
+    },
+    {
+      "signature": "Engine(settings,store,connector=None).scan(); .process(); .create_client(name,mailbox=\"\"); .classify(ids,destination); .print_messages(ids); .state(); .save_template(folders); .apply_template(client_id); .history(client_id); .associate(message_id,path)",
+      "purpose": "Payloads and transport per docs/API.md. Each adapter error visible, no overwriting personal files. Documents paths managed by engine and tracked by IDs. Persistent client provisioning, message identity content SHA plus Message-ID metadata, jobs retryable, print uncertain terminal. Settings editable validated allowlist."
+    }
+  ],
+  "dataModels": [
+    {
+      "name": "Record",
+      "fields": [
+        {
+          "name": "kind",
+          "type": "str"
+        },
+        {
+          "name": "id",
+          "type": "str"
+        },
+        {
+          "name": "payload",
+          "type": "JSON",
+          "description": "Typed by service: settings,client,template,message,document,job,print,event; versionable per-record fields, unique(kind,id)."
+        }
+      ]
+    }
+  ],
+  "dataFlows": [
+    {
+      "name": "Traitement",
+      "steps": [
+        "Discover folders and source messages with no read-state mutation",
+        "Persist spool and queue before export",
+        "Render and verify documents atomically",
+        "Classify via intent and recoverable moves",
+        "Persist print intent before submit; ambiguous result requires explicit action"
+      ]
+    }
+  ]
+}

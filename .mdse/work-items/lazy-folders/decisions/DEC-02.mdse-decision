@@ -1,0 +1,32 @@
+{
+  "mdse": "2.3",
+  "kind": "Decision",
+  "id": "DEC-02",
+  "name": "Exception pour les dossiers choisis à la création",
+  "status": "accepted",
+  "revision": 1,
+  "createdAt": "2026-10-24",
+  "updatedAt": "2026-10-24",
+  "workItem": "WI-lazy-folders",
+  "requirements": [
+    "REQ-01",
+    "REQ-02",
+    "REQ-03",
+    "REQ-04"
+  ],
+  "context": "Complément direct de l’utilisateur pendant l’implémentation : cocher un premier ensemble de dossiers à créer même vides.",
+  "chosen": "Ajouter initial_folders facultatif à create_client et à l’API. Liste vide par défaut, chemins sélectionnés indépendamment dans le modèle courant avec parents implicites ; champs persistés avant effets, reprise idempotente. Les chemins choisis et leurs ancêtres sont exclus du nettoyage des dossiers vides.",
+  "rationale": "Concilier la création à la demande et une préparation explicite sans matérialiser les autres branches.",
+  "rejected": [
+    {
+      "alternative": "Cocher tous les dossiers par défaut",
+      "reason": "Réintroduit les arborescences vides que l’utilisateur veut éviter."
+    }
+  ],
+  "decidedBy": "agent",
+  "consequences": [
+    "Une sélection de parent ne coche pas automatiquement ses enfants ; un enfant sélectionné crée ses parents.",
+    "Le catalogue mémorisé reste compatible avec les anciens clients sans initial_folders.",
+    "Aucun nouveau schéma de base ni service ; champ JSON optionnel et extension compatible de la requête."
+  ]
+}

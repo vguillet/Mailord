@@ -1,0 +1,40 @@
+{
+  "mdse": "2.3",
+  "kind": "Design",
+  "id": "DESIGN",
+  "name": "Sélecteur attaché au document",
+  "status": "approved",
+  "revision": 2,
+  "createdAt": "2026-10-24",
+  "updatedAt": "2026-10-24",
+  "workItem": "WI-inline-document-filing",
+  "requirements": [
+    "REQ-01",
+    "REQ-02"
+  ],
+  "decisions": [
+    "DEC-01"
+  ],
+  "components": [
+    {
+      "name": "InterfaceLocale",
+      "state": "modified",
+      "path": "mailord/static/app.js",
+      "responsibility": "État document/message/client, recherche, branches dépliées, choix, requête et erreur ; rendu inline et parcours clavier. Chevrons SVG de 20 px et trait de 2,4 px dans des boutons de 32 × 32 px, agrandis à la demande de l’utilisateur pour rester lisibles à côté du texte."
+    }
+  ],
+  "internalInterfaces": [
+    {
+      "signature": "folderEntries(folders, query, expanded)",
+      "purpose": "Projeter le catalogue complet en branches visibles ; recherche dans tout le chemin et ancêtres sans dépendre des dossiers existants."
+    },
+    {
+      "signature": "renderDetail / openFiling / renderFolders / confirmFiling",
+      "purpose": "Un seul sélecteur sous le document ; conserver son nœud DOM et le focus au rafraîchissement, réinitialiser au changement de communication ; requête capture les identifiants et ferme uniquement son propre sélecteur après succès."
+    },
+    {
+      "signature": "POST /api/classify {message_ids:[id],document_ids:[id],destination}",
+      "purpose": "Réutiliser le moteur et ses protections sans modification ; préserver cases impression, statuts ambrés, modèles et emplacements existants."
+    }
+  ]
+}

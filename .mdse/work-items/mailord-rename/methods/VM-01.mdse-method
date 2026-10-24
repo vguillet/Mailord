@@ -1,0 +1,25 @@
+{
+  "mdse": "2.3",
+  "kind": "Method",
+  "id": "VM-01",
+  "name": "Contrôles du renommage et de la conservation",
+  "status": "approved",
+  "revision": 1,
+  "createdAt": "2026-10-24",
+  "updatedAt": "2026-10-24",
+  "workItem": "WI-mailord-rename",
+  "class": "verification",
+  "method": "test",
+  "automated": true,
+  "requirements": [
+    "REQ-01"
+  ],
+  "command": "python -m pytest -q",
+  "passCriteria": [
+    {
+      "id": "PC-01",
+      "statement": "Suite, démarrage supervisé, roue installable et migration testés ; parcours navigateur et empreintes des archives contrôlés."
+    }
+  ],
+  "evidenceKind": "test-output"
+}

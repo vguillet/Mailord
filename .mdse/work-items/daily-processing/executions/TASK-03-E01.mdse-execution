@@ -1,0 +1,100 @@
+{
+  "mdse": "2.3",
+  "revision": 1,
+  "createdAt": "2026-10-24",
+  "updatedAt": "2026-10-24",
+  "workItem": "WI-daily-processing",
+  "kind": "Execution",
+  "id": "TASK-03-E01",
+  "name": "Mail unifié, actions documentaires et suivi explicite",
+  "status": "succeeded",
+  "task": "TASK-03",
+  "attempt": 1,
+  "participants": [
+    {
+      "actor": "agent-codex",
+      "roles": [
+        "performer"
+      ]
+    },
+    {
+      "actor": "person-project-owner",
+      "roles": [
+        "initiator"
+      ]
+    }
+  ],
+  "startedAt": "2026-10-24",
+  "completedAt": "2026-10-24",
+  "summary": "Option 2 et précisions utilisateur implémentées : pied PDF, pièces séparées, titre pleine largeur, icônes Lucide et destination dessous ; suppression des contrôles et textes demandés ; suivi sans ambiguïté. 43 tests ciblés, parcours IAB, comparaison visuelle et paquet vérifiés. Main 8765 actualisé sans mutation des registres ni des 13 archives.",
+  "commits": [
+    {
+      "hash": "cff5171ca545dd62387fc3a8d26cfbb3abf7c0a7",
+      "message": "feat(daily-processing): unify mail PDF controls and clarify tracking (REQ-01, REQ-02)",
+      "type": "feat"
+    }
+  ],
+  "filesChanged": [
+    {
+      "path": "autosecretaire/static/app.js",
+      "action": "update"
+    },
+    {
+      "path": "autosecretaire/static/style.css",
+      "action": "update"
+    },
+    {
+      "path": "README.md",
+      "action": "update"
+    },
+    {
+      "path": "docs/DAILY_UPGRADE.md",
+      "action": "update"
+    },
+    {
+      "path": "docs/VALIDATION.md",
+      "action": "update"
+    },
+    {
+      "path": "design-qa.md",
+      "action": "create"
+    },
+    {
+      "path": "pyproject.toml",
+      "action": "update"
+    },
+    {
+      "path": "tests/test_ui.py",
+      "action": "update"
+    },
+    {
+      "path": "autosecretaire/static/icons",
+      "action": "create"
+    }
+  ],
+  "testing": {
+    "approach": "selective-TDD",
+    "passed": 43,
+    "failed": 0,
+    "skipped": 0
+  },
+  "doneCriteria": [
+    {
+      "id": "DC-01",
+      "met": true
+    }
+  ],
+  "implementationDeviations": [],
+  "evidence": [
+    {
+      "kind": "test-output",
+      "reference": "docs/VALIDATION.md",
+      "description": "9 scénarios de badges rouges avant implémentation puis 43 tests ciblés verts ; parcours PDF, simulation, réimpression annulée et conservation des données."
+    },
+    {
+      "kind": "test-output",
+      "reference": "design-qa.md",
+      "description": "Comparaisons du concept et des corrections utilisateur avec rendu navigateur ; 1280, 720 et 390 px CSS ; captures et vérification des icônes dans le paquet."
+    }
+  ]
+}

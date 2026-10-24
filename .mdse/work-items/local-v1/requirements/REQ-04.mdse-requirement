@@ -1,0 +1,33 @@
+{
+  "mdse": "2.3",
+  "kind": "Requirement",
+  "id": "REQ-04",
+  "name": "Dossiers et connecteurs",
+  "status": "verified",
+  "revision": 2,
+  "createdAt": "2026-10-23",
+  "updatedAt": "2026-10-23",
+  "workItem": "WI-local-v1",
+  "keyword": "SHALL",
+  "statement": "L’utilisatrice SHALL surveiller des dossiers de démonstration, IMAP ou Apple Mail par un adaptateur sélectionné.",
+  "priority": "must",
+  "acceptanceCriteria": [
+    {
+      "id": "AC-01",
+      "kind": "happy-path",
+      "given": "un dossier contenant un mail lu ou déplacé",
+      "when": "une synchronisation est lancée",
+      "then": "le message et sa source sont découverts sans modification de son état lu"
+    },
+    {
+      "id": "AC-02",
+      "kind": "failure-path",
+      "given": "une réponse serveur erronée",
+      "when": "une lecture est tentée",
+      "then": "l’erreur est signalée sans déclarer le message exporté"
+    }
+  ],
+  "verifiedBy": [
+    "VM-04"
+  ]
+}

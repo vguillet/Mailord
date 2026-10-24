@@ -1,0 +1,40 @@
+{
+  "mdse": "2.3",
+  "kind": "Requirement",
+  "id": "REQ-04",
+  "name": "Choix initial de dossiers vides",
+  "status": "verified",
+  "revision": 1,
+  "createdAt": "2026-10-24",
+  "updatedAt": "2026-10-24",
+  "workItem": "WI-lazy-folders",
+  "keyword": "SHALL",
+  "statement": "À la création d’un client, l’utilisatrice SHALL pouvoir cocher des destinations du modèle à créer immédiatement, avec leurs parents, même vides ; ces choix restent conservés et sont repris en cas d’interruption.",
+  "priority": "must",
+  "acceptanceCriteria": [
+    {
+      "id": "AC-01",
+      "kind": "happy-path",
+      "given": "un formulaire de nouveau client",
+      "when": "certaines destinations seulement sont cochées",
+      "then": "elles et leurs parents sont créés ; les autres restent virtuelles et aucun dossier n’est coché par défaut"
+    },
+    {
+      "id": "AC-02",
+      "kind": "failure-path",
+      "given": "une erreur de création ou un chemin hors modèle",
+      "when": "la création est reprise ou refusée",
+      "then": "les choix valides sont repris sans perte ; les entrées invalides ne créent aucun client ni dossier"
+    },
+    {
+      "id": "AC-03",
+      "kind": "happy-path",
+      "given": "un dossier choisi initialement reçoit puis perd son dernier document",
+      "when": "le mail est reclassé",
+      "then": "ce dossier et ses parents restent présents même vides"
+    }
+  ],
+  "verifiedBy": [
+    "VM-04"
+  ]
+}

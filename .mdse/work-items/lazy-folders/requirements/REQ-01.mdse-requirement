@@ -1,0 +1,33 @@
+{
+  "mdse": "2.3",
+  "kind": "Requirement",
+  "id": "REQ-01",
+  "name": "Catalogue complet sans dossiers vides",
+  "status": "verified",
+  "revision": 1,
+  "createdAt": "2026-10-24",
+  "updatedAt": "2026-10-24",
+  "workItem": "WI-lazy-folders",
+  "keyword": "SHALL",
+  "statement": "Le service SHALL proposer la totalité du modèle courant et des destinations conservées du client sans créer de dossier documentaire non explicitement choisi lors de la création, reprise ou actualisation du client.",
+  "priority": "must",
+  "acceptanceCriteria": [
+    {
+      "id": "AC-01",
+      "kind": "happy-path",
+      "given": "un client créé sans sélection initiale et un modèle imbriqué",
+      "when": "les destinations sont consultées",
+      "then": "le modèle entier et ses parents sont sélectionnables, favoris compris, sans création locale"
+    },
+    {
+      "id": "AC-02",
+      "kind": "failure-path",
+      "given": "un client existant et une nouvelle version du modèle",
+      "when": "le modèle est enregistré puis le service redémarre",
+      "then": "les nouvelles destinations sont disponibles sans perdre les anciennes ni modifier les fichiers"
+    }
+  ],
+  "verifiedBy": [
+    "VM-01"
+  ]
+}

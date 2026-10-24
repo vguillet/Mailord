@@ -1,0 +1,67 @@
+{
+  "mdse": "2.3",
+  "kind": "Design",
+  "id": "DESIGN",
+  "name": "Modèle avec présélections et destinations par document",
+  "status": "approved",
+  "revision": 2,
+  "createdAt": "2026-10-24",
+  "updatedAt": "2026-10-24",
+  "workItem": "WI-correspondence-filing",
+  "requirements": [
+    "REQ-01",
+    "REQ-02",
+    "REQ-03"
+  ],
+  "decisions": [
+    "DEC-01"
+  ],
+  "components": [
+    {
+      "name": "GestionClients",
+      "state": "modified",
+      "path": "mailord/engine.py",
+      "responsibility": "Modèle versionné avec initial_folders et email_folder ; choix par défaut et reprise client figée."
+    },
+    {
+      "name": "TraitementDocuments",
+      "state": "modified",
+      "path": "mailord/engine.py",
+      "responsibility": "PDF au dossier Correspondances, pièces jointes en attente, adaptation des archives suivies et réparations à leur destination."
+    },
+    {
+      "name": "ArchivageLocal",
+      "state": "modified",
+      "path": "mailord/engine.py",
+      "responsibility": "Intentions par pièce, reprises et contrôles avant déplacement, nettoyage protégé."
+    },
+    {
+      "name": "InterfaceLocale",
+      "state": "modified",
+      "path": "mailord/static/app.js",
+      "responsibility": "Cases du modèle, rôle Correspondances, présélections client modifiables, statut et classement par pièce."
+    }
+  ],
+  "internalInterfaces": [
+    {
+      "signature": "save_template(folders, initial_folders=None, email_folder=None) ; PUT /api/template",
+      "purpose": "Options validées avant nouvelle version ; dossier mail conservé dans le catalogue. Omission conserve les paramètres antérieurs ; les choix supprimés du modèle sont retirés. UI suit renommage/déplacement et duplication des présélections ; rôle mail déplaçable, suppression refusée avant choix d’un remplaçant."
+    },
+    {
+      "signature": "create_client initial_folders=None ; POST /api/clients",
+      "purpose": "Omission applique le modèle uniquement à un nouveau client ; [] reste vide. Doublon client sans choix ne réapplique pas les nouveaux défauts."
+    },
+    {
+      "signature": "classify(message_ids, destination, document_ids=None) ; POST /api/classify",
+      "purpose": "Omission cible toutes les pièces jointes ; liste explicite cible seulement les pièces des messages. Rejeter PDF mail, identifiants étrangers, chemins interdits, sources altérées et intentions en cours avant effets. Le PDF du mail ne se déplace pas."
+    },
+    {
+      "signature": "Document.destination/classification/move_destination ; Message.filing_version/email_destination/classification_auto_print",
+      "purpose": "Intentions et destination finale par document ; message classé si toutes les PJ le sont. Compatibilité des anciennes intentions, instantané du dossier mail au traitement et adaptation des anciennes archives avec impression protégée. Empreintes et identifiants inchangés."
+    },
+    {
+      "signature": "Interface classement PJ et cases du modèle",
+      "purpose": "Bouton par pièce, choix multiple dans le sélecteur, emplacement et statut par document, PDF fixe affiché séparément. Les cases d’impression restent distinctes."
+    }
+  ]
+}

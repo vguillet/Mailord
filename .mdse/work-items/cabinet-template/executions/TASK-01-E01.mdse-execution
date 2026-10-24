@@ -1,0 +1,88 @@
+{
+  "mdse": "2.3",
+  "kind": "Execution",
+  "id": "TASK-01-E01",
+  "name": "Configuration et contrôles du modèle",
+  "status": "succeeded",
+  "revision": 1,
+  "createdAt": "2026-10-24",
+  "updatedAt": "2026-10-24",
+  "workItem": "WI-cabinet-template",
+  "task": "TASK-01",
+  "attempt": 1,
+  "participants": [
+    {
+      "actor": "agent-codex",
+      "roles": [
+        "performer"
+      ]
+    },
+    {
+      "actor": "person-project-owner",
+      "roles": [
+        "initiator"
+      ]
+    }
+  ],
+  "startedAt": "2026-10-24",
+  "completedAt": "2026-10-24",
+  "summary": "Structure issue du PDF, repères et exemples adaptés ; inspection de création/préservation, suite existante et parcours navigateur. Configuration et présentation : pas de nouveau test miroir.",
+  "commits": [
+    {
+      "hash": "3a53aaedbd38e6815e9f6cb88998138d993cd144",
+      "message": "feat(cabinet-template): adopt supplied filing structure and guidance (REQ-01, REQ-02)",
+      "type": "feat"
+    }
+  ],
+  "filesChanged": [
+    {
+      "path": "autosecretaire/config.py",
+      "action": "update"
+    },
+    {
+      "path": "autosecretaire/demo.py",
+      "action": "update"
+    },
+    {
+      "path": "autosecretaire/static/app.js",
+      "action": "update"
+    },
+    {
+      "path": "tests/test_engine.py",
+      "action": "update"
+    },
+    {
+      "path": "tests/test_api.py",
+      "action": "update"
+    },
+    {
+      "path": "tests/test_print_preferences.py",
+      "action": "update"
+    },
+    {
+      "path": "docs/FOLDER_TEMPLATE.md",
+      "action": "create"
+    },
+    {
+      "path": "docs/VALIDATION.md",
+      "action": "update"
+    }
+  ],
+  "testing": {
+    "approach": "selective-TDD",
+    "passed": 154,
+    "failed": 0,
+    "skipped": 0
+  },
+  "implementationDeviations": [],
+  "doneCriteria": [
+    {
+      "id": "DC-01",
+      "met": true
+    },
+    {
+      "id": "DC-02",
+      "met": true
+    }
+  ]
+}

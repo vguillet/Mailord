@@ -1,0 +1,53 @@
+{
+  "mdse": "2.3",
+  "kind": "WorkItem",
+  "id": "WI-lazy-folders",
+  "name": "Dossiers créés au premier document",
+  "status": "reconciled",
+  "revision": 1,
+  "createdAt": "2026-10-24",
+  "updatedAt": "2026-10-24",
+  "slug": "lazy-folders",
+  "purpose": "Faire évoluer la création immédiate livrée dans WI-local-v1 et WI-cabinet-template vers un catalogue virtuel et une matérialisation au classement, selon la correction explicite de l’utilisateur. L’utilisateur a ensuite demandé une exception explicite : sélectionner des dossiers vides à préparer dès la création.",
+  "userStories": [
+    {
+      "id": "US-01",
+      "role": "utilisatrice",
+      "capability": "choisir tout dossier du modèle sans le créer à vide",
+      "benefit": "garder uniquement les branches utiles sur le Mac"
+    }
+  ],
+  "testingApproach": "selective-TDD",
+  "requirements": [
+    "REQ-01",
+    "REQ-02",
+    "REQ-03",
+    "REQ-04"
+  ],
+  "constraints": [
+    "CON-01"
+  ],
+  "methods": [
+    "VM-01",
+    "VM-02",
+    "VM-03",
+    "VM-04"
+  ],
+  "decisions": [
+    "DEC-01",
+    "DEC-02"
+  ],
+  "tasks": [
+    "TASK-01"
+  ],
+  "executions": [
+    "TASK-01-E01"
+  ],
+  "verifications": [
+    "VER-01"
+  ],
+  "deliverables": [
+    "DLV-01"
+  ],
+  "design": "DESIGN"
+}

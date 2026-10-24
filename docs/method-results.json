@@ -1,0 +1,106 @@
+{
+  "date": "2026-10-23",
+  "runs": [
+    {
+      "methods": [
+        "VM-01",
+        "VM-12"
+      ],
+      "command": "python3 -m pytest tests/test_api.py -q",
+      "exit_code": 0,
+      "passed": 4,
+      "failed": 0,
+      "skipped": 0,
+      "duration_seconds": 1.534,
+      "output": "....                                                                     [100%]\n4 passed in 0.70s"
+    },
+    {
+      "methods": [
+        "VM-02",
+        "VM-03",
+        "VM-07",
+        "VM-08",
+        "VM-11"
+      ],
+      "command": "python3 -m pytest tests/test_engine.py -q",
+      "exit_code": 0,
+      "passed": 14,
+      "failed": 0,
+      "skipped": 0,
+      "duration_seconds": 1.038,
+      "output": "..............                                                           [100%]\n14 passed in 0.49s"
+    },
+    {
+      "methods": [
+        "VM-04"
+      ],
+      "command": "python3 -m pytest tests/test_connectors.py -q",
+      "exit_code": 0,
+      "passed": 27,
+      "failed": 0,
+      "skipped": 0,
+      "duration_seconds": 0.561,
+      "output": "...........................                                              [100%]\n27 passed in 0.04s"
+    },
+    {
+      "methods": [
+        "VM-05",
+        "VM-06"
+      ],
+      "command": "python3 -m pytest tests/test_documents.py -q",
+      "exit_code": 0,
+      "passed": 24,
+      "failed": 0,
+      "skipped": 0,
+      "duration_seconds": 0.893,
+      "output": "........................                                                 [100%]\n24 passed in 0.36s"
+    },
+    {
+      "methods": [
+        "VM-09"
+      ],
+      "command": "python3 -m pytest tests/test_printing.py -q",
+      "exit_code": 0,
+      "passed": 12,
+      "failed": 0,
+      "skipped": 0,
+      "duration_seconds": 0.528,
+      "output": "............                                                             [100%]\n12 passed in 0.02s"
+    },
+    {
+      "methods": [
+        "VM-10"
+      ],
+      "command": "python3 -m pytest tests/test_ui.py -q",
+      "exit_code": 0,
+      "passed": 17,
+      "failed": 0,
+      "skipped": 0,
+      "duration_seconds": 1.157,
+      "output": ".................                                                        [100%]\n17 passed in 0.70s"
+    },
+    {
+      "methods": [
+        "VM-14"
+      ],
+      "command": "python3 -m pytest tests/test_printing.py tests/test_engine.py -q",
+      "exit_code": 0,
+      "passed": 26,
+      "failed": 0,
+      "skipped": 0,
+      "duration_seconds": 1.313,
+      "output": "..........................                                               [100%]\n26 passed in 0.57s"
+    },
+    {
+      "methods": [
+        "VM-15"
+      ],
+      "command": "python3 -m pytest tests/test_connectors.py -q",
+      "exit_code": 0,
+      "passed": 27,
+      "failed": 0,
+      "skipped": 0,
+      "output": "...........................                                              [100%]\n27 passed in 0.05s"
+    }
+  ]
+}

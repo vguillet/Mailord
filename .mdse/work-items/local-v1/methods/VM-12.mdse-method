@@ -1,0 +1,25 @@
+{
+  "mdse": "2.3",
+  "kind": "Method",
+  "id": "VM-12",
+  "name": "Tests : Installation",
+  "status": "approved",
+  "revision": 1,
+  "createdAt": "2026-10-23",
+  "updatedAt": "2026-10-23",
+  "workItem": "WI-local-v1",
+  "class": "verification",
+  "method": "test",
+  "automated": true,
+  "requirements": [
+    "REQ-12"
+  ],
+  "command": "python3 -m pytest tests/test_api.py -q",
+  "passCriteria": [
+    {
+      "id": "PC-01",
+      "statement": "Tous les scénarios associés réussissent sans test sauté ; les intégrations matérielles sont simulées explicitement."
+    }
+  ],
+  "evidenceKind": "test-output"
+}

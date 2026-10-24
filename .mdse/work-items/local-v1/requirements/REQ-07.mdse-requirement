@@ -1,0 +1,33 @@
+{
+  "mdse": "2.3",
+  "kind": "Requirement",
+  "id": "REQ-07",
+  "name": "Réconciliation durable",
+  "status": "verified",
+  "revision": 2,
+  "createdAt": "2026-10-23",
+  "updatedAt": "2026-10-23",
+  "workItem": "WI-local-v1",
+  "keyword": "SHALL",
+  "statement": "L’utilisatrice SHALL retrouver une file persistante qui répare les fichiers absents ou invalides sans doublonner les messages.",
+  "priority": "must",
+  "acceptanceCriteria": [
+    {
+      "id": "AC-01",
+      "kind": "happy-path",
+      "given": "un export achevé",
+      "when": "le service est relancé et resynchronisé",
+      "then": "aucun message ni export supplémentaire n’est créé"
+    },
+    {
+      "id": "AC-02",
+      "kind": "failure-path",
+      "given": "un PDF supprimé ou corrompu",
+      "when": "le contrôle est relancé",
+      "then": "le fichier est remis en file et régénéré sans nouvelle impression"
+    }
+  ],
+  "verifiedBy": [
+    "VM-07"
+  ]
+}

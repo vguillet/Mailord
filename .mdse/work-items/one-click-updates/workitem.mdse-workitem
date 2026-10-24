@@ -1,0 +1,60 @@
+{
+  "mdse": "2.3",
+  "kind": "WorkItem",
+  "id": "WI-one-click-updates",
+  "name": "Mises à jour depuis l’interface",
+  "status": "reconciled",
+  "revision": 1,
+  "createdAt": "2026-10-23",
+  "updatedAt": "2026-10-23",
+  "slug": "one-click-updates",
+  "purpose": "Permettre à une utilisatrice non technique d’installer les versions poussées sur Git depuis son interface locale.",
+  "userStories": [
+    {
+      "id": "US-01",
+      "role": "utilisatrice",
+      "capability": "installer une mise à jour en un clic",
+      "benefit": "ne pas utiliser le terminal"
+    }
+  ],
+  "testingApproach": "selective-TDD",
+  "requirements": [
+    "REQ-01",
+    "REQ-02",
+    "REQ-03",
+    "REQ-04"
+  ],
+  "constraints": [
+    "CON-01"
+  ],
+  "methods": [
+    "VM-01",
+    "VM-02",
+    "VM-03",
+    "VM-04"
+  ],
+  "decisions": [
+    "DEC-01"
+  ],
+  "tasks": [
+    "TASK-01",
+    "TASK-02",
+    "TASK-03"
+  ],
+  "executions": [
+    "TASK-01-E01",
+    "TASK-02-E01",
+    "TASK-03-E01",
+    "TASK-03-E02"
+  ],
+  "verifications": [
+    "VER-01"
+  ],
+  "deliverables": [
+    "DLV-01",
+    "DLV-02",
+    "DLV-03",
+    "DLV-04"
+  ],
+  "design": "DESIGN"
+}

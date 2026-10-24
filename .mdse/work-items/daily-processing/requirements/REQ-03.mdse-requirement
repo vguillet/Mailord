@@ -1,0 +1,33 @@
+{
+  "mdse": "2.3",
+  "kind": "Requirement",
+  "id": "REQ-03",
+  "name": "Recherche documentaire",
+  "status": "verified",
+  "revision": 2,
+  "createdAt": "2026-10-24",
+  "updatedAt": "2026-10-24",
+  "workItem": "WI-daily-processing",
+  "keyword": "SHALL",
+  "statement": "L’utilisatrice SHALL retrouver un mail par le nom original ou exporté de ses pièces et leur destination.",
+  "priority": "must",
+  "acceptanceCriteria": [
+    {
+      "id": "AC-01",
+      "kind": "happy-path",
+      "given": "une pièce dont le nom ne figure pas dans le mail",
+      "when": "son nom est recherché sans respecter accents ou casse",
+      "then": "le mail correspondant est proposé avec ses documents"
+    },
+    {
+      "id": "AC-02",
+      "kind": "edge-case",
+      "given": "une recherche sans résultat ou un filtre client actif",
+      "when": "la recherche est effectuée",
+      "then": "un état vide clair ou uniquement les résultats du client sont affichés"
+    }
+  ],
+  "verifiedBy": [
+    "VM-03"
+  ]
+}

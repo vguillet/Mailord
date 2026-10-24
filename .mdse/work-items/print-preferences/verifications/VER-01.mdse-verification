@@ -1,0 +1,83 @@
+{
+  "mdse": "2.3",
+  "kind": "Verification",
+  "id": "VER-01",
+  "name": "Vérification des préférences d’impression",
+  "status": "pass",
+  "revision": 1,
+  "createdAt": "2026-10-24",
+  "updatedAt": "2026-10-24",
+  "workItem": "WI-print-preferences",
+  "requirements": [
+    "REQ-01",
+    "REQ-02"
+  ],
+  "executions": [
+    "TASK-01-E01"
+  ],
+  "tasks": [],
+  "testRun": {
+    "runner": "pytest",
+    "command": "/Users/vguillet/Documents/Repos/Auto-secretaire/.venv/bin/python -c 'import pytest; raise SystemExit(pytest.main([\"-q\"]))'",
+    "passed": 154,
+    "failed": 0,
+    "skipped": 0
+  },
+  "results": [
+    {
+      "requirement": "REQ-01",
+      "result": "pass",
+      "methods": [
+        "VM-01"
+      ],
+      "acceptanceCriteria": [
+        {
+          "id": "AC-01",
+          "covered": true,
+          "test": "test_preferences_api_persist_and_old_configuration_defaults"
+        },
+        {
+          "id": "AC-02",
+          "covered": true,
+          "test": "test_invalid_preferences_leave_settings_untouched"
+        }
+      ]
+    },
+    {
+      "requirement": "REQ-02",
+      "result": "pass",
+      "methods": [
+        "VM-02"
+      ],
+      "acceptanceCriteria": [
+        {
+          "id": "AC-01",
+          "covered": true,
+          "test": "test_both_mail_and_supported_attachment_receive_options_without_duplicate"
+        },
+        {
+          "id": "AC-02",
+          "covered": true,
+          "test": "test_attachment_toggle_is_default_and_per_document_selection_controls_existing"
+        }
+      ]
+    }
+  ],
+  "evidence": [
+    {
+      "kind": "test-output",
+      "reference": "docs/print-preferences-test-results.json",
+      "description": "Commande commune des méthodes exécutée : 18 tests passés."
+    },
+    {
+      "kind": "browser-review",
+      "reference": "docs/VALIDATION.md",
+      "description": "Enregistrement et rechargement des réglages, impression simulée du mail et de sa pièce jointe avec les options attendues."
+    }
+  ],
+  "deviationReview": [],
+  "warnings": [
+    "Aucune impression matérielle effectuée ; compatibilité physique avec le pilote cible à confirmer.",
+    "Avertissement Starlette/httpx préexistant sous Python 3.14."
+  ]
+}

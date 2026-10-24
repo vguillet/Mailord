@@ -1,0 +1,77 @@
+{
+  "mdse": "2.3",
+  "kind": "Verification",
+  "id": "VER-01",
+  "name": "Portée impression et favoris vérifiés",
+  "status": "pass",
+  "revision": 1,
+  "createdAt": "2026-10-24",
+  "updatedAt": "2026-10-24",
+  "workItem": "WI-document-client-actions",
+  "requirements": [
+    "REQ-01",
+    "REQ-02"
+  ],
+  "executions": [
+    "TASK-01-E01"
+  ],
+  "tasks": [],
+  "testRun": {
+    "runner": "pytest",
+    "command": "/Users/vguillet/Documents/Repos/Auto-secretaire/.venv/bin/python -c 'import pytest; raise SystemExit(pytest.main([\"-q\",\"--tb=short\"]))'",
+    "passed": 211,
+    "failed": 0,
+    "skipped": 0
+  },
+  "results": [
+    {
+      "requirement": "REQ-01",
+      "result": "pass",
+      "methods": [
+        "VM-01"
+      ],
+      "acceptanceCriteria": [
+        {
+          "id": "AC-01",
+          "covered": true,
+          "test": "test_one_document_ignores_checkboxes_and_preserves_other_documents ; Chrome : une pièce décochée, un seul travail simulé, cases inchangées, double clic et actualisation sans doublon ; deux empreintes servies contrôlées."
+        },
+        {
+          "id": "AC-02",
+          "covered": true,
+          "test": "test_document_reprint_requires_confirmation_and_stays_scoped, test_uncertain_print_does_not_submit_again_implicitly, test_certain_failure_retries_only_the_failed_document, test_invalid_document_is_never_submitted (4 cas), test_document_print_and_star_routes_protected ; Chrome : nouvelle impression confirmée de la seule pièce."
+        }
+      ]
+    },
+    {
+      "requirement": "REQ-02",
+      "result": "pass",
+      "methods": [
+        "VM-02"
+      ],
+      "acceptanceCriteria": [
+        {
+          "id": "AC-01",
+          "covered": true,
+          "test": "test_client_star_persists_without_altering_folder_favorites_or_archives ; test_starred_clients_first_then_french_alphabetical_order ; Chrome : étoile, rechargement, recherche et retrait avec retour au tri normal."
+        },
+        {
+          "id": "AC-02",
+          "covered": true,
+          "test": "Chrome : étoile ne change ni mail, client actif, sélecteur ou recherche ; refus 503 affiché sans changement de favori et focus restauré. Test API : archives et favoris de dossiers conservés, types invalides refusés."
+        }
+      ]
+    }
+  ],
+  "evidence": [
+    {
+      "kind": "test-output",
+      "reference": "docs/VALIDATION.md",
+      "description": "211 tests, 31 ciblés, syntaxe JS valide ; Chrome 8882, deux travaux simulés limités à la pièce et étoiles persistantes ; aucun papier imprimé."
+    }
+  ],
+  "deviationReview": [],
+  "warnings": [
+    "Validation réalisée sur données fictives et dans Chrome ; aucune acceptation humaine ou essai d’imprimante cible revendiqué."
+  ]
+}

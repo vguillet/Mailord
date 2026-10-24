@@ -1,0 +1,40 @@
+{
+  "mdse": "2.3",
+  "kind": "Requirement",
+  "id": "REQ-01",
+  "name": "Progression d’impression fiable",
+  "status": "verified",
+  "revision": 3,
+  "createdAt": "2026-10-24",
+  "updatedAt": "2026-10-24",
+  "workItem": "WI-daily-processing",
+  "keyword": "SHALL",
+  "statement": "L’utilisatrice SHALL distinguer les impressions partielles et le résultat courant de chaque document.",
+  "priority": "must",
+  "acceptanceCriteria": [
+    {
+      "id": "AC-01",
+      "kind": "happy-path",
+      "given": "deux documents sélectionnés dont un seul soumis",
+      "when": "le suivi est affiché",
+      "then": "la liste et le détail indiquent une progression partielle avec À imprimer 1/2 et Transmis à l’imprimante 1/2, sans présenter le mail comme envoyé ni une impression complète"
+    },
+    {
+      "id": "AC-02",
+      "kind": "failure-path",
+      "given": "une réimpression échoue puis une nouvelle réimpression réussit",
+      "when": "le suivi est recalculé",
+      "then": "la dernière tentative remplace l’ancien échec dans le statut courant ; l’historique demeure"
+    },
+    {
+      "id": "AC-03",
+      "kind": "edge-case",
+      "given": "un document décoché a un résultat incertain ou aucune sélection imprimable",
+      "when": "le suivi est affiché",
+      "then": "l’incertitude reste visible et aucune sélection n’est présentée comme impression complète ; simulation et soumission réelle sont distinguées"
+    }
+  ],
+  "verifiedBy": [
+    "VM-01"
+  ]
+}

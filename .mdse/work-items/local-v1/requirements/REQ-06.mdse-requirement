@@ -1,0 +1,33 @@
+{
+  "mdse": "2.3",
+  "kind": "Requirement",
+  "id": "REQ-06",
+  "name": "Nommage",
+  "status": "verified",
+  "revision": 2,
+  "createdAt": "2026-10-23",
+  "updatedAt": "2026-10-23",
+  "workItem": "WI-local-v1",
+  "keyword": "SHALL",
+  "statement": "Les documents SHALL porter un préfixe AAAA-MM-JJ suivi de leur nom original nettoyé, sans écrasement.",
+  "priority": "must",
+  "acceptanceCriteria": [
+    {
+      "id": "AC-01",
+      "kind": "happy-path",
+      "given": "une date de réception et un nom original",
+      "when": "un fichier est exporté",
+      "then": "son nom suit AAAA-MM-JJ - nom.ext avec une date de repli documentée"
+    },
+    {
+      "id": "AC-02",
+      "kind": "failure-path",
+      "given": "deux documents de même nom ou un nom contenant ../",
+      "when": "l’export est demandé",
+      "then": "aucun fichier extérieur n’est écrit ni aucun original écrasé"
+    }
+  ],
+  "verifiedBy": [
+    "VM-06"
+  ]
+}

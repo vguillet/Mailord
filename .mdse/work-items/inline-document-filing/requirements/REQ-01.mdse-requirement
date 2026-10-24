@@ -1,0 +1,40 @@
+{
+  "mdse": "2.3",
+  "kind": "Requirement",
+  "id": "REQ-01",
+  "name": "Sélecteur individuel intégré",
+  "status": "verified",
+  "revision": 2,
+  "createdAt": "2026-10-24",
+  "updatedAt": "2026-10-24",
+  "workItem": "WI-inline-document-filing",
+  "keyword": "SHALL",
+  "statement": "L’interface SHALL proposer le choix du dossier de classement directement sous chaque document sans ouvrir de dialogue ni proposer de classement groupé.",
+  "priority": "must",
+  "acceptanceCriteria": [
+    {
+      "id": "AC-01",
+      "kind": "happy-path",
+      "given": "un mail exporté avec PDF et pièces jointes",
+      "when": "un document est ouvert pour classement",
+      "then": "un seul sélecteur se déplie sous ce document ; recherche, favoris/récents et arborescence complète sélectionnable, y compris les destinations absentes ; aucun dossier présélectionné et validation explicite"
+    },
+    {
+      "id": "AC-02",
+      "kind": "happy-path",
+      "given": "un dossier choisi pour un document",
+      "when": "le classement est validé",
+      "then": "seul ce document est rangé ; le sélecteur se replie après réussite et le statut reflète le résultat ; les commandes groupées de classement ont disparu, celles d’impression restent distinctes"
+    },
+    {
+      "id": "AC-03",
+      "kind": "failure-path",
+      "given": "une recherche sans correspondance et aucune destination choisie",
+      "when": "le résultat est affiché",
+      "then": "un état vide explicite apparaît, sans choix automatique et avec validation désactivée"
+    }
+  ],
+  "verifiedBy": [
+    "VM-01"
+  ]
+}

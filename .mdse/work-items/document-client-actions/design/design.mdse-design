@@ -1,0 +1,52 @@
+{
+  "mdse": "2.3",
+  "kind": "Design",
+  "id": "DESIGN",
+  "name": "Actions par document et favoris clients",
+  "status": "approved",
+  "revision": 2,
+  "createdAt": "2026-10-24",
+  "updatedAt": "2026-10-24",
+  "workItem": "WI-document-client-actions",
+  "requirements": [
+    "REQ-01",
+    "REQ-02"
+  ],
+  "decisions": [
+    "DEC-01"
+  ],
+  "components": [
+    {
+      "name": "InterfaceLocale",
+      "state": "modified",
+      "path": "mailord/static/app.js",
+      "responsibility": "Icône impression par fichier, état et confirmation de réimpression, erreurs ; étoiles accessibles hors bouton de navigation, favoris en tête et maintien du contexte."
+    },
+    {
+      "name": "Impression",
+      "state": "modified",
+      "path": "mailord/engine.py",
+      "responsibility": "Portée document explicite, sélection habituelle conservée, même génération initiale et options, résultats individuels."
+    },
+    {
+      "name": "GestionClients",
+      "state": "modified",
+      "path": "mailord/engine.py",
+      "responsibility": "Étoile booléenne persistée dans le registre, défaut false compatible sans modifier les favoris de dossiers."
+    }
+  ],
+  "internalInterfaces": [
+    {
+      "signature": "POST /api/documents/{id}/print et /reprint {confirm:true}",
+      "purpose": "Imprimer uniquement id ; refuser non imprimable/invalide ; réutiliser print_messages avec document_ids explicite et retourner le travail concerné."
+    },
+    {
+      "signature": "PUT /api/clients/{id}/star {starred:boolean}",
+      "purpose": "Enregistrer un booléen strict, 400 si invalide, 404 si inconnu ; exposer starred dans /api/state avec défaut false."
+    },
+    {
+      "signature": "sortClients / documentPrintView / renderClients / documentCard",
+      "purpose": "Favoris puis ordre français, statut par document et confirmation selon ses travaux ; blocage par identifiant en cours ; une étoile ne navigue pas."
+    }
+  ]
+}

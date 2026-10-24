@@ -1,0 +1,29 @@
+{
+  "mdse": "2.3",
+  "kind": "Deliverable",
+  "id": "DLV-05",
+  "name": "Moteur et API",
+  "status": "conditional",
+  "revision": 2,
+  "createdAt": "2026-10-23",
+  "updatedAt": "2026-10-23",
+  "workItem": "WI-local-v1",
+  "type": "source-code",
+  "producedBy": "TASK-05-E01",
+  "task": "TASK-05",
+  "version": "63cdb6b90a8ec85d841d4911a66ad4d8386f117f",
+  "location": "autosecretaire/engine.py",
+  "requirements": [
+    "REQ-01",
+    "REQ-02",
+    "REQ-03",
+    "REQ-07",
+    "REQ-08",
+    "REQ-09",
+    "REQ-11"
+  ],
+  "verifications": [
+    "VER-01"
+  ],
+  "acceptanceNote": "Vérifié logiciellement ; essai sur le Mac, le compte et l’imprimante cible encore requis. Aucune acceptation humaine n’est attribuée."
+}

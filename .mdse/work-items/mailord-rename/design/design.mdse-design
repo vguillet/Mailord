@@ -1,0 +1,36 @@
+{
+  "mdse": "2.3",
+  "kind": "Design",
+  "id": "DESIGN",
+  "name": "Identité, paquet et reprise locale",
+  "status": "approved",
+  "revision": 1,
+  "createdAt": "2026-10-24",
+  "updatedAt": "2026-10-24",
+  "workItem": "WI-mailord-rename",
+  "requirements": [
+    "REQ-01"
+  ],
+  "decisions": [],
+  "components": [
+    {
+      "name": "Identite",
+      "state": "modified",
+      "path": "mailord/static/index.html",
+      "responsibility": "Nom, signature, icône SVG locale et favicon ; supports et métadonnées de futurs PDF harmonisés."
+    },
+    {
+      "name": "Paquet",
+      "state": "modified",
+      "path": "pyproject.toml",
+      "responsibility": "Module, console, variables, scripts et tests renommés ; historique Git importé dans le dépôt fourni, sans modifier origin."
+    },
+    {
+      "name": "Reprise",
+      "state": "new",
+      "path": "scripts/relocate_runtime.py",
+      "responsibility": "Copie contrôlée hors service, correction des champs de chemins dans SQLite, source conservée ; fichiers de correspondance inchangés."
+    }
+  ],
+  "internalInterfaces": []
+}

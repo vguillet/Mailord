@@ -1,0 +1,33 @@
+{
+  "mdse": "2.3",
+  "kind": "Requirement",
+  "id": "REQ-09",
+  "name": "Impression fiable",
+  "status": "verified",
+  "revision": 3,
+  "createdAt": "2026-10-23",
+  "updatedAt": "2026-10-23",
+  "workItem": "WI-local-v1",
+  "keyword": "SHALL",
+  "statement": "L’utilisatrice SHALL choisir une politique d’impression et suivre les soumissions séparément des exports.",
+  "priority": "must",
+  "acceptanceCriteria": [
+    {
+      "id": "AC-01",
+      "kind": "happy-path",
+      "given": "une imprimante configurée et des documents compatibles",
+      "when": "l’impression est déclenchée",
+      "then": "la soumission conserve son identifiant sans être appelée preuve de papier imprimé"
+    },
+    {
+      "id": "AC-02",
+      "kind": "failure-path",
+      "given": "un délai dépassé ou un redémarrage après début de soumission",
+      "when": "le service reprend",
+      "then": "le résultat est incertain et aucun nouvel envoi automatique ne survient"
+    }
+  ],
+  "verifiedBy": [
+    "VM-14"
+  ]
+}

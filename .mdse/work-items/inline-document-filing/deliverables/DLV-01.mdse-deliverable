@@ -1,0 +1,24 @@
+{
+  "mdse": "2.3",
+  "kind": "Deliverable",
+  "id": "DLV-01",
+  "name": "Sélecteur de classement sous chaque document",
+  "status": "conditional",
+  "revision": 2,
+  "createdAt": "2026-10-24",
+  "updatedAt": "2026-10-24",
+  "workItem": "WI-inline-document-filing",
+  "type": "source-code",
+  "producedBy": "TASK-01-E01",
+  "task": "TASK-01",
+  "version": "d9bce4e0368b3798050cc71cab829d9e14e9161c",
+  "location": "autosecretaire/static/app.js",
+  "requirements": [
+    "REQ-01",
+    "REQ-02"
+  ],
+  "verifications": [
+    "VER-01"
+  ],
+  "acceptanceNote": "Vérifié automatiquement et dans Chrome sur démonstration isolée ; acceptation humaine distincte."
+}

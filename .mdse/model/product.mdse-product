@@ -1,0 +1,160 @@
+{
+  "mdse": "2.3",
+  "kind": "Product",
+  "id": "PRODUCT",
+  "name": "Définition du produit Mailord",
+  "status": "current",
+  "revision": 9,
+  "createdAt": "2026-10-23",
+  "updatedAt": "2026-10-24",
+  "problem": "La professionnelle classe les communications de ses clients dans des dossiers de messagerie, puis télécharge, renomme, range et imprime manuellement les mails et leurs pièces jointes. Elle doit vérifier ce qui a déjà été enregistré et reproduire une structure de dossiers pour chaque nouveau client.",
+  "valueProposition": "Conserver son organisation par client tout en automatisant l'export PDF, le nommage chronologique, le contrôle des documents et l'impression, avec une interface locale qui rend le classement rapide et l'avancement visible.",
+  "targetUsers": [
+    {
+      "persona": "Professionnelle qui gère les communications de ses clients dans Apple Mail sur Mac",
+      "needs": [
+        "Réduire les manipulations répétitives sans perdre le contrôle des destinations.",
+        "Créer des dossiers clients cohérents et les adapter facilement.",
+        "Retrouver les documents dans le Finder et savoir précisément ce qui reste à traiter."
+      ],
+      "painPoints": [
+        "Exports manuels répétés et noms de fichiers hétérogènes.",
+        "Doute sur les mails déjà archivés ou imprimés.",
+        "Création et entretien répétitifs de la même arborescence."
+      ]
+    }
+  ],
+  "needs": [
+    {
+      "id": "NEED-01",
+      "statement": "Exécuter la gestion documentaire sur son Mac, au moyen d'un service en arrière-plan et d'une interface web locale, puis laisser son outil habituel synchroniser les fichiers vers le cloud.",
+      "persona": "Professionnelle qui gère les communications de ses clients dans Apple Mail sur Mac",
+      "priority": "must"
+    },
+    {
+      "id": "NEED-02",
+      "statement": "Associer chaque client à un dossier de messagerie et à un dossier documentaire local, et reprendre les clients et dossiers existants sans imposer des tags.",
+      "persona": "Professionnelle qui gère les communications de ses clients dans Apple Mail sur Mac",
+      "priority": "must"
+    },
+    {
+      "id": "NEED-03",
+      "statement": "Créer un client avec son dossier mail et ajuster les présélections du modèle (Correspondances initialement) pour les dossiers locaux à préparer même vides ; les autres branches sont créées au premier document, avec reprise des créations incomplètes.",
+      "persona": "Professionnelle qui gère les communications de ses clients dans Apple Mail sur Mac",
+      "priority": "must"
+    },
+    {
+      "id": "NEED-04",
+      "statement": "Construire et modifier visuellement le modèle de dossiers clients, prévisualiser le résultat et personnaliser les noms et la structure sans écrire du code.",
+      "persona": "Professionnelle qui gère les communications de ses clients dans Apple Mail sur Mac",
+      "priority": "must"
+    },
+    {
+      "id": "NEED-05",
+      "statement": "Repérer les messages non encore exportés dans les dossiers clients, même s'ils sont déjà lus ou ont été déplacés après leur réception, et les placer dans une file de traitement.",
+      "persona": "Professionnelle qui gère les communications de ses clients dans Apple Mail sur Mac",
+      "priority": "must"
+    },
+    {
+      "id": "NEED-06",
+      "statement": "Obtenir automatiquement un PDF lisible de chaque mail avec ses en-têtes utiles, ainsi que ses pièces jointes conservées localement et préparées pour l’impression lorsque leur format le permet. Choisir leur destination de classement, y compris celle du PDF du mail.",
+      "persona": "Professionnelle qui gère les communications de ses clients dans Apple Mail sur Mac",
+      "priority": "must"
+    },
+    {
+      "id": "NEED-07",
+      "statement": "Conserver le nom de base des documents et lui ajouter systématiquement un préfixe année-mois-jour, avec un format personnalisable, un ordre chronologique et aucune perte par collision de noms.",
+      "persona": "Professionnelle qui gère les communications de ses clients dans Apple Mail sur Mac",
+      "priority": "must"
+    },
+    {
+      "id": "NEED-08",
+      "statement": "Vérifier la présence et la validité des PDF attendus, repérer les exports absents ou incomplets et reprendre uniquement les opérations nécessaires grâce à un registre persistant.",
+      "persona": "Professionnelle qui gère les communications de ses clients dans Apple Mail sur Mac",
+      "priority": "must"
+    },
+    {
+      "id": "NEED-09",
+      "statement": "Naviguer par client, consulter mails, PDF, pièces jointes, statuts et emplacements exacts, et repérer immédiatement les documents non classés grâce à un affichage contrasté et explicite. Étoiler les clients pour les retrouver en tête de la barre latérale.",
+      "persona": "Professionnelle qui gère les communications de ses clients dans Apple Mail sur Mac",
+      "priority": "must"
+    },
+    {
+      "id": "NEED-10",
+      "statement": "Choisir rapidement la destination de chaque PDF de mail ou pièce jointe avec un sélecteur directement sous le document uniquement, recherche, arborescence lisible, favoris et clavier.",
+      "persona": "Professionnelle qui gère les communications de ses clients dans Apple Mail sur Mac",
+      "priority": "must"
+    },
+    {
+      "id": "NEED-11",
+      "statement": "Imprimer automatiquement le contenu du mail et les pièces jointes sélectionnées, suivre séparément les travaux d'impression et éviter les réimpressions dues à une réparation ou un reclassement. Imprimer aussi un seul document depuis ses actions, à côté de l’aperçu et du Finder, sans dépendre des cases du mail.",
+      "persona": "Professionnelle qui gère les communications de ses clients dans Apple Mail sur Mac",
+      "priority": "must"
+    },
+    {
+      "id": "NEED-12",
+      "statement": "Conserver les documents dans une arborescence Finder ordinaire et reprendre leur gestion après redémarrage ou veille, en distinguant sauvegarde locale, classement, impression et synchronisation cloud.",
+      "persona": "Professionnelle qui gère les communications de ses clients dans Apple Mail sur Mac",
+      "priority": "must"
+    },
+    {
+      "id": "NEED-13",
+      "statement": "Rapprocher les PDF déjà téléchargés des messages d'origine et examiner les cas ambigus pour reprendre l'historique sans duplication ni impression massive implicite.",
+      "persona": "Professionnelle qui gère les communications de ses clients dans Apple Mail sur Mac",
+      "priority": "should"
+    },
+    {
+      "id": "NEED-14",
+      "statement": "Faire évoluer le modèle pour les futurs clients et compléter les dossiers existants de manière explicite sans déplacer ou supprimer silencieusement leurs archives.",
+      "persona": "Professionnelle qui gère les communications de ses clients dans Apple Mail sur Mac",
+      "priority": "must"
+    },
+    {
+      "id": "NEED-15",
+      "statement": "Profiter de règles de messagerie par correspondant pour alimenter les dossiers clients tout en gardant le déplacement manuel comme déclencheur valable.",
+      "persona": "Professionnelle qui gère les communications de ses clients dans Apple Mail sur Mac",
+      "priority": "should"
+    },
+    {
+      "id": "NEED-16",
+      "statement": "Installer les versions publiées sur Git depuis un bouton local sans utiliser le terminal.",
+      "priority": "must"
+    }
+  ],
+  "successMeasures": [
+    {
+      "measure": "Traçabilité des mails du corpus de validation",
+      "target": "Chaque message possède un état explicite et chaque PDF archivé un emplacement résolu.",
+      "current": "Traçabilité observée sur la démonstration et dans les tests automatisés ; corpus réel de l’utilisatrice encore non mesuré."
+    },
+    {
+      "measure": "Reprise après interruption sur le corpus de validation",
+      "target": "Aucun document écrasé et aucune impression relancée automatiquement lorsque son résultat est incertain.",
+      "current": "Cas automatisés de reprise, refus de collision et impression incertaine vérifiés ; annulation interrompue reprise sans impression. Corpus réel de l’utilisatrice non mesuré."
+    },
+    {
+      "measure": "Conformité des créations de clients",
+      "target": "L'arborescence créée correspond au modèle choisi et toute étape incomplète est identifiable et reprenable.",
+      "current": "Non mesuré."
+    },
+    {
+      "measure": "Nommage des documents générés",
+      "target": "Tous portent le préfixe chronologique configuré et conservent leur nom de base avec une gestion explicite des collisions.",
+      "current": "Non mesuré."
+    },
+    {
+      "measure": "Ergonomie du classement",
+      "target": "Une session avec l’utilisatrice démontre le classement individuel directement sous chaque document ; le gain de temps sera mesuré sur son corpus.",
+      "current": "Parcours démontré par Codex sur données fictives : documents visibles, recherche, annulation et modèle navigable. Gain de temps et acceptation de l’utilisatrice non mesurés."
+    }
+  ],
+  "nonGoals": [
+    "Remplacer Apple Mail pour la rédaction, l'envoi et la consultation générale des courriels.",
+    "Créer un service SaaS hébergeant les messages ou les documents de l'utilisatrice.",
+    "Remplacer le fournisseur de synchronisation cloud déjà utilisé.",
+    "Introduire un système de tags comme condition de fonctionnement : le rattachement du client repose sur les dossiers de messagerie.",
+    "Construire dès la première version un moteur généraliste de workflows ou un CRM.",
+    "Imposer un classement autonome par IA ou garantir l'impression de tous les formats de pièces jointes."
+  ],
+  "competitiveContext": "Le no-code a été exploré dans la conversation. Le périmètre retenu privilégie une interface locale adaptée au classement par client, des modèles d'arborescence éditables et un contrôle persistant des documents. Cette spécification n'atteste aucun essai sur la boîte Orange ou l'imprimante réelle."
+}

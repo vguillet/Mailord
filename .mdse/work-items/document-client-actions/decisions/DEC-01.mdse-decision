@@ -1,0 +1,29 @@
+{
+  "mdse": "2.3",
+  "kind": "Decision",
+  "id": "DEC-01",
+  "name": "Actions ciblées avec registre existant",
+  "status": "accepted",
+  "revision": 1,
+  "createdAt": "2026-10-24",
+  "updatedAt": "2026-10-24",
+  "workItem": "WI-document-client-actions",
+  "requirements": [
+    "REQ-01",
+    "REQ-02"
+  ],
+  "context": "Deux demandes directes : imprimer chaque document depuis sa carte et marquer les clients favoris.",
+  "chosen": "Ajouter des routes de print/reprint par document qui réutilisent les intentions du moteur avec une portée explicite ; étoile persistée en booléen Client.starred, false par défaut en lecture. Présentation favorite en tête, tri français alphabétique ; boutons séparés pour navigation et étoile.",
+  "rationale": "Conserver les protections existantes et rendre les actions indépendantes du contexte de sélection.",
+  "decidedBy": "agent",
+  "rejected": [
+    {
+      "alternative": "Changer temporairement les cases impression ou stocker les étoiles seulement dans le navigateur",
+      "reason": "Effets de bord sur la sélection et perte des favoris entre navigateurs."
+    }
+  ],
+  "consequences": [
+    "La commande globale du bas du détail disparaît ; l’impression des mails sélectionnés reste disponible dans la barre de sélection.",
+    "Les archives et intentions existantes sont conservées ; les anciens clients restent non étoilés sans migration physique."
+  ]
+}

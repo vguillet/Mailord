@@ -1,0 +1,88 @@
+{
+  "mdse": "2.3",
+  "kind": "Verification",
+  "id": "VER-01",
+  "name": "Vérification du modèle du cabinet",
+  "status": "pass",
+  "revision": 1,
+  "createdAt": "2026-10-24",
+  "updatedAt": "2026-10-24",
+  "workItem": "WI-cabinet-template",
+  "requirements": [
+    "REQ-01",
+    "REQ-02"
+  ],
+  "executions": [
+    "TASK-01-E01"
+  ],
+  "tasks": [],
+  "testRun": {
+    "runner": "pytest",
+    "command": "/Users/vguillet/Documents/Repos/Auto-secretaire/.venv/bin/python -c 'import pytest; raise SystemExit(pytest.main([\"-q\"]))'",
+    "passed": 154,
+    "failed": 0,
+    "skipped": 0
+  },
+  "results": [
+    {
+      "requirement": "REQ-01",
+      "result": "pass",
+      "methods": [
+        "VM-01"
+      ],
+      "acceptanceCriteria": [
+        {
+          "id": "AC-01",
+          "covered": true,
+          "test": "Inspection création de 37 dossiers et confrontation PDF"
+        },
+        {
+          "id": "AC-02",
+          "covered": true,
+          "test": "Parcours navigateur : repères, duplication TJ/CA, création affaire"
+        },
+        {
+          "id": "AC-03",
+          "covered": true,
+          "test": "Inspection : rejet de ../hors-racine sans changement"
+        }
+      ]
+    },
+    {
+      "requirement": "REQ-02",
+      "result": "pass",
+      "methods": [
+        "VM-02"
+      ],
+      "acceptanceCriteria": [
+        {
+          "id": "AC-01",
+          "covered": true,
+          "test": "Inspection registre personnalisé après réinstanciation"
+        },
+        {
+          "id": "AC-02",
+          "covered": true,
+          "test": "test_provision_template_version_and_safe_additive ; tests/test_documents.py ; inspection du fichier témoin"
+        }
+      ]
+    }
+  ],
+  "evidence": [
+    {
+      "kind": "inspection-report",
+      "reference": "docs/FOLDER_TEMPLATE.md",
+      "description": "Transcription de la hiérarchie et distinctions entre dossiers, annotations et règles hors portée."
+    },
+    {
+      "kind": "test-output",
+      "reference": "docs/VALIDATION.md",
+      "description": "154 tests passés et contrôles de persistance, préservation et navigateur décrits dans la section Modèle du cabinet."
+    }
+  ],
+  "deviationReview": [],
+  "warnings": [
+    "Les doubles classements et règles de rédaction du PDF restent manuels ; seules la structure et les consignes ont été intégrées.",
+    "Validation sur le compte et le matériel cible distincte ; avertissement de test Starlette/httpx préexistant."
+  ]
+}

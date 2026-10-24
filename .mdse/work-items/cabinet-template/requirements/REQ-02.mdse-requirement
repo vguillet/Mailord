@@ -1,0 +1,33 @@
+{
+  "mdse": "2.3",
+  "kind": "Requirement",
+  "id": "REQ-02",
+  "name": "Préservation des dossiers et choix existants",
+  "status": "verified",
+  "revision": 2,
+  "createdAt": "2026-10-24",
+  "updatedAt": "2026-10-24",
+  "workItem": "WI-cabinet-template",
+  "keyword": "SHALL",
+  "statement": "Le changement de modèle SHALL préserver les modèles déjà enregistrés et les documents existants, en conservant le préfixe de date et l’application additive explicite.",
+  "priority": "must",
+  "acceptanceCriteria": [
+    {
+      "id": "AC-01",
+      "kind": "failure-path",
+      "given": "un modèle personnalisé et un dossier existant",
+      "when": "le logiciel redémarre avec le nouveau modèle initial",
+      "then": "le modèle enregistré et les fichiers ne changent pas"
+    },
+    {
+      "id": "AC-02",
+      "kind": "happy-path",
+      "given": "le modèle du cabinet enregistré explicitement",
+      "when": "l’utilisatrice complète un dossier existant",
+      "then": "les rubriques manquantes sont ajoutées sans suppression et les exports restent préfixés par la date"
+    }
+  ],
+  "verifiedBy": [
+    "VM-02"
+  ]
+}

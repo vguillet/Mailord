@@ -1,0 +1,218 @@
+{
+  "mdse": "2.3",
+  "kind": "Roadmap",
+  "id": "ROADMAP",
+  "name": "Feuille de route Mailord",
+  "status": "current",
+  "revision": 15,
+  "createdAt": "2026-10-23",
+  "updatedAt": "2026-10-24",
+  "milestones": [
+    {
+      "id": "MS-01",
+      "name": "Valider les intégrations du Mac",
+      "goal": "Déterminer où vivent les dossiers mail, prouver leur lecture et leur création ainsi que l'impression, puis choisir le mode de déploiement local.",
+      "notes": "Logiciel, démonstration et documentation livrés. Validation sur le compte et le matériel cible avec l’utilisatrice encore à effectuer ; ne pas confondre tests simulés et essai terrain.",
+      "state": "in-progress",
+      "order": 1,
+      "workItems": []
+    },
+    {
+      "id": "MS-02",
+      "name": "Créer les clients et éditer les modèles",
+      "goal": "Disposer du service local, du registre, de la navigation clients, du rattachement des dossiers existants et de la création coordonnée des dossiers mail et locaux.",
+      "notes": "Fonctionnalité logicielle livrée dans WI-local-v1 et vérifiée par VER-01 ; intégrations physiques distinctes.",
+      "state": "delivered",
+      "order": 2,
+      "workItems": [
+        "WI-local-v1"
+      ],
+      "deliveredDate": "2026-10-23"
+    },
+    {
+      "id": "MS-03",
+      "name": "Surveiller les messages et produire les PDF",
+      "goal": "Détecter les messages manquants, générer les PDF et pièces jointes, appliquer les noms chronologiques et vérifier les fichiers via une file persistante.",
+      "notes": "Fonctionnalité logicielle livrée dans WI-local-v1 et vérifiée par VER-01 ; intégrations physiques distinctes.",
+      "state": "delivered",
+      "order": 3,
+      "workItems": [
+        "WI-local-v1"
+      ],
+      "deliveredDate": "2026-10-23"
+    },
+    {
+      "id": "MS-04",
+      "name": "Classer rapidement depuis l'interface",
+      "goal": "Permettre la consultation des états et chemins, l'aperçu, la recherche de destination et le classement individuel ou par lots.",
+      "notes": "Fonctionnalité logicielle livrée dans WI-local-v1 et vérifiée par VER-01 ; intégrations physiques distinctes.",
+      "state": "delivered",
+      "order": 4,
+      "workItems": [
+        "WI-local-v1"
+      ],
+      "deliveredDate": "2026-10-23"
+    },
+    {
+      "id": "MS-05",
+      "name": "Imprimer et reprendre les traitements",
+      "goal": "Gérer l'impression du mail et des pièces jointes compatibles, les interruptions et les résultats incertains sans duplication implicite.",
+      "notes": "Fonctionnalité logicielle livrée dans WI-local-v1 et vérifiée par VER-01 ; intégrations physiques distinctes.",
+      "state": "delivered",
+      "order": 5,
+      "workItems": [
+        "WI-local-v1"
+      ],
+      "deliveredDate": "2026-10-23"
+    },
+    {
+      "id": "MS-06",
+      "name": "Valider l'usage et préparer l'installation",
+      "goal": "Démontrer le parcours complet avec l'utilisatrice, reprendre un corpus historique et documenter l'installation, le démarrage et la synchronisation existante.",
+      "notes": "Logiciel, démonstration et documentation livrés. Validation sur le compte et le matériel cible avec l’utilisatrice encore à effectuer ; ne pas confondre tests simulés et essai terrain.",
+      "state": "in-progress",
+      "order": 6,
+      "workItems": []
+    },
+    {
+      "id": "MS-07",
+      "name": "Mises à jour en un clic",
+      "goal": "Installer une version publiée depuis l’interface.",
+      "state": "delivered",
+      "order": 7,
+      "workItems": [
+        "WI-one-click-updates"
+      ],
+      "deliveredDate": "2026-10-24",
+      "notes": "136 tests et mise à jour depuis Chrome sur dépôt de test ; source distante finale à configurer."
+    },
+    {
+      "id": "MS-08",
+      "name": "Préférences d’impression",
+      "goal": "Choisir recto verso et couleur dans les réglages locaux.",
+      "state": "delivered",
+      "order": 8,
+      "workItems": [
+        "WI-print-preferences"
+      ],
+      "deliveredDate": "2026-10-24",
+      "notes": "154 tests et parcours navigateur ; imprimantes simulées explicitement."
+    },
+    {
+      "id": "MS-09",
+      "name": "Modèle de classement du cabinet",
+      "goal": "Intégrer la structure du PDF fourni au modèle de dossiers et à ses repères.",
+      "state": "delivered",
+      "order": 9,
+      "workItems": [
+        "WI-cabinet-template"
+      ],
+      "deliveredDate": "2026-10-24",
+      "notes": "37 dossiers ; inspection du PDF, création et préservation, 154 tests et parcours navigateur sur données fictives."
+    },
+    {
+      "id": "MS-10",
+      "name": "Dossiers à la demande et choix initiaux",
+      "goal": "Proposer toute l’arborescence sans dossiers vides superflus et permettre de cocher les dossiers à préparer à la création du client.",
+      "state": "delivered",
+      "order": 10,
+      "workItems": [
+        "WI-lazy-folders"
+      ],
+      "deliveredDate": "2026-10-24",
+      "notes": "174 tests et parcours Chrome : destinations virtuelles, classement dans une branche absente, nettoyage borné et sélection initiale conservée."
+    },
+    {
+      "id": "MS-11",
+      "name": "Correspondances et pièces jointes indépendantes",
+      "goal": "Configurer les présélections et archiver les PDF de mails dans Correspondances en répartissant les pièces jointes.",
+      "state": "delivered",
+      "order": 11,
+      "workItems": [
+        "WI-correspondence-filing"
+      ],
+      "deliveredDate": "2026-10-24",
+      "notes": "191 tests, formulaire et classement séparé contrôlés dans Chrome ; adaptation des PDF suivis et impressions préservées."
+    },
+    {
+      "id": "MS-12",
+      "name": "Classement choisi pour tous les documents",
+      "goal": "Choisir le dossier du PDF du mail comme celui des pièces jointes et rendre les documents en attente immédiatement visibles.",
+      "state": "delivered",
+      "order": 12,
+      "workItems": [
+        "WI-manual-document-filing"
+      ],
+      "deliveredDate": "2026-10-24",
+      "notes": "197 tests, parcours Chrome de classement partiel et complet, badges mesurés à 8,45:1 ; ancienne règle automatique remplacée, archives existantes conservées."
+    },
+    {
+      "id": "MS-13",
+      "name": "Classement intégré par document",
+      "goal": "Choisir le dossier sous chaque document, avec arborescence lisible et contexte conservé.",
+      "state": "delivered",
+      "order": 13,
+      "workItems": [
+        "WI-inline-document-filing"
+      ],
+      "deliveredDate": "2026-10-24",
+      "notes": "199 tests et parcours Chrome : catalogue virtuel, recherche, erreurs, clavier, rafraîchissement et navigation pendant une requête ; chevrons agrandis à 20 px."
+    },
+    {
+      "id": "MS-14",
+      "name": "Actions directes et clients favoris",
+      "goal": "Imprimer chaque document depuis sa carte et épingler ses clients favoris.",
+      "state": "delivered",
+      "order": 14,
+      "workItems": [
+        "WI-document-client-actions"
+      ],
+      "deliveredDate": "2026-10-24",
+      "notes": "211 tests et parcours Chrome : portée impression, double clic, confirmation, options, étoiles persistantes, recherche, retrait et contexte conservé."
+    },
+    {
+      "id": "MS-15",
+      "name": "Traitement quotidien après revue",
+      "goal": "Rendre progression, recherche et classement fiables et rapides, avec modèle navigable et annulation.",
+      "state": "delivered",
+      "order": 15,
+      "workItems": [
+        "WI-daily-processing"
+      ],
+      "deliveredDate": "2026-10-24",
+      "notes": "224 tests ; parcours IAB et comparaison des données principales après upgrade. Aucune intégration matérielle revendiquée. Retour utilisateur : champs et corps du mail rétablis avant documents ; 34 tests ciblés et navigateur revérifiés. Option 2 et corrections visuelles : 43 tests ciblés, QA et conservation des archives vérifiés ; main 8765 actualisé."
+    }
+  ],
+  "backlog": [
+    {
+      "name": "Validation sur le Mac cible",
+      "rationale": "Configurer racine, dossiers mail, modèle réel et permissions ; confirmer quelques exports et impressions avec l’utilisatrice.",
+      "priority": "high"
+    },
+    {
+      "name": "Formats bureautiques complémentaires",
+      "rationale": "Ajouter des conversions locales seulement selon les formats effectivement rencontrés. Les originaux sont déjà conservés.",
+      "priority": "medium"
+    },
+    {
+      "name": "Suggestions de destinations et aide aux règles par correspondant",
+      "rationale": "Amélioration optionnelle ; les règles se configurent aujourd’hui dans Apple Mail.",
+      "priority": "low"
+    },
+    {
+      "name": "Installation guidée et reprise des dossiers existants",
+      "rationale": "Créer un espace réel séparé de la démonstration, guider les correspondances mail/local et aligner les dossiers avec un aperçu des changements.",
+      "priority": "high"
+    },
+    {
+      "name": "Paramètres par affaire et clients archivés",
+      "rationale": "Personnaliser juridiction/lieu sans changer le modèle global et sortir les affaires terminées du parcours quotidien.",
+      "priority": "medium"
+    },
+    {
+      "name": "Source de publication Git définitive",
+      "rationale": "Configurer le dépôt et la branche de confiance pour le bouton de mise à jour sur le Mac cible.",
+      "priority": "high"
+    }
+  ]
+}

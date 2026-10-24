@@ -1,0 +1,24 @@
+{
+  "mdse": "2.3",
+  "kind": "Deliverable",
+  "id": "DLV-01",
+  "name": "Socle et contrat",
+  "status": "conditional",
+  "revision": 2,
+  "createdAt": "2026-10-23",
+  "updatedAt": "2026-10-23",
+  "workItem": "WI-local-v1",
+  "type": "source-code",
+  "producedBy": "TASK-01-E01",
+  "task": "TASK-01",
+  "version": "85f83bb67c3be93e29a68d038126857473daa25e",
+  "location": "pyproject.toml",
+  "requirements": [
+    "REQ-01",
+    "REQ-12"
+  ],
+  "verifications": [
+    "VER-01"
+  ],
+  "acceptanceNote": "Vérifié logiciellement ; essai sur le Mac, le compte et l’imprimante cible encore requis. Aucune acceptation humaine n’est attribuée."
+}

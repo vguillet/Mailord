@@ -1,0 +1,76 @@
+{
+  "mdse": "2.3",
+  "kind": "Execution",
+  "id": "TASK-01-E01",
+  "name": "Préparation et superviseur",
+  "status": "succeeded",
+  "revision": 1,
+  "createdAt": "2026-10-24",
+  "updatedAt": "2026-10-24",
+  "workItem": "WI-one-click-updates",
+  "task": "TASK-01",
+  "attempt": 1,
+  "participants": [
+    {
+      "actor": "agent-codex",
+      "roles": [
+        "performer"
+      ]
+    },
+    {
+      "actor": "person-project-owner",
+      "roles": [
+        "initiator"
+      ]
+    }
+  ],
+  "startedAt": "2026-10-23",
+  "completedAt": "2026-10-24",
+  "summary": "Contrats implémentés, tests exécutés. Sources et transports de test locaux ; aucun dépôt distant utilisateur configuré.",
+  "commits": [
+    {
+      "hash": "388ff89b08b4829cbb3960d1a22e5bb1d6a3a473",
+      "message": "feat(updates): stage pinned releases and recover failed startup (REQ-01, REQ-02, REQ-03)",
+      "type": "feat"
+    }
+  ],
+  "filesChanged": [
+    {
+      "path": "autosecretaire/updates.py",
+      "action": "create"
+    },
+    {
+      "path": "autosecretaire/supervisor.py",
+      "action": "create"
+    },
+    {
+      "path": "update.json",
+      "action": "create"
+    },
+    {
+      "path": "tests/test_updates.py",
+      "action": "create"
+    },
+    {
+      "path": "tests/test_supervisor.py",
+      "action": "create"
+    }
+  ],
+  "testing": {
+    "approach": "selective-TDD",
+    "passed": 18,
+    "failed": 0,
+    "skipped": 0
+  },
+  "implementationDeviations": [],
+  "doneCriteria": [
+    {
+      "id": "DC-01",
+      "met": true
+    },
+    {
+      "id": "DC-02",
+      "met": true
+    }
+  ]
+}

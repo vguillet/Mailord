@@ -1,0 +1,33 @@
+{
+  "mdse": "2.3",
+  "kind": "Requirement",
+  "id": "REQ-02",
+  "name": "Création de la seule branche utilisée",
+  "status": "verified",
+  "revision": 1,
+  "createdAt": "2026-10-24",
+  "updatedAt": "2026-10-24",
+  "workItem": "WI-lazy-folders",
+  "keyword": "SHALL",
+  "statement": "Le service SHALL créer les dossiers nécessaires à l’écriture du PDF ou au classement des documents dans une destination absente, avec les protections existantes contre collisions, pertes et chemins non autorisés.",
+  "priority": "must",
+  "acceptanceCriteria": [
+    {
+      "id": "AC-01",
+      "kind": "happy-path",
+      "given": "un mail exporté et une branche encore absente",
+      "when": "le classement est validé",
+      "then": "le mail et ses pièces jointes sont rangés dans la seule branche nécessaire"
+    },
+    {
+      "id": "AC-02",
+      "kind": "failure-path",
+      "given": "un export échoue ou un document source manque ou une destination traverse un lien symbolique",
+      "when": "le traitement est demandé",
+      "then": "aucune branche vide inutile ni écriture hors client n’est créée et la reprise reste possible"
+    }
+  ],
+  "verifiedBy": [
+    "VM-02"
+  ]
+}

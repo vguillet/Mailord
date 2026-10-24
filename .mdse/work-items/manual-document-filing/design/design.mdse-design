@@ -1,0 +1,62 @@
+{
+  "mdse": "2.3",
+  "kind": "Design",
+  "id": "DESIGN",
+  "name": "Documents uniformes et statut visible",
+  "status": "approved",
+  "revision": 2,
+  "createdAt": "2026-10-24",
+  "updatedAt": "2026-10-24",
+  "workItem": "WI-manual-document-filing",
+  "requirements": [
+    "REQ-01",
+    "REQ-02"
+  ],
+  "decisions": [
+    "DEC-01"
+  ],
+  "components": [
+    {
+      "name": "TraitementDocuments",
+      "state": "modified",
+      "path": "mailord/engine.py",
+      "responsibility": "Version 3, exports tous en attente, conservation des destinations et réparations."
+    },
+    {
+      "name": "ArchivageLocal",
+      "state": "modified",
+      "path": "mailord/engine.py",
+      "responsibility": "Classement du PDF et des annexes via les mêmes intentions et reprises."
+    },
+    {
+      "name": "GestionClients",
+      "state": "modified",
+      "path": "mailord/engine.py",
+      "responsibility": "Présélections conservées ; ancien email_folder sans routage ni dossier imposé."
+    },
+    {
+      "name": "InterfaceLocale",
+      "state": "modified",
+      "path": "mailord/static/app.js",
+      "responsibility": "Actions pour tous les documents, libellés neutres au type et statuts en attente fortement contrastés."
+    }
+  ],
+  "internalInterfaces": [
+    {
+      "signature": "Message.filing_version=3 ; Engine._prepare_filing/_refresh_classification",
+      "purpose": "Préserver destination/classification existantes ; initialiser les anciennes métadonnées sans mouvement. Retirer email_destination actif. Statut agrégé de tous les documents, y compris intentions en cours ; compatibilité v2 conservée pendant reprise avant adaptation."
+    },
+    {
+      "signature": "Engine.process/classify ; POST /api/classify",
+      "purpose": "Chaque nouvel export destination 00 - À classer et pending. Omission document_ids sélectionne tous les documents ; liste peut inclure mail PDF et annexes. Les mêmes validations, collisions, reprises et impressions restent en place. Supprimer _route_email."
+    },
+    {
+      "signature": "Engine.template/save_template ; éditeur",
+      "purpose": "Supprimer l’ajout automatique du dossier mail au catalogue et l’éditeur du rôle. Conserver initial_folders et la compatibilité de l’ancien email_folder comme métadonnée facultative validée lorsqu’elle est explicitement fournie, sans effet sur les documents."
+    },
+    {
+      "signature": "renderDetail/openClassify ; style.css",
+      "purpose": "Badge À CLASSER contrasté, nom et emplacement plus foncés, bordure/fond ambre, résumé des documents restants ; mêmes commandes pour mail et annexes. Les cases de classement présélectionnent les non-classés et restent distinctes de l’impression."
+    }
+  ]
+}

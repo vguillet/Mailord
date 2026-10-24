@@ -1,0 +1,24 @@
+{
+  "mdse": "2.3",
+  "kind": "Actor",
+  "id": "agent-documents",
+  "name": "Codex documents",
+  "status": "available",
+  "revision": 1,
+  "createdAt": "2026-10-23",
+  "updatedAt": "2026-10-23",
+  "class": "agent",
+  "taskTypes": [
+    "software",
+    "testing"
+  ],
+  "capabilities": [
+    "model-project",
+    "write-code",
+    "run-tests",
+    "inspect-repository"
+  ],
+  "dispatch": {
+    "mode": "in-session"
+  }
+}

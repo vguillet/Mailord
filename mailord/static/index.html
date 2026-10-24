@@ -1,0 +1,58 @@
+<!doctype html>
+<html lang="fr">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="color-scheme" content="light">
+  <meta name="theme-color" content="#f6f7f2">
+  <title>Mailord · Mon espace</title>
+  <meta name="application-name" content="Mailord">
+  <meta name="description" content="Mailord — Le seigneur des emails. Classement et impression de vos communications, sur votre Mac.">
+  <link rel="icon" type="image/svg+xml" href="/static/mailord.svg">
+  <link rel="stylesheet" href="/static/style.css">
+  <script src="/static/app.js" defer></script>
+</head>
+<body>
+  <a class="skip-link" href="#main">Aller aux communications</a>
+  <div class="app-shell">
+    <aside class="sidebar" aria-label="Navigation principale">
+      <a class="brand" href="/" aria-label="Mailord, accueil"><img class="brand-mark" src="/static/mailord.svg" width="36" height="36" alt=""><span>Mailord<small>Le seigneur des emails.</small></span></a>
+      <button class="nav-item active" id="all-clients" data-action="all-clients"><span class="nav-icon" aria-hidden="true">▦</span>Vue d’ensemble<span id="all-count" class="count">0</span></button>
+      <div class="nav-heading"><span>MES CLIENTS</span></div>
+      <label class="search-field sidebar-search"><span aria-hidden="true">⌕</span><input id="client-search" type="search" placeholder="Rechercher un client" aria-label="Rechercher un client" autocomplete="off"><kbd>/</kbd></label>
+      <nav id="client-list" class="client-list" aria-label="Clients"><p class="subtle small loading-text">Chargement de vos clients…</p></nav>
+      <button class="add-client" data-action="new-client"><span aria-hidden="true">＋</span> Nouveau client</button>
+      <div class="sidebar-bottom">
+        <button class="sidebar-tool" data-action="template" aria-label="Modèle de dossiers"><span class="sidebar-tool-icon icon-folder-tree" aria-hidden="true"></span><span class="sidebar-tooltip" aria-hidden="true">Modèle de dossiers</span></button>
+        <button class="sidebar-tool" id="updates-nav" data-action="updates" aria-label="Mises à jour"><span class="sidebar-tool-icon icon-refresh" aria-hidden="true"></span><span class="sidebar-tooltip" aria-hidden="true">Mises à jour</span><span class="update-dot hidden" id="updates-dot" aria-label="Nouvelle version disponible"></span></button>
+        <button class="sidebar-tool" data-action="settings" aria-label="Réglages"><span class="sidebar-tool-icon icon-settings" aria-hidden="true"></span><span class="sidebar-tooltip" aria-hidden="true">Réglages</span></button>
+        <div class="local-status" tabindex="0" role="status" aria-labelledby="connection-label"><span id="connection-dot" class="status-dot" aria-hidden="true"></span><div id="connection-label" class="sidebar-tooltip">Connexion au service…<small>Sur cet ordinateur</small></div></div>
+        <button class="sidebar-tool" data-action="shortcuts" aria-label="Raccourcis clavier"><span class="sidebar-tool-icon icon-help" aria-hidden="true"></span><span class="sidebar-tooltip" aria-hidden="true">Raccourcis clavier</span></button>
+      </div>
+    </aside>
+    <main id="main" tabindex="-1">
+      <header class="topbar"><div class="breadcrumb">Mon espace <span>/</span> <span id="breadcrumb-current">Vue d’ensemble</span></div><div class="topbar-right"><button class="button small update-topbar hidden" id="update-available-button" data-action="updates">Nouvelle version ↗</button><span id="mode-label" class="mode-label">Local</span><span class="avatar" title="Espace local Mailord" aria-label="Espace local Mailord">M</span></div></header>
+      <div class="page-content">
+        <section class="page-heading"><div><div class="eyebrow">COMMUNICATIONS CLIENTS</div><h1 id="page-title">Votre espace documentaire</h1><p id="page-subtitle">Choisissez un mail, puis classez ses documents.</p></div><button class="button primary" id="sync-button" data-action="sync"><svg width="16" height="16" viewBox="0 0 24 24" aria-hidden="true"><path d="M20 7v5h-5M4 17v-5h5M6.1 7a7 7 0 0 1 11.6-1L20 9M4 15l2.3 3A7 7 0 0 0 18 17" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>Relever les mails</button></section>
+        <div id="update-banner" class="notice hidden" role="status"></div>
+        <div id="global-error" class="notice error hidden" role="alert"></div>
+        <div id="context-notice" class="notice hidden"></div>
+        <section id="summary" class="summary-grid" aria-label="Résumé du suivi"></section>
+        <div class="section-heading"><div><h2 id="list-heading">Toutes les communications</h2><span id="message-count" class="subtle small"></span></div><div class="section-actions"><button class="button quiet small hidden" id="client-history" data-action="history">Retrouver des PDF existants</button><button class="button quiet small" data-action="process" title="Vérifier les fichiers et reprendre les exports en échec">Contrôler les fichiers</button></div></div>
+        <section class="workbench" aria-label="Communications et aperçu">
+          <div class="mail-panel">
+            <div class="mail-toolbar"><div class="filter-tabs" role="group" aria-label="Filtrer les communications"><button data-filter="all" class="filter active" aria-pressed="true">Tous</button><button data-filter="pending" class="filter" aria-pressed="false">À classer <span id="pending-count"></span></button><button data-filter="error" class="filter" aria-pressed="false">À vérifier <span id="error-count"></span></button></div><label class="search-field mail-search"><span aria-hidden="true">⌕</span><input id="message-search" type="search" aria-label="Rechercher un mail ou un document" placeholder="Mail, pièce jointe ou dossier…" autocomplete="off"></label></div>
+            <div id="bulk-toolbar" class="bulk-toolbar hidden"><label><input id="select-all" type="checkbox" aria-label="Sélectionner tous les mails affichés"><span id="selected-count">0 sélectionné</span></label><div><button class="button small quiet" data-action="print">Imprimer</button><button class="icon-button" data-action="clear-selection" title="Effacer la sélection" aria-label="Effacer la sélection">×</button></div></div>
+            <div id="message-list" class="message-list" aria-label="Liste des mails"><div class="empty-state"><span class="spinner" aria-hidden="true"></span><h3>Ouverture de votre espace</h3><p>Nous récupérons le dernier état des communications.</p></div></div>
+            <div class="list-footer"><span id="last-scan">Pas encore de relève</span><span class="keyboard-hint"><kbd>J</kbd><kbd>K</kbd> parcourir</span></div>
+          </div>
+          <aside id="detail-panel" class="detail-panel" aria-label="Détail de la communication"><div class="empty-state detail-empty"><span class="empty-icon" aria-hidden="true">↗</span><h3>Le détail, en un clic.</h3><p>Sélectionnez une communication pour consulter ses documents et choisir où les ranger.</p></div></aside>
+        </section>
+        <footer class="page-footer"><span><span class="tiny-dot"></span>Vos documents restent sur votre Mac.</span><span>La synchronisation cloud est gérée par votre application habituelle.</span></footer>
+      </div>
+    </main>
+  </div>
+  <div id="toast-region" class="toast-region" aria-live="polite" aria-atomic="true"></div>
+  <dialog id="modal" class="modal" aria-labelledby="modal-title"><div id="modal-content"></div></dialog>
+</body>
+</html>

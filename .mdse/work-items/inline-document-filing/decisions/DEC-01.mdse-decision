@@ -1,0 +1,29 @@
+{
+  "mdse": "2.3",
+  "kind": "Decision",
+  "id": "DEC-01",
+  "name": "Classement individuel inline uniquement",
+  "status": "accepted",
+  "revision": 1,
+  "createdAt": "2026-10-24",
+  "updatedAt": "2026-10-24",
+  "workItem": "WI-inline-document-filing",
+  "requirements": [
+    "REQ-01",
+    "REQ-02"
+  ],
+  "context": "Choix explicite de l’utilisateur après le brainstorm : sélecteur sous chaque document uniquement.",
+  "chosen": "Remplacer la fenêtre de classement et les boutons groupés par un état local de sélecteur attaché à un document. Réutiliser POST /api/classify avec un seul document_id ; garder l’API groupée pour compatibilité. Présélection de destination vide, arborescence repliable et recherche dans tout le catalogue.",
+  "rationale": "Garde le contexte du mail visible, limite l’encombrement et préserve les règles déjà vérifiées.",
+  "decidedBy": "agent",
+  "rejected": [
+    {
+      "alternative": "Zone commune ou panneau permanent",
+      "reason": "Non retenus par l’utilisateur."
+    }
+  ],
+  "consequences": [
+    "Classement uniquement individuel dans l’interface ; API groupée conservée pour compatibilité.",
+    "État inline conservé à l’actualisation ; fermeture après réussite uniquement, erreur locale et requête attachée au document initial."
+  ]
+}

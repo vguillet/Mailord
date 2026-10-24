@@ -1,0 +1,33 @@
+{
+  "mdse": "2.3",
+  "kind": "Requirement",
+  "id": "REQ-01",
+  "name": "Présélections du modèle",
+  "status": "verified",
+  "revision": 1,
+  "createdAt": "2026-10-24",
+  "updatedAt": "2026-10-24",
+  "workItem": "WI-correspondence-filing",
+  "keyword": "SHALL",
+  "statement": "Le service SHALL mémoriser dans le modèle les dossiers cochés par défaut pour un nouveau client, avec Correspondances présélectionné initialement et décochable par client.",
+  "priority": "must",
+  "acceptanceCriteria": [
+    {
+      "id": "AC-01",
+      "kind": "happy-path",
+      "given": "un modèle et un nouveau client",
+      "when": "les présélections sont enregistrées puis le formulaire ouvert",
+      "then": "les choix mémorisés sont cochés, modifiables et créent seulement les branches choisies"
+    },
+    {
+      "id": "AC-02",
+      "kind": "failure-path",
+      "given": "des choix invalides ou une modification de branche",
+      "when": "le modèle est sauvegardé ou refusé",
+      "then": "aucun choix hors arborescence n’est persisté et un renommage conserve les choix correspondants"
+    }
+  ],
+  "verifiedBy": [
+    "VM-01"
+  ]
+}

@@ -1,0 +1,241 @@
+{
+  "mdse": "2.3",
+  "kind": "Architecture",
+  "id": "ARCH",
+  "name": "Architecture initiale Mailord",
+  "status": "current",
+  "revision": 14,
+  "createdAt": "2026-10-23",
+  "updatedAt": "2026-10-24",
+  "style": "Service natif macOS modulaire, FastAPI sur boucle locale, interface HTML/CSS/JavaScript et registre SQLite.",
+  "components": [
+    {
+      "name": "InterfaceLocale",
+      "responsibility": "Navigation par client, messages, états et aperçu ; création de clients, édition du modèle et du nommage. Classement individuel via un sélecteur attaché au document : recherche, branches dépliables, favoris/récents, choix explicite. Arborescence complète même virtuelle et chevrons 20 px dans boutons 32 px. Un seul sélecteur, conservé par identifiant au rafraîchissement ; erreurs inline et requête capturant document/message/client. Impression sélectionnée séparément ; aucune commande de classement groupé dans l’interface. Icône et état d’impression par document avec confirmation ciblée ; commande globale du détail retirée. Étoiles clients accessibles, favorites en tête avec tri français, recherche et focus conservés. Champs De/À/Reçu/Client puis corps ouvert et repliable, avant PDF et pièces jointes, sélections persistées conservées sans contrôle auto/groupé dans les cartes, progression et recherche documentaire accent-insensible ; modèle recherchable/repliable sans perte des choix masqués. Bouton Annuler le classement ciblé par document et jeton. Mail avec pied PDF et pièces jointes distinctes ; documentControls partagé conserve les identifiants d’action. Icônes Lucide distribuées dans static/icons. messagePrintBadges représente séparément les compteurs métier existants, sans modifier le registre.",
+      "state": "existing",
+      "dependsOn": [
+        "GestionClients",
+        "TraitementDocuments",
+        "Registre"
+      ]
+    },
+    {
+      "name": "GestionClients",
+      "responsibility": "Associer dossiers mail et locaux, gérer les modèles versionnés et la création reprenable. Proposer le modèle courant et les destinations mémorisées sans créer les branches. Persister et reprendre les dossiers initiaux choisis et leurs présélections ; préserver les choix par client. Ancien email_folder accepté comme métadonnée sans routage ni dossier imposé. Client.starred booléen persisté via PUT /api/clients/{id}/star ; défaut false en lecture pour les anciens registres, distinct de favorites (dossiers).",
+      "state": "existing",
+      "dependsOn": [
+        "Messagerie",
+        "ArchivageLocal",
+        "Registre"
+      ]
+    },
+    {
+      "name": "Messagerie",
+      "responsibility": "Lister les dossiers et messages, relire les mouvements, récupérer le contenu et créer un dossier client via l'adaptateur confirmé par le jalon d'intégration.",
+      "state": "existing"
+    },
+    {
+      "name": "TraitementDocuments",
+      "responsibility": "Détection des travaux, conversion PDF, extraction des pièces jointes, contrôle des exports, file persistante et reprises indépendantes du classement et de l’impression. Exporter tous les nouveaux documents en attente ; adapter les métadonnées des anciens registres sans déplacer leurs fichiers ni réimprimer.",
+      "state": "existing",
+      "dependsOn": [
+        "Messagerie",
+        "ArchivageLocal",
+        "Impression",
+        "Registre"
+      ]
+    },
+    {
+      "name": "ArchivageLocal",
+      "responsibility": "Créer uniquement les parents nécessaires à la publication ou les dossiers initiaux choisis ; enregistrer, nommer, contrôler et déplacer sans collision. Retirer les seuls ancêtres vides d’une branche source, en protégeant les choix initiaux et sans nettoyage global. Classer PDF et pièces jointes indépendamment via intentions persistées et cibles réservées dans un lot. Document.undo_filing conserve un seul état précédent avec jeton ; undo_applied rend la répétition idempotente. POST undo-filing valide empreinte, confinement et absence de collision, persiste move_classification et réutilise la reprise ; désactive classification_auto_print sans toucher aux travaux existants.",
+      "state": "existing"
+    },
+    {
+      "name": "Impression",
+      "responsibility": "Préparer et soumettre les documents compatibles, mémoriser les identifiants et retours disponibles et signaler une issue incertaine sans nouvelle soumission implicite. Transmettre les préférences recto verso et couleur par document avec traduction des options de pilote reconnues. print_document réutilise print_messages avec document_ids explicite, ignore les cases sans les modifier et retourne le travail ciblé ; génération initiale idempotente, réimpression confirmée par route dédiée. print_progress compte le dernier essai des documents imprimables cochés ou déjà tentés ; partial/mixed/not_selected explicites, incertitudes décochées visibles. Les commandes ordinaires reprennent seulement la dernière intention ; les générations dépassées restent historiques.",
+      "state": "existing"
+    },
+    {
+      "name": "Registre",
+      "responsibility": "Persister l'identité des clients et messages, les versions de modèles, les chemins, les états par étape, la file et l'historique des opérations.",
+      "state": "existing"
+    },
+    {
+      "name": "MisesAJour",
+      "responsibility": "Détecter une branche publiée, préparer le commit choisi et ses dépendances dans une version isolée ; état et configuration privés.",
+      "state": "existing"
+    },
+    {
+      "name": "SuperviseurLocal",
+      "responsibility": "Lancer la version active, sauvegarder le registre à l’arrêt, contrôler la candidate sans traitement et restaurer l’ancienne version si le démarrage échoue.",
+      "state": "existing",
+      "dependsOn": [
+        "MisesAJour",
+        "Registre"
+      ]
+    }
+  ],
+  "dataFlows": [
+    {
+      "name": "Créer un client",
+      "steps": [
+        "Saisir le nom, prévisualiser les chemins et ajuster les présélections du modèle (Correspondances initialement).",
+        "Valider les choix dans le modèle courant et les persister avec l’association client.",
+        "Créer ou rattacher le dossier mail via Messagerie.",
+        "Créer seulement les dossiers cochés et leurs parents ; les autres destinations restent virtuelles.",
+        "Reprendre les étapes incomplètes à partir des choix persistés puis surveiller les mails."
+      ]
+    },
+    {
+      "name": "Détecter et exporter",
+      "steps": [
+        "Inventorier les dossiers clients, y compris les messages lus et déplacés.",
+        "Comparer les messages au registre et contrôler les fichiers attendus.",
+        "Mettre en file les étapes manquantes.",
+        "Générer un PDF du mail et conserver les pièces jointes.",
+        "Appliquer le préfixe de date et le nom de base.",
+        "Enregistrer le PDF et les pièces jointes dans la zone d’attente avec destination et statut pending par document."
+      ]
+    },
+    {
+      "name": "Classer et imprimer",
+      "steps": [
+        "Afficher la destination et le statut de chaque PDF et pièce jointe, avec surlignage des documents à classer.",
+        "Ouvrir le sélecteur sous un document, choisir sa destination dans l’arborescence complète et valider explicitement.",
+        "Persister son intention puis créer uniquement la branche nécessaire, déplacer le document et mettre à jour son chemin. Le contrat API multiple reste compatible.",
+        "Retirer les ancêtres vides de la source en préservant les dossiers initialement choisis.",
+        "Marquer le mail classé lorsque tous ses documents le sont, y compris son PDF même sans pièce jointe.",
+        "Soumettre l’impression selon la politique ; après classement attend tous les documents, sans relancer les travaux existants."
+      ]
+    },
+    {
+      "name": "Contrôle et reprise",
+      "steps": [
+        "Au démarrage et périodiquement, rapprocher registre, messages et fichiers.",
+        "Détecter les PDF absents, invalides ou déplacés.",
+        "Reprendre les étapes nécessaires sans réimprimer un travail déjà soumis.",
+        "Présenter les divergences et résultats incertains à l'utilisatrice."
+      ]
+    },
+    {
+      "name": "Synchronisation existante",
+      "steps": [
+        "Enregistrer les documents complets dans la racine locale choisie.",
+        "Laisser le fournisseur existant synchroniser cette racine.",
+        "Ne présenter la copie cloud comme confirmée que si une preuve de synchronisation est disponible."
+      ]
+    },
+    {
+      "name": "Mise à jour explicite",
+      "steps": [
+        "Comparer le commit local à la branche distante périodiquement ou sur demande.",
+        "Au clic, préparer le SHA sélectionné et son venv séparé.",
+        "Arrêter proprement, sauvegarder SQLite et lancer une probation sans traitements.",
+        "En cas d’échec revenir au précédent ; sinon enregistrer la version active puis autoriser le traitement.",
+        "Recharger automatiquement l’interface et conserver le même registre et les documents."
+      ]
+    },
+    {
+      "name": "Annuler un classement",
+      "steps": [
+        "Conserver le chemin et le statut antérieurs lors d’un classement, avec jeton propre au document.",
+        "À la demande, vérifier le jeton courant, le contenu et la disponibilité de l’ancien emplacement.",
+        "Persister l’intention inverse et la reprendre sans écrasement ; rétablir aussi le statut pending ou classified.",
+        "Recalculer le statut du mail sans lancer d’impression ; même jeton répété sans nouvel effet."
+      ]
+    }
+  ],
+  "stack": [
+    {
+      "layer": "Exécution",
+      "technology": "Python 3.11+ natif macOS, Uvicorn, LaunchAgent optionnel",
+      "rationale": "Accès aux services Apple Mail et CUPS sans relais Docker."
+    },
+    {
+      "layer": "Interface",
+      "technology": "HTML, CSS, JavaScript local et FastAPI",
+      "rationale": "Interface en français sans dépendance à un service externe ni compilation frontend."
+    },
+    {
+      "layer": "Messagerie",
+      "technology": "Dossiers .eml de démonstration, IMAP TLS stdlib, JXA via osascript",
+      "rationale": "Dossiers serveur ou Sur mon Mac via adaptateurs distincts, sans base interne de Mail."
+    },
+    {
+      "layer": "Documents",
+      "technology": "ReportLab, pypdf, Pillow",
+      "rationale": "PDF texte passif, originaux préservés, validation et conversion locale des formats compatibles."
+    },
+    {
+      "layer": "Persistance",
+      "technology": "SQLite WAL records(kind,id,payload JSON), spool privé et fichiers ordinaires",
+      "rationale": "Identités, file, intentions, empreintes et reprise indépendante par étape."
+    },
+    {
+      "layer": "Impression",
+      "technology": "CUPS lp/lpstat via appels sans shell",
+      "rationale": "Soumissions tracées, simulation et résultats incertains sans relance implicite."
+    }
+  ],
+  "dependencyRules": [
+    "InterfaceLocale appelle GestionClients et TraitementDocuments ; elle ne pilote pas directement le système de fichiers ou l'imprimante.",
+    "GestionClients et TraitementDocuments utilisent les frontières Messagerie, ArchivageLocal, Impression et Registre.",
+    "Les adaptateurs ne dépendent pas de l'interface utilisateur.",
+    "Le fournisseur cloud observe les fichiers locaux ; il ne pilote pas le moteur de traitement.",
+    "Les opérations d'impression sont suivies séparément des exports et des déplacements de fichiers."
+  ],
+  "crossCuttingConcerns": [
+    {
+      "concern": "Identité et reprise",
+      "approach": "Utiliser un registre durable indépendant du nom de fichier et de l'état lu/non lu. Les mouvements de message ou renommages du client ne valent pas nouvelle demande d'impression."
+    },
+    {
+      "concern": "Nommage",
+      "approach": "Format initial proposé : AAAA-MM-JJ - nom de base.ext. Garder le nom original des pièces jointes et utiliser l'objet pour le PDF du mail. Définir la source de date et le fuseau dans les exigences."
+    },
+    {
+      "concern": "Modèles",
+      "approach": "Le modèle courant est proposé avec les destinations mémorisées, réelles et leurs parents. Mémoriser une version ne crée aucun dossier. Les choix initiaux persistent et restent protégés même vides. initial_folders définit les présélections ; lecture des anciennes versions avec défauts compatibles sans réécriture. Renommer une branche conserve les présélections dans l’éditeur. Ancien rôle email_folder retiré de l’interface et sans effet sur le classement."
+    },
+    {
+      "concern": "Données locales",
+      "approach": "Racine documentaire choisie par l'utilisatrice, fichier de suivi persistant, secrets et données personnelles hors du dépôt de développement. Afficher la provenance et le résultat des étapes."
+    },
+    {
+      "concern": "Intégration réelle",
+      "approach": "Valider sur fixtures et copies de messages puis sur l'environnement cible autorisé ; ne pas manipuler directement la base interne d'Apple Mail sans contrat d'intégration démontré."
+    },
+    {
+      "concern": "Impression",
+      "approach": "Distinguer préparé, soumis, en attente, échec et résultat incertain ; une soumission ne prouve pas à elle seule que le papier a été imprimé."
+    },
+    {
+      "concern": "Vérification et limites",
+      "approach": "224 tests et parcours IAB fictifs : progression, reprises, annulation, recherche et modèle ; conservation des 13 archives et registres suivis après redémarrage. Intégrations matérielles et acceptation de l’utilisatrice distinctes."
+    },
+    {
+      "concern": "Mises à jour et compatibilité",
+      "approach": "Protocole et schéma version 1 déclarés dans update.json ; accès Git de confiance configuré une fois ; rollback uniquement avant activation ; aucune réinitialisation du dépôt utilisateur."
+    },
+    {
+      "concern": "Préférences d’impression",
+      "approach": "Réglages persistants print_sides/print_color_mode, défauts du pilote préservés ; instantané par intention, reprise preparing stable, pas de réimpression implicite ni altération des archives."
+    },
+    {
+      "concern": "Séparation des archives",
+      "approach": "Message.filing_version=3 ; destination/classification de chaque document conservées à l’adaptation, ancien email_destination retiré sans mouvement. PDF et pièces jointes nouveaux pending ; message.classification agrège tous les documents et intentions. Réparation à l’emplacement enregistré et impressions existantes préservées."
+    }
+  ],
+  "workItems": [
+    "WI-local-v1",
+    "WI-one-click-updates",
+    "WI-print-preferences",
+    "WI-cabinet-template",
+    "WI-lazy-folders",
+    "WI-correspondence-filing",
+    "WI-manual-document-filing",
+    "WI-inline-document-filing",
+    "WI-document-client-actions",
+    "WI-daily-processing"
+  ]
+}

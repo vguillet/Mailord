@@ -1,0 +1,80 @@
+{
+  "mdse": "2.3",
+  "kind": "Execution",
+  "id": "TASK-01-E01",
+  "name": "Réalisation Socle et contrat",
+  "status": "succeeded",
+  "revision": 1,
+  "createdAt": "2026-10-23",
+  "updatedAt": "2026-10-23",
+  "workItem": "WI-local-v1",
+  "task": "TASK-01",
+  "attempt": 1,
+  "participants": [
+    {
+      "actor": "agent-codex",
+      "roles": [
+        "performer"
+      ]
+    },
+    {
+      "actor": "person-project-owner",
+      "roles": [
+        "initiator"
+      ]
+    }
+  ],
+  "startedAt": "2026-10-23",
+  "completedAt": "2026-10-23",
+  "summary": "Implémentation du contrat et exécution des tests ciblés. Tests matériels remplacés par simulations explicitement.",
+  "commits": [
+    {
+      "hash": "85f83bb67c3be93e29a68d038126857473daa25e",
+      "message": "feat(local-v1): add local registry and application contract (REQ-01, REQ-12)",
+      "type": "feat"
+    }
+  ],
+  "filesChanged": [
+    {
+      "path": "pyproject.toml",
+      "action": "create"
+    },
+    {
+      "path": "autosecretaire/__init__.py",
+      "action": "create"
+    },
+    {
+      "path": "autosecretaire/store.py",
+      "action": "create"
+    },
+    {
+      "path": "autosecretaire/config.py",
+      "action": "create"
+    },
+    {
+      "path": "docs/API.md",
+      "action": "create"
+    },
+    {
+      "path": "tests/test_store.py",
+      "action": "create"
+    }
+  ],
+  "testing": {
+    "approach": "selective-TDD",
+    "passed": 1,
+    "failed": 0,
+    "skipped": 0
+  },
+  "implementationDeviations": [],
+  "doneCriteria": [
+    {
+      "id": "DC-01",
+      "met": true
+    },
+    {
+      "id": "DC-02",
+      "met": true
+    }
+  ]
+}

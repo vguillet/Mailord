@@ -1,0 +1,30 @@
+{
+  "mdse": "2.3",
+  "kind": "Decision",
+  "id": "DEC-01",
+  "name": "Structure métier et repères de classement",
+  "status": "accepted",
+  "revision": 1,
+  "createdAt": "2026-10-24",
+  "updatedAt": "2026-10-24",
+  "workItem": "WI-cabinet-template",
+  "requirements": [
+    "REQ-01",
+    "REQ-02"
+  ],
+  "context": "Le PDF est une référence métier : sa première page contient l’arbre, les autres pages des règles documentaires. L’éditeur, les versions et l’application additive existent déjà.",
+  "chosen": "Remplacer uniquement DEFAULT_FOLDERS, ajouter les repères dans l’éditeur et la création de client, puis enregistrer explicitement ce modèle dans la démonstration ouverte. Garder 00 - À classer, les titres des rubriques sans leurs annotations et la branche littérale [JURIDICTION + lieu]. Conserver le nom de base et la date en préfixe.",
+  "rationale": "Le contenu du modèle change, les contrats et le fonctionnement de classement restent identiques. La nouvelle configuration ne doit pas écraser les personnalisations lors d’une mise à jour.",
+  "rejected": [
+    {
+      "alternative": "Exécuter toutes les règles du PDF automatiquement",
+      "reason": "Envoi, rédaction, copies documentaires et fusion d’annexes ne font pas partie de la demande de structure."
+    }
+  ],
+  "decidedBy": "agent",
+  "consequences": [
+    "Les rubriques 05 et 07 sont incluses sans astérisque : les étoiles sont des notes du document. Les abréviations et parenthèses explicatives restent dans les repères ; 03 MAILS (PDF) conserve son libellé.",
+    "La juridiction se personnalise dans le modèle avant création ; pas de déduction automatique ni de création de toutes les juridictions possibles.",
+    "L’interface classe actuellement le mail et ses pièces jointes ensemble ; les doubles classements du guide restent manuels."
+  ]
+}

@@ -1,0 +1,33 @@
+{
+  "mdse": "2.3",
+  "kind": "Requirement",
+  "id": "REQ-05",
+  "name": "PDF et pièces jointes",
+  "status": "verified",
+  "revision": 2,
+  "createdAt": "2026-10-23",
+  "updatedAt": "2026-10-23",
+  "workItem": "WI-local-v1",
+  "keyword": "SHALL",
+  "statement": "L’utilisatrice SHALL obtenir un PDF lisible du mail avec ses en-têtes et conserver les pièces jointes originales.",
+  "priority": "must",
+  "acceptanceCriteria": [
+    {
+      "id": "AC-01",
+      "kind": "happy-path",
+      "given": "un message MIME texte ou HTML et des pièces jointes",
+      "when": "l’export est effectué",
+      "then": "le PDF contient objet expéditeur destinataires date et corps et les pièces jointes sont conservées"
+    },
+    {
+      "id": "AC-02",
+      "kind": "failure-path",
+      "given": "une pièce jointe non imprimable ou une image intégrée",
+      "when": "la préparation est exécutée",
+      "then": "l’original est conservé et le statut imprimable explicite sans imprimer les images intégrées par défaut"
+    }
+  ],
+  "verifiedBy": [
+    "VM-05"
+  ]
+}

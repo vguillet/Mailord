@@ -1,0 +1,78 @@
+{
+  "mdse": "2.3",
+  "kind": "Verification",
+  "id": "VER-01",
+  "name": "Classement manuel et contraste vérifiés",
+  "status": "pass",
+  "revision": 1,
+  "createdAt": "2026-10-24",
+  "updatedAt": "2026-10-24",
+  "workItem": "WI-manual-document-filing",
+  "requirements": [
+    "REQ-01",
+    "REQ-02"
+  ],
+  "executions": [
+    "TASK-01-E01"
+  ],
+  "tasks": [],
+  "testRun": {
+    "runner": "pytest",
+    "command": "/Users/vguillet/Documents/Repos/Auto-secretaire/.venv/bin/python -c 'import pytest; raise SystemExit(pytest.main([\"-q\",\"--tb=short\"]))'",
+    "passed": 197,
+    "failed": 0,
+    "skipped": 0
+  },
+  "results": [
+    {
+      "requirement": "REQ-01",
+      "result": "pass",
+      "methods": [
+        "VM-01"
+      ],
+      "acceptanceCriteria": [
+        {
+          "id": "AC-01",
+          "covered": true,
+          "test": "tests/test_manual_document_filing.py : test_all_new_documents_wait_for_manual_filing ; test_mail_without_attachment_waits_for_its_own_destination ; test_api_accepts_email_document_selection ; Chrome PDF puis pièce jointe dans deux destinations."
+        },
+        {
+          "id": "AC-02",
+          "covered": true,
+          "test": "test_old_fixed_pdf_stays_put_but_can_be_reclassified ; test_interrupted_pdf_filing_resumes_without_filing_attachments ; test_legacy_pdf_keeps_its_location_without_printing ; test_legacy_adaptation_preserves_filed_attachments_and_print_intents ; SHA-256 des fichiers servis inchangés dans Chrome."
+        }
+      ]
+    },
+    {
+      "requirement": "REQ-02",
+      "result": "pass",
+      "methods": [
+        "VM-02"
+      ],
+      "acceptanceCriteria": [
+        {
+          "id": "AC-01",
+          "covered": true,
+          "test": "node --check valide ; Chrome liste/détail/sélecteur inspectés : badge 8,45:1 (couleurs effectives), noms 11,60:1 ; PDF avec bouton Classer et choix obligatoire de dossier."
+        },
+        {
+          "id": "AC-02",
+          "covered": true,
+          "test": "Chrome : après rangement du PDF seul, pièce jointe seule surlignée et présélectionnée, résumé 1 document à classer ; après rangement de la pièce, aucun surlignage et statut Classé explicite."
+        }
+      ]
+    }
+  ],
+  "evidence": [
+    {
+      "kind": "test-output",
+      "reference": "docs/VALIDATION.md",
+      "description": "197 réussis ; six tests ciblés ; syntaxe JS valide, parcours Chrome 8880 et deux fichiers re-hachés via leur contenu servi ; aucune erreur console."
+    }
+  ],
+  "deviationReview": [],
+  "warnings": [
+    "Validation sur compte Orange, Apple Mail et imprimante cible non réalisée ; modifications vérifiées sur démonstration isolée et transports de test.",
+    "Les archives déjà classées gardent leurs destinations et statuts ; les déplacer reste une action explicite."
+  ]
+}

@@ -1,0 +1,69 @@
+{
+  "mdse": "2.3",
+  "revision": 2,
+  "createdAt": "2026-10-24",
+  "updatedAt": "2026-10-24",
+  "workItem": "WI-daily-processing",
+  "kind": "Task",
+  "id": "TASK-02",
+  "name": "Rétablir le mail avant les documents",
+  "status": "done",
+  "order": 2,
+  "type": "software",
+  "objective": "Rétablir l’ordre de lecture demandé et conserver les outils de classement.",
+  "requirements": [
+    "REQ-02"
+  ],
+  "design": "DESIGN",
+  "decisions": [
+    "DEC-02"
+  ],
+  "constraints": [
+    "CON-01"
+  ],
+  "dependsOn": [
+    "TASK-01"
+  ],
+  "capabilities": [
+    "write-code",
+    "run-tests"
+  ],
+  "eligibleActors": [
+    "agent-codex"
+  ],
+  "files": [
+    {
+      "path": "mailord/static/app.js",
+      "action": "update"
+    },
+    {
+      "path": "mailord/static/style.css",
+      "action": "update"
+    },
+    {
+      "path": "README.md",
+      "action": "update"
+    },
+    {
+      "path": "docs/DAILY_UPGRADE.md",
+      "action": "update"
+    },
+    {
+      "path": "docs/VALIDATION.md",
+      "action": "update"
+    }
+  ],
+  "doneCriteria": [
+    {
+      "id": "DC-01",
+      "statement": "Navigateur : mail ouvert avant PDF/pièces jointes ; repli et retour au mail conservés, actions des documents inchangées ; syntaxe valide."
+    }
+  ],
+  "outputs": [
+    {
+      "name": "Disposition mail puis documents",
+      "kind": "source-code",
+      "deliverable": true
+    }
+  ]
+}

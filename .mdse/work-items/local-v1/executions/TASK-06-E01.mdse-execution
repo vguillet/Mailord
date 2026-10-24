@@ -1,0 +1,133 @@
+{
+  "mdse": "2.3",
+  "kind": "Execution",
+  "id": "TASK-06-E01",
+  "name": "Réalisation Intégration et installation",
+  "status": "succeeded",
+  "revision": 1,
+  "createdAt": "2026-10-23",
+  "updatedAt": "2026-10-23",
+  "workItem": "WI-local-v1",
+  "task": "TASK-06",
+  "attempt": 1,
+  "participants": [
+    {
+      "actor": "agent-codex",
+      "roles": [
+        "performer"
+      ]
+    },
+    {
+      "actor": "person-project-owner",
+      "roles": [
+        "initiator"
+      ]
+    }
+  ],
+  "startedAt": "2026-10-23",
+  "completedAt": "2026-10-23",
+  "summary": "Implémentation du contrat et exécution des tests ciblés. Tests matériels remplacés par simulations explicitement.",
+  "commits": [
+    {
+      "hash": "912d5c22f7df75faacd8238a9c44ecbe7a5c4d1a",
+      "message": "feat(local-v1): package Mac service and validate end-to-end flow (REQ-01, REQ-09, REQ-10, REQ-12)",
+      "type": "feat"
+    }
+  ],
+  "filesChanged": [
+    {
+      "path": "autosecretaire/__main__.py",
+      "action": "create"
+    },
+    {
+      "path": "autosecretaire/demo.py",
+      "action": "create"
+    },
+    {
+      "path": "scripts/install-macos.sh",
+      "action": "create"
+    },
+    {
+      "path": "scripts/start.command",
+      "action": "create"
+    },
+    {
+      "path": "scripts/launchagent.py",
+      "action": "create"
+    },
+    {
+      "path": "README.md",
+      "action": "update"
+    },
+    {
+      "path": "docs/INSTALLATION.md",
+      "action": "create"
+    },
+    {
+      "path": "docs/VALIDATION.md",
+      "action": "create"
+    },
+    {
+      "path": "tests/test_ui.py",
+      "action": "update"
+    },
+    {
+      "path": "tests/test_api.py",
+      "action": "update"
+    },
+    {
+      "path": "uv.lock",
+      "action": "create"
+    },
+    {
+      "path": "requirements.lock",
+      "action": "create"
+    },
+    {
+      "path": "autosecretaire/engine.py",
+      "action": "update"
+    },
+    {
+      "path": "autosecretaire/static/app.js",
+      "action": "update"
+    },
+    {
+      "path": "tests/test_engine.py",
+      "action": "update"
+    },
+    {
+      "path": "docs/API.md",
+      "action": "update"
+    },
+    {
+      "path": ".gitignore",
+      "action": "update"
+    }
+  ],
+  "testing": {
+    "approach": "selective-TDD",
+    "passed": 99,
+    "failed": 0,
+    "skipped": 0
+  },
+  "implementationDeviations": [
+    {
+      "rule": 2,
+      "type": "missing-critical",
+      "found": "Le statut d’impression seul ne présentait pas la cause précise du refus ni la référence de soumission.",
+      "action": "Exposer et afficher les enregistrements d’impression par document ; test de régression sur l’erreur lisible.",
+      "resolved": true
+    }
+  ],
+  "doneCriteria": [
+    {
+      "id": "DC-01",
+      "met": true
+    },
+    {
+      "id": "DC-02",
+      "met": true
+    }
+  ],
+  "notes": "99 tests ; parcours Chrome réel en démonstration ; dépendances installées dans un environnement Python isolé ; aucune activation LaunchAgent ni intégration matérielle réelle."
+}

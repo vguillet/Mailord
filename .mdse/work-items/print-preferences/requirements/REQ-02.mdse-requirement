@@ -1,0 +1,33 @@
+{
+  "mdse": "2.3",
+  "kind": "Requirement",
+  "id": "REQ-02",
+  "name": "Application aux documents sélectionnés",
+  "status": "verified",
+  "revision": 2,
+  "createdAt": "2026-10-24",
+  "updatedAt": "2026-10-24",
+  "workItem": "WI-print-preferences",
+  "keyword": "SHALL",
+  "statement": "Le service SHALL transmettre les préférences d’impression aux nouvelles soumissions du PDF du mail et des pièces jointes imprimables sélectionnées, en conservant la traçabilité des choix et la protection contre les réimpressions.",
+  "priority": "must",
+  "acceptanceCriteria": [
+    {
+      "id": "AC-01",
+      "kind": "happy-path",
+      "given": "un mail et une pièce jointe sélectionnés",
+      "when": "leur impression est demandée",
+      "then": "les deux travaux reçoivent les mêmes préférences et celles-ci sont enregistrées"
+    },
+    {
+      "id": "AC-02",
+      "kind": "failure-path",
+      "given": "un travail déjà soumis ou une pièce exclue ou non imprimable",
+      "when": "les préférences changent et le traitement reprend",
+      "then": "aucune nouvelle impression implicite de ces documents ne se produit"
+    }
+  ],
+  "verifiedBy": [
+    "VM-02"
+  ]
+}

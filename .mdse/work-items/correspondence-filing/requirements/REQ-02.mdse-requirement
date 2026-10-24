@@ -1,0 +1,33 @@
+{
+  "mdse": "2.3",
+  "kind": "Requirement",
+  "id": "REQ-02",
+  "name": "PDF en Correspondances",
+  "status": "verified",
+  "revision": 1,
+  "createdAt": "2026-10-24",
+  "updatedAt": "2026-10-24",
+  "workItem": "WI-correspondence-filing",
+  "keyword": "SHALL",
+  "statement": "Le service SHALL ranger les PDF de mails dans le dossier Correspondances désigné par le modèle indépendamment du classement des pièces jointes.",
+  "priority": "must",
+  "acceptanceCriteria": [
+    {
+      "id": "AC-01",
+      "kind": "happy-path",
+      "given": "un nouveau mail avec ou sans pièce jointe",
+      "when": "il est exporté, y compris après décochage initial de Correspondances",
+      "then": "son PDF est dans Correspondances, les pièces jointes attendent leur classement ; un mail seul est déjà classé"
+    },
+    {
+      "id": "AC-02",
+      "kind": "failure-path",
+      "given": "des archives suivies anciennes ou un export interrompu",
+      "when": "le contrôle reprend",
+      "then": "les PDF suivis rejoignent Correspondances sans perte ni impression supplémentaire due à cette adaptation"
+    }
+  ],
+  "verifiedBy": [
+    "VM-02"
+  ]
+}

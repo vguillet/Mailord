@@ -1,0 +1,22 @@
+{
+  "VM-01": {
+    "command": "python3 -m pytest tests/test_updates.py -q",
+    "exit_code": 0,
+    "output": "..............                                                           [100%]\n14 passed in 1.71s\n"
+  },
+  "VM-02": {
+    "command": "python3 -m pytest tests/test_updates.py -q",
+    "exit_code": 0,
+    "output": "..............                                                           [100%]\n14 passed in 1.71s\n"
+  },
+  "VM-03": {
+    "command": "python3 -m pytest tests/test_supervisor.py tests/test_update_api.py tests/test_update_integration.py -q",
+    "exit_code": 0,
+    "output": "........                                                                 [100%]\n8 passed in 5.28s\n"
+  },
+  "VM-04": {
+    "command": "python3 -m pytest tests/test_update_ui.py tests/test_update_api.py -q",
+    "exit_code": 0,
+    "output": ".................                                                        [100%]\n17 passed in 1.08s\n"
+  }
+}

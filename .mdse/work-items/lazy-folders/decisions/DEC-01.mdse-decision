@@ -1,0 +1,31 @@
+{
+  "mdse": "2.3",
+  "kind": "Decision",
+  "id": "DEC-01",
+  "name": "Catalogue virtuel et écriture à la demande",
+  "status": "accepted",
+  "revision": 1,
+  "createdAt": "2026-10-24",
+  "updatedAt": "2026-10-24",
+  "workItem": "WI-lazy-folders",
+  "requirements": [
+    "REQ-01",
+    "REQ-02",
+    "REQ-03"
+  ],
+  "context": "La demande explicite de l’utilisateur remplace la matérialisation immédiate décrite dans les livraisons précédentes. Aucun nouveau service ni schéma persistant nécessaire.",
+  "chosen": "Conserver les chemins du modèle dans le registre ; proposer union du modèle courant, du modèle mémorisé pour le client, des parents et des dossiers existants. Réserver le chemin client sans mkdir. _publish crée les parents au premier fichier. Retirer par rmdir les branches vidées par nos déplacements et les parents vides après échec d’écriture, sans parcours de nettoyage global.",
+  "rationale": "Séparer les destinations disponibles de la présence sur disque tout en conservant la reprise, les favoris et les anciens clients.",
+  "rejected": [
+    {
+      "alternative": "Créer tous les dossiers puis effacer les vides périodiquement",
+      "reason": "Création inutile, bruit de synchronisation et risque de toucher des répertoires sans rapport."
+    }
+  ],
+  "decidedBy": "agent",
+  "consequences": [
+    "Le dossier mail client est toujours créé pour permettre la surveillance ; la racine locale du client apparaît au premier export.",
+    "Les anciens dossiers vides ne sont pas supprimés en masse. Un fichier caché compte comme contenu.",
+    "GET /api/state enrichit chaque client avec existing_folders ; folders reste une liste compatible, maintenant virtuelle. Le modèle courant est proposé également aux anciens clients."
+  ]
+}

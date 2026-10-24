@@ -1,0 +1,24 @@
+{
+  "mdse": "2.3",
+  "kind": "Deliverable",
+  "id": "DLV-03",
+  "name": "Conversion documentaire",
+  "status": "conditional",
+  "revision": 2,
+  "createdAt": "2026-10-23",
+  "updatedAt": "2026-10-23",
+  "workItem": "WI-local-v1",
+  "type": "source-code",
+  "producedBy": "TASK-03-E01",
+  "task": "TASK-03",
+  "version": "f0679b38693d4921be87fbb3b88d7d2ee520439c",
+  "location": "autosecretaire/documents.py",
+  "requirements": [
+    "REQ-05",
+    "REQ-06"
+  ],
+  "verifications": [
+    "VER-01"
+  ],
+  "acceptanceNote": "Vérifié logiciellement ; essai sur le Mac, le compte et l’imprimante cible encore requis. Aucune acceptation humaine n’est attribuée."
+}

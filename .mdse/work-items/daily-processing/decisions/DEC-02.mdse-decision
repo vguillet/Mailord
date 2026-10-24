@@ -1,0 +1,27 @@
+{
+  "mdse": "2.3",
+  "revision": 2,
+  "createdAt": "2026-10-24",
+  "updatedAt": "2026-10-24",
+  "workItem": "WI-daily-processing",
+  "kind": "Decision",
+  "id": "DEC-02",
+  "name": "Lecture du mail en premier",
+  "status": "accepted",
+  "requirements": [
+    "REQ-02"
+  ],
+  "context": "L’utilisateur préfère explicitement retrouver le corps du mail avant ses pièces jointes après la mise à niveau. Cette préférence remplace la seule disposition documents avant corps de DEC-01.",
+  "chosen": "Afficher De, À, Reçu et Client au-dessus du corps du mail ouvert par défaut, puis le PDF et les pièces jointes. Garder la possibilité de replier le mail, les compteurs et les actions individuelles.",
+  "rationale": "Préserver un ordre de lecture naturel avant le classement.",
+  "rejected": [
+    {
+      "alternative": "Conserver les documents avant le corps replié",
+      "reason": "L’utilisateur demande explicitement de rétablir le mail en premier."
+    }
+  ],
+  "consequences": [
+    "Modification de présentation uniquement ; archives et impressions inchangées."
+  ],
+  "decidedBy": "user"
+}

@@ -1,0 +1,30 @@
+{
+  "mdse": "2.3",
+  "kind": "Decision",
+  "id": "DEC-01",
+  "name": "Même classement pour le PDF du mail et les annexes",
+  "status": "accepted",
+  "revision": 1,
+  "createdAt": "2026-10-24",
+  "updatedAt": "2026-10-24",
+  "workItem": "WI-manual-document-filing",
+  "requirements": [
+    "REQ-01",
+    "REQ-02"
+  ],
+  "context": "L’utilisateur corrige explicitement le routage automatique demandé au tour précédent. Les choix par défaut du modèle restent utiles et ne sont pas annulés.",
+  "chosen": "Exporter tous les nouveaux documents dans 00 - À classer. Autoriser leur classement individuel ou par lot. Version de métadonnées 3 pour agréger le statut de tous les documents et préserver les chemins et statuts des versions précédentes. Retirer le rôle automatique Correspondances de l’interface ; accepter l’ancien paramètre email_folder comme métadonnée sans effet sur le routage.",
+  "rationale": "Un seul comportement cohérent pour le mail et ses pièces, sans déplacer les archives antérieures.",
+  "decidedBy": "agent",
+  "rejected": [
+    {
+      "alternative": "Déplacer tous les anciens PDF vers la zone d’attente",
+      "reason": "Perturbe les archives déjà rangées sans demande explicite."
+    }
+  ],
+  "consequences": [
+    "Impression après classement attend aussi le PDF du mail, même pour un mail sans annexe.",
+    "Correspondances peut rester présélectionné pour créer un dossier vide, sans imposer une destination aux documents.",
+    "État en attente représenté par texte gras, badge ambre contrasté et bordure, dans les trois surfaces."
+  ]
+}

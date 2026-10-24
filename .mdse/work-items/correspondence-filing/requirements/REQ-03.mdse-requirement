@@ -1,0 +1,33 @@
+{
+  "mdse": "2.3",
+  "kind": "Requirement",
+  "id": "REQ-03",
+  "name": "Pièces jointes indépendantes",
+  "status": "verified",
+  "revision": 1,
+  "createdAt": "2026-10-24",
+  "updatedAt": "2026-10-24",
+  "workItem": "WI-correspondence-filing",
+  "keyword": "SHALL",
+  "statement": "Le service SHALL permettre de classer chaque pièce jointe dans une destination distincte et montrer son emplacement et son statut sans déplacer le PDF du mail.",
+  "priority": "must",
+  "acceptanceCriteria": [
+    {
+      "id": "AC-01",
+      "kind": "happy-path",
+      "given": "un mail avec plusieurs pièces jointes",
+      "when": "une seule pièce puis les autres sont classées",
+      "then": "chaque pièce rejoint sa destination et le mail est entièrement classé seulement après toutes ses pièces"
+    },
+    {
+      "id": "AC-02",
+      "kind": "failure-path",
+      "given": "une interruption, un chemin interdit ou une pièce hors sélection",
+      "when": "un classement ou une reprise est demandé",
+      "then": "les fichiers sont protégés, les intentions aboutissent sans doublons, et l’impression après classement attend toutes les pièces"
+    }
+  ],
+  "verifiedBy": [
+    "VM-03"
+  ]
+}

@@ -1,0 +1,14 @@
+{
+  "mdse": "2.3",
+  "kind": "Constraint",
+  "id": "CON-01",
+  "name": "Préserver les classements et les fichiers existants",
+  "status": "active",
+  "revision": 1,
+  "createdAt": "2026-10-24",
+  "updatedAt": "2026-10-24",
+  "workItem": "WI-manual-document-filing",
+  "type": "prohibition",
+  "statement": "Ne déplacer aucun document sain existant du seul fait de la mise à jour, ne pas supprimer les présélections ni les dossiers existants, ne pas réimprimer et ne pas modifier les boîtes mail.",
+  "reason": "La correction porte sur le choix de classement et sa visibilité, sans remettre en cause les données déjà rangées."
+}

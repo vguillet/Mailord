@@ -1,0 +1,23 @@
+{
+  "mdse": "2.3",
+  "kind": "Actor",
+  "id": "person-project-owner",
+  "name": "Utilisateur initiateur du projet",
+  "status": "available",
+  "revision": 1,
+  "createdAt": "2026-10-23",
+  "updatedAt": "2026-10-23",
+  "class": "person",
+  "taskTypes": [
+    "human-decision",
+    "testing"
+  ],
+  "capabilities": [
+    "clarify-needs",
+    "review-proposals",
+    "validate-user-workflow"
+  ],
+  "dispatch": {
+    "mode": "in-session"
+  }
+}

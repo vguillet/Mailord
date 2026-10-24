@@ -1,0 +1,33 @@
+{
+  "mdse": "2.3",
+  "kind": "Requirement",
+  "id": "REQ-02",
+  "name": "Mail et archivage réunis, pièces jointes distinctes",
+  "status": "verified",
+  "revision": 5,
+  "createdAt": "2026-10-24",
+  "updatedAt": "2026-10-24",
+  "workItem": "WI-daily-processing",
+  "keyword": "SHALL",
+  "statement": "L’utilisatrice SHALL accéder rapidement aux documents, à leur progression et au sens des choix d’impression.",
+  "priority": "must",
+  "acceptanceCriteria": [
+    {
+      "id": "AC-01",
+      "kind": "happy-path",
+      "given": "une fenêtre de bureau de 1280 par 720 et un mail exporté",
+      "when": "un mail est ouvert",
+      "then": "le sujet et De, À, Reçu et Client précèdent le corps ouvert par défaut ; le pied sauge du mail contient les seuls outils PDF, toujours accessibles corps replié ; seules les pièces jointes sont dans leur section. Leur nom occupe la largeur disponible, les badges et icônes sont alignés dans la rangée suivante, puis la destination en pleine largeur. Les labels fixes et le contrôle auto/groupé sont retirés sans modifier les choix enregistrés."
+    },
+    {
+      "id": "AC-02",
+      "kind": "edge-case",
+      "given": "aucun client ou des communications en attente",
+      "when": "la vue d’ensemble est affichée",
+      "then": "le titre et les compteurs indiquent les mails et documents réels sans annoncer un rangement terminé à tort"
+    }
+  ],
+  "verifiedBy": [
+    "VM-02"
+  ]
+}

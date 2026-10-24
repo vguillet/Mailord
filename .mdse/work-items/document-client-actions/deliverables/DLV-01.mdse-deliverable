@@ -1,0 +1,24 @@
+{
+  "mdse": "2.3",
+  "kind": "Deliverable",
+  "id": "DLV-01",
+  "name": "Actions document et client",
+  "status": "conditional",
+  "revision": 2,
+  "createdAt": "2026-10-24",
+  "updatedAt": "2026-10-24",
+  "workItem": "WI-document-client-actions",
+  "type": "source-code",
+  "producedBy": "TASK-01-E01",
+  "task": "TASK-01",
+  "version": "520535558d08e25e768f911414f1e781aba36adc",
+  "location": "autosecretaire/static/app.js",
+  "requirements": [
+    "REQ-01",
+    "REQ-02"
+  ],
+  "verifications": [
+    "VER-01"
+  ],
+  "acceptanceNote": "Tests et Chrome sur données fictives en simulation ; acceptation humaine et essais matériels distincts."
+}

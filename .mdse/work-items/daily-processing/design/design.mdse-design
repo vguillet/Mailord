@@ -1,0 +1,57 @@
+{
+  "mdse": "2.3",
+  "kind": "Design",
+  "id": "DESIGN",
+  "name": "Traitement quotidien fiable",
+  "status": "approved",
+  "revision": 6,
+  "createdAt": "2026-10-24",
+  "updatedAt": "2026-10-24",
+  "workItem": "WI-daily-processing",
+  "requirements": [
+    "REQ-01",
+    "REQ-02",
+    "REQ-03",
+    "REQ-04",
+    "REQ-05"
+  ],
+  "decisions": [
+    "DEC-01",
+    "DEC-02",
+    "DEC-03"
+  ],
+  "components": [
+    {
+      "name": "InterfaceLocale",
+      "state": "modified",
+      "path": "mailord/static/app.js",
+      "responsibility": "Mail dans un bloc avec sujet, De/À/Reçu/Client et corps ouvert repliable ; pied sauge attaché au corps pour les commandes du PDF, sans carte PDF dupliquée. Section et compteur propres aux pièces jointes ; classement, impression et annulation restent individuels. Compteurs globaux distincts ; recherche noms/destinations et modèle repliable conservés. Noms de pièces sur une ligne dédiée ; icônes Lucide locales alignées avec les badges, destination dessous. Contrôle auto/groupé retiré sans mutation des choix ; suivi À imprimer, Transmis à l’imprimante et Simulation dans la liste et le détail. Barre latérale : modèle, mises à jour, réglages, voyant local et aide réunis en une ligne compacte en bas ; libellés au survol et au clavier."
+    },
+    {
+      "name": "Impression",
+      "state": "modified",
+      "path": "mailord/engine.py",
+      "responsibility": "Progression dérivée du dernier essai par document ; distinguer partiel, simulation et soumission. Les reprises utilisent la dernière intention, sans rejouer les anciennes."
+    },
+    {
+      "name": "ArchivageLocal",
+      "state": "modified",
+      "path": "mailord/engine.py",
+      "responsibility": "Mémoriser un seul classement antérieur par document et le restaurer via intention persistée, jeton idempotent, contrôles de contenu et refus des collisions, sans impression."
+    }
+  ],
+  "internalInterfaces": [
+    {
+      "signature": "Engine.print_progress(message) -> total/submitted/simulated/pending/error/uncertain/preparing/submitting ; state.messages[].print_progress",
+      "purpose": "Agrégation courante des derniers travaux ; print_status distingue partial, not_selected, preparing et mixed sans mutation."
+    },
+    {
+      "signature": "POST /api/documents/{id}/undo-filing {token:string}",
+      "purpose": "Retour idempotent au chemin et classement antérieurs ; rejet des fichiers modifiés, collisions et jetons obsolètes ; aucune soumission impression."
+    },
+    {
+      "signature": "messageMatches(message, query, clientName) / folderEntries",
+      "purpose": "Recherche accents/casse sur mail, noms et destinations ; recherche et expansion du modèle indépendantes des choix persistants."
+    }
+  ]
+}

@@ -1,0 +1,24 @@
+{
+  "mdse": "2.3",
+  "revision": 1,
+  "createdAt": "2026-10-24",
+  "updatedAt": "2026-10-24",
+  "workItem": "WI-daily-processing",
+  "kind": "Deliverable",
+  "id": "DLV-03",
+  "name": "Mail unifié et commandes documentaires clarifiées",
+  "status": "conditional",
+  "type": "source-code",
+  "producedBy": "TASK-03-E01",
+  "task": "TASK-03",
+  "version": "cff5171ca545dd62387fc3a8d26cfbb3abf7c0a7",
+  "location": "autosecretaire/static/app.js",
+  "requirements": [
+    "REQ-01",
+    "REQ-02"
+  ],
+  "verifications": [
+    "VER-03"
+  ],
+  "acceptanceNote": "Disposition demandée appliquée et vérifiée ; acceptation d’usage distincte, aucune approbation humaine inventée."
+}

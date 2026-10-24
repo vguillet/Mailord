@@ -1,0 +1,25 @@
+{
+  "mdse": "2.3",
+  "kind": "Method",
+  "id": "VM-03",
+  "name": "Vérifier Nettoyage des branches vidées par le classement",
+  "status": "approved",
+  "revision": 1,
+  "createdAt": "2026-10-24",
+  "updatedAt": "2026-10-24",
+  "workItem": "WI-lazy-folders",
+  "class": "verification",
+  "method": "test",
+  "automated": true,
+  "requirements": [
+    "REQ-03"
+  ],
+  "command": "python -m pytest tests/test_lazy_folders.py -q",
+  "passCriteria": [
+    {
+      "id": "PC-01",
+      "statement": "Les tests de catalogue, matérialisation, erreurs et nettoyage passent sans échec ; contrôle du sélecteur dans le navigateur."
+    }
+  ],
+  "evidenceKind": "test-output"
+}

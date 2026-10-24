@@ -1,0 +1,24 @@
+{
+  "mdse": "2.3",
+  "kind": "Deliverable",
+  "id": "DLV-01",
+  "name": "Préférences d’impression",
+  "status": "conditional",
+  "revision": 2,
+  "createdAt": "2026-10-24",
+  "updatedAt": "2026-10-24",
+  "workItem": "WI-print-preferences",
+  "type": "source-code",
+  "producedBy": "TASK-01-E01",
+  "task": "TASK-01",
+  "version": "4540f3afe7d7cd8557f44e7de1e48cf13c2dd348",
+  "location": "autosecretaire/printing.py",
+  "requirements": [
+    "REQ-01",
+    "REQ-02"
+  ],
+  "verifications": [
+    "VER-01"
+  ],
+  "acceptanceNote": "Options vérifiées sur transports simulés et interface réelle ; essais matériels restent à réaliser. Aucune acceptation humaine enregistrée."
+}

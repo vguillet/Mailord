@@ -1,0 +1,14 @@
+{
+  "mdse": "2.3",
+  "kind": "Constraint",
+  "id": "CON-01",
+  "name": "Données locales",
+  "status": "active",
+  "revision": 1,
+  "createdAt": "2026-10-23",
+  "updatedAt": "2026-10-23",
+  "workItem": "WI-local-v1",
+  "type": "prohibition",
+  "statement": "Le système SHALL NOT modifier la base interne Mail, envoyer des mails, ni remplacer le service de synchronisation.",
+  "reason": "La demande concerne des archives locales et des adaptateurs documentés."
+}

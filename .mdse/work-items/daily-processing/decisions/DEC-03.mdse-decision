@@ -1,0 +1,29 @@
+{
+  "mdse": "2.3",
+  "revision": 1,
+  "createdAt": "2026-10-24",
+  "updatedAt": "2026-10-24",
+  "workItem": "WI-daily-processing",
+  "kind": "Decision",
+  "id": "DEC-03",
+  "name": "Option 2 : classer après lecture",
+  "status": "accepted",
+  "requirements": [
+    "REQ-01",
+    "REQ-02"
+  ],
+  "context": "L’utilisateur choisit la deuxième proposition visuelle : rattacher les actions du PDF au mail et distinguer ses pièces jointes. L’utilisateur précise ensuite : meilleurs pictogrammes, destination sous les badges, titre de pièce en pleine largeur, actions alignées avec les badges, suivi À classer/À imprimer, retrait du contrôle auto/groupé et du texte explicatif.",
+  "chosen": "Mail unifié avec pied sauge ; section Pièces jointes séparée. Nom de pièce sur sa propre ligne, puis badges à gauche et icônes œil/dossier/imprimante à droite, puis destination en pleine largeur. Conserver annulation et confirmations ; retirer le contrôle auto/groupé des cartes et les labels inutiles. Nommer explicitement les transmissions à l’imprimante et les simulations.",
+  "rationale": "Associer visuellement le PDF à la communication qu’il archive, sans doubler son nom comme une pièce jointe.",
+  "rejected": [
+    {
+      "alternative": "Conserver le PDF parmi les cartes de pièces jointes",
+      "reason": "La représentation du mail reste confondue avec ses pièces jointes."
+    }
+  ],
+  "consequences": [
+    "Préserver identifiants, routes, classement manuel, états d’impression, préférences enregistrées et confirmation de réimpression ; retirer seulement le contrôle de sélection par document dans cette vue.",
+    "Adapter les rangées du pied à la largeur disponible du panneau existant, sans changer la navigation."
+  ],
+  "decidedBy": "user"
+}

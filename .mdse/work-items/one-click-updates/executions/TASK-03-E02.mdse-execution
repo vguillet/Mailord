@@ -1,0 +1,68 @@
+{
+  "mdse": "2.3",
+  "kind": "Execution",
+  "id": "TASK-03-E02",
+  "name": "Validation sous Python isolé",
+  "status": "succeeded",
+  "revision": 1,
+  "createdAt": "2026-10-24",
+  "updatedAt": "2026-10-24",
+  "workItem": "WI-one-click-updates",
+  "task": "TASK-03",
+  "attempt": 2,
+  "participants": [
+    {
+      "actor": "agent-codex",
+      "roles": [
+        "performer"
+      ]
+    },
+    {
+      "actor": "person-project-owner",
+      "roles": [
+        "initiator"
+      ]
+    }
+  ],
+  "startedAt": "2026-10-24",
+  "completedAt": "2026-10-24",
+  "summary": "Correction de la fixture de processus pour partager aussi un venv installé ; suite complète réussie sous Python 3.14.",
+  "commits": [
+    {
+      "hash": "dc03605aa10ad17365f0995519872f16fbc46a1a",
+      "message": "test(updates): exercise restart from isolated Python environments (REQ-03)",
+      "type": "test"
+    }
+  ],
+  "filesChanged": [
+    {
+      "path": "tests/test_update_integration.py",
+      "action": "update"
+    }
+  ],
+  "testing": {
+    "approach": "selective-TDD",
+    "passed": 136,
+    "failed": 0,
+    "skipped": 0
+  },
+  "implementationDeviations": [
+    {
+      "rule": 1,
+      "type": "bug",
+      "found": "La fixture de processus ne transmettait pas les bibliothèques d’un Python lancé depuis un venv.",
+      "action": "Partager le venv de test complet lorsqu’il existe ; 136 tests sous Python 3.14 réussis.",
+      "resolved": true
+    }
+  ],
+  "doneCriteria": [
+    {
+      "id": "DC-01",
+      "met": true
+    },
+    {
+      "id": "DC-02",
+      "met": true
+    }
+  ]
+}

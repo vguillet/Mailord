@@ -1,0 +1,33 @@
+{
+  "mdse": "2.3",
+  "kind": "Requirement",
+  "id": "REQ-01",
+  "name": "Détecter les versions publiées",
+  "status": "verified",
+  "revision": 2,
+  "createdAt": "2026-10-23",
+  "updatedAt": "2026-10-24",
+  "workItem": "WI-one-click-updates",
+  "keyword": "SHALL",
+  "statement": "Le service SHALL détecter périodiquement et sur demande le commit publié sur une branche Git configurée et distinguer disponible, à jour, non configuré et échec.",
+  "priority": "must",
+  "acceptanceCriteria": [
+    {
+      "id": "AC-01",
+      "kind": "happy-path",
+      "given": "un dépôt et une branche accessibles",
+      "when": "un nouveau commit est poussé",
+      "then": "son identifiant est présenté comme disponible"
+    },
+    {
+      "id": "AC-02",
+      "kind": "failure-path",
+      "given": "un dépôt inaccessible",
+      "when": "une vérification échoue",
+      "then": "une erreur sans secret est affichée et le service reste utilisable"
+    }
+  ],
+  "verifiedBy": [
+    "VM-01"
+  ]
+}

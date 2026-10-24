@@ -1,0 +1,9 @@
+{
+  "methods": [
+    "VM-01",
+    "VM-02"
+  ],
+  "command": "python3 -m pytest tests/test_print_preferences.py -q",
+  "exit_code": 0,
+  "output": "..................                                                       [100%]\n18 passed in 0.67s\n"
+}

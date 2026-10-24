@@ -1,0 +1,33 @@
+{
+  "mdse": "2.3",
+  "kind": "Requirement",
+  "id": "REQ-02",
+  "name": "Clients et reprise",
+  "status": "verified",
+  "revision": 2,
+  "createdAt": "2026-10-23",
+  "updatedAt": "2026-10-23",
+  "workItem": "WI-local-v1",
+  "keyword": "SHALL",
+  "statement": "L’utilisatrice SHALL créer ou rattacher un client à un dossier mail et un dossier local.",
+  "priority": "must",
+  "acceptanceCriteria": [
+    {
+      "id": "AC-01",
+      "kind": "happy-path",
+      "given": "un nom de client et un dossier mail",
+      "when": "la création est validée",
+      "then": "le client et son arborescence existent"
+    },
+    {
+      "id": "AC-02",
+      "kind": "failure-path",
+      "given": "une panne de création mail",
+      "when": "la création est reprise",
+      "then": "le même client est complété sans duplication"
+    }
+  ],
+  "verifiedBy": [
+    "VM-02"
+  ]
+}
