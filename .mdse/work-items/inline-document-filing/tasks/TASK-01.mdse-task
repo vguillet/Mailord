@@ -1,0 +1,83 @@
+{
+  "mdse": "2.3",
+  "kind": "Task",
+  "id": "TASK-01",
+  "name": "Sélecteur individuel intégré et parcours vérifié",
+  "status": "pending",
+  "revision": 1,
+  "createdAt": "2026-10-24",
+  "updatedAt": "2026-10-24",
+  "workItem": "WI-inline-document-filing",
+  "order": 1,
+  "type": "software",
+  "objective": "Remplacer le dialogue de classement par un sélecteur inline individuel, vérifier la conservation du contexte et les erreurs.",
+  "requirements": [
+    "REQ-01",
+    "REQ-02"
+  ],
+  "design": "DESIGN",
+  "decisions": [
+    "DEC-01"
+  ],
+  "constraints": [
+    "CON-01"
+  ],
+  "dependsOn": [],
+  "designReferences": [
+    {
+      "section": "components",
+      "item": "InterfaceLocale"
+    }
+  ],
+  "files": [
+    {
+      "path": "autosecretaire/static/app.js",
+      "action": "update"
+    },
+    {
+      "path": "autosecretaire/static/style.css",
+      "action": "update"
+    },
+    {
+      "path": "autosecretaire/static/index.html",
+      "action": "update"
+    },
+    {
+      "path": "tests/test_ui.py",
+      "action": "update"
+    },
+    {
+      "path": "README.md",
+      "action": "update"
+    },
+    {
+      "path": "docs/INSTALLATION.md",
+      "action": "update"
+    },
+    {
+      "path": "docs/VALIDATION.md",
+      "action": "update"
+    }
+  ],
+  "doneCriteria": [
+    {
+      "id": "DC-01",
+      "statement": "Tests du catalogue et suite existante passent ; moteur inchangé."
+    },
+    {
+      "id": "DC-02",
+      "statement": "Chrome vérifie le rendu, classement individuel, clavier, recherche, favoris, actualisation, échec et navigation pendant requête ; documentation cohérente."
+    }
+  ],
+  "priority": "high",
+  "plannedEffort": "1h",
+  "plannedStart": "2026-10-24",
+  "plannedEnd": "2026-10-24",
+  "outputs": [
+    {
+      "name": "Classement uniforme des documents",
+      "kind": "source-code",
+      "deliverable": true
+    }
+  ]
+}

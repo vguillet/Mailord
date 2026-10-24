@@ -1,0 +1,14 @@
+{
+  "mdse": "2.3",
+  "kind": "Constraint",
+  "id": "CON-01",
+  "name": "Préserver les données et les autres actions",
+  "status": "active",
+  "revision": 1,
+  "createdAt": "2026-10-24",
+  "updatedAt": "2026-10-24",
+  "workItem": "WI-inline-document-filing",
+  "type": "prohibition",
+  "statement": "Ne pas déplacer les archives à la mise à jour, modifier les règles du moteur, réutiliser les cases d’impression pour le classement ou ajouter une arborescence permanente. Conserver les présélections et les statuts contrastés.",
+  "reason": "La demande porte uniquement sur le sélecteur sous chaque document."
+}

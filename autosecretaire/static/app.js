@@ -13,6 +13,18 @@
     }
     return left.length - right.length;
   });
+  const searchKey = value => String(value).normalize('NFD').replace(/[\u0300-\u036f]/g, '').toLocaleLowerCase('fr');
+  function folderEntries(folders, query = '', expanded = []) {
+    const all = sortFolders(folders);
+    const q = searchKey(query.trim());
+    const open = new Set(expanded);
+    const matches = all.filter(path => searchKey(path).includes(q));
+    return all.filter(path => {
+      if (q) return matches.some(match => match === path || match.startsWith(path + '/'));
+      for (let parent = parentPath(path); parent; parent = parentPath(parent)) if (!open.has(parent)) return false;
+      return true;
+    }).map(path => ({path, depth: path.split('/').length - 1, hasChildren: all.some(other => other.startsWith(path + '/')), expanded: !!q || open.has(path)}));
+  }
   function checkedFolder(path) {
     const value = String(path).trim();
     if (!value || value.startsWith('/') || value.includes('\\') || /[\x00-\x1f]/.test(value) || value.split('/').some(part => !part.trim() || part === '.' || part === '..')) {
@@ -78,12 +90,12 @@
   }
 
   // Export deterministic transformations for focused tests without a browser.
-  if (typeof module !== 'undefined' && module.exports) module.exports = {escape, checkedFolder, withParents, changeBranch, updateView, updateRecovery, sessionRequest};
+  if (typeof module !== 'undefined' && module.exports) module.exports = {escape, folderEntries, checkedFolder, withParents, changeBranch, updateView, updateRecovery, sessionRequest};
   if (typeof document === 'undefined') return;
 
   const $ = (selector, root = document) => root.querySelector(selector);
   const $$ = (selector, root = document) => [...root.querySelectorAll(selector)];
-  const model = {state: null, client: null, active: null, selected: new Set(), filter: 'all', query: '', clientQuery: '', refreshing: false, busy: new Set(), template: [], templateDefaults: [], templateSelected: null, templateDirty: false, destination: '', foldersQuery: '', recent: {}, history: [], previousFocus: null};
+  const model = {state: null, client: null, active: null, selected: new Set(), filter: 'all', query: '', clientQuery: '', refreshing: false, busy: new Set(), template: [], templateDefaults: [], templateSelected: null, templateDirty: false, filing: null, recent: {}, history: [], previousFocus: null};
   try { model.recent = JSON.parse(localStorage.getItem('autosecretaire.recent') || '{}'); } catch (_) { model.recent = {}; }
   const modal = $('#modal');
   const modalContent = $('#modal-content');
@@ -272,16 +284,32 @@
     const pending = d.classification !== 'classified' || !!d.move_to;
     return `<span class="filing-status${pending ? ' pending' : ''}">${pending ? 'À classer' : '✓ Classé'}</span>`;
   }
+  function documentCard(d, message) {
+    const pending = d.classification !== 'classified' || !!d.move_to;
+    const open = model.filing?.documentId === d.id;
+    return `<div class="document${pending ? ' pending' : ''}" data-document-id="${escape(d.id)}"><div class="document-row"><input type="checkbox" data-document-select="${escape(d.id)}" aria-label="Inclure ${escape(d.original_name || d.name)} à l’impression" ${d.selected ? 'checked' : ''} ${!d.printable ? 'disabled' : ''}><span class="document-icon" aria-hidden="true">${escape(d.name.split('.').pop().slice(0, 4).toUpperCase())}</span><div class="document-info"><p class="document-name">${escape(d.name)}</p>${filingBadge(d)}<small>${d.kind === 'email' ? 'Mail en PDF' : d.inline ? 'Image intégrée au message' : 'Pièce jointe originale'}${!d.printable ? ' · format non imprimable ici' : ''}</small></div><button class="icon-button" data-action="preview" data-id="${escape(d.id)}" title="Consulter le document" aria-label="Consulter ${escape(d.original_name || d.name)}">↗</button><button class="icon-button" data-action="reveal" data-id="${escape(d.id)}" title="Afficher dans le Finder" aria-label="Afficher dans le Finder">▱</button></div><button class="document-destination" data-action="classify-document" data-id="${escape(d.id)}" aria-expanded="${open}" aria-controls="filing-${escape(d.id)}" ${message.status !== 'ready' ? 'disabled' : ''}><span>${pending ? 'Choisir un dossier…' : `Dossier : ${escape(d.destination || parentPath(d.path))}`}</span><span aria-hidden="true">${open ? '⌃' : '⌄'}</span></button><div id="filing-${escape(d.id)}" class="filing-slot"></div></div>`;
+  }
   function renderDetail() {
     const m = activeMessage();
     const panel = $('#detail-panel');
-    if (!m) { panel.innerHTML = `<div class="empty-state detail-empty"><span class="empty-icon" aria-hidden="true">↗</span><h3>Le détail, en un clic.</h3><p>Sélectionnez une communication pour consulter ses documents et choisir où les ranger.</p></div>`; return; }
+    if (!m) { model.filing = null; panel.innerHTML = `<div class="empty-state detail-empty"><span class="empty-icon" aria-hidden="true">↗</span><h3>Le détail, en un clic.</h3><p>Sélectionnez une communication pour consulter ses documents et choisir où les ranger.</p></div>`; return; }
     const client = messageClient(m);
     const docs = m.documents || [];
     const email = docs.find(d => d.kind === 'email');
+    if (model.filing && (model.filing.messageId !== m.id || !docs.some(d => d.id === model.filing.documentId))) model.filing = null;
+    const candidate = $('#inline-filing');
+    const previous = model.filing && candidate?.dataset.documentId === model.filing.documentId ? candidate : null;
+    const focused = previous?.contains(document.activeElement) ? document.activeElement : null;
+    const scroll = $('.detail-content', panel)?.scrollTop || 0;
     const pendingDocs = docs.filter(d => d.classification !== 'classified' || d.move_to).length;
     const canPrint = m.status === 'ready' && !['submitted', 'uncertain', 'simulated'].includes(m.print_status);
-    panel.innerHTML = `<div class="detail-header"><span>APERÇU DE LA COMMUNICATION</span>${email ? `<button class="button quiet small" data-action="preview" data-id="${escape(email.id)}">Ouvrir le PDF ↗</button>` : ''}</div><div class="detail-content"><h2 class="detail-subject">${escape(m.subject || 'Sans objet')}</h2><dl class="detail-meta"><dt>De</dt><dd>${escape(m.sender || 'Expéditeur inconnu')}</dd><dt>À</dt><dd>${escape(Array.isArray(m.recipients) ? m.recipients.join(', ') : m.recipients || '—')}</dd><dt>Reçu</dt><dd>${escape(dateLabel(m.date, true))}</dd><dt>Client</dt><dd>${escape(client?.name || '—')}</dd></dl><div class="detail-statuses">${chip(m.status === 'ready' ? '✓ PDF disponible' : m.status === 'error' ? 'Export en erreur' : 'Export en attente', m.status === 'error' ? 'error' : m.status === 'queued' ? 'neutral' : '')}${chip(printLabel(m.print_status), printTone(m.print_status))}</div>${m.error ? `<div class="notice error"><span>${escape(m.error)}</span><button class="button small" data-action="process">Reprendre</button></div>` : ''}<div class="document-preview">${escape(m.body || 'Le contenu de ce mail sera disponible après son export.')}</div><h3 class="mini-heading">DOCUMENTS <small>${docs.length} fichier${docs.length > 1 ? 's' : ''}</small></h3><div class="document-list">${docs.length ? docs.map(d => `<div class="document${d.classification !== 'classified' || d.move_to ? ' pending' : ''}" data-document-id="${escape(d.id)}"><input type="checkbox" data-document-select="${escape(d.id)}" aria-label="Inclure ${escape(d.original_name || d.name)} à l’impression" ${d.selected ? 'checked' : ''} ${!d.printable ? 'disabled' : ''}><span class="document-icon" aria-hidden="true">${escape((d.name || d.path || '').split('.').pop()?.slice(0, 4).toUpperCase() || 'DOC')}</span><div class="document-info"><p class="document-name">${escape(d.name || leaf(d.path) || d.original_name)}</p>${filingBadge(d)}<small>${d.kind === 'email' ? 'Mail en PDF' : d.inline ? 'Image intégrée au message' : 'Pièce jointe originale'}${!d.printable ? ' · format non imprimable ici' : ''}</small><small class="document-location">▱ ${escape(d.destination || parentPath(d.path))}</small></div><button class="button quiet small" data-action="classify-document" data-id="${escape(d.id)}" ${m.status !== 'ready' ? 'disabled' : ''}>${d.classification === 'classified' ? 'Déplacer' : 'Classer'}</button><button class="icon-button" data-action="preview" data-id="${escape(d.id)}" title="Consulter le document" aria-label="Consulter ${escape(d.original_name || d.name)}">↗</button><button class="icon-button" data-action="reveal" data-id="${escape(d.id)}" title="Afficher dans le Finder" aria-label="Afficher dans le Finder">▱</button></div>`).join('') : '<p class="small subtle">Les documents apparaîtront après l’export.</p>'}</div>${(m.print_jobs || []).length ? `<h3 class="mini-heading">SUIVI DES IMPRESSIONS</h3>${m.print_jobs.map(job => `<p class="detail-note">${escape(docs.find(d => d.id === job.document_id)?.name || 'Document')} · ${escape(printLabel(job.status))}${job.job_id ? ` · ${escape(job.job_id)}` : ''}${job.error ? `<br><strong>${escape(job.error)}</strong>` : ''}</p>`).join('')}` : ''}<p class="detail-note">Cases à gauche : inclure les documents à l’impression. Le bouton Classer choisit la destination du PDF du mail ou d’une pièce jointe.</p><div class="filing-summary${pendingDocs || !docs.length ? ' pending' : ''}"><strong>${docs.length ? (pendingDocs ? `${pendingDocs} document${pendingDocs > 1 ? 's' : ''} à classer` : '✓ Tous les documents sont classés') : 'Téléchargement en attente'}</strong><span>${pendingDocs ? 'Choisissez un dossier pour chaque document surligné.' : docs.length ? 'Les emplacements sont indiqués sur chaque document.' : 'Les documents apparaîtront après leur export.'}</span></div><div class="detail-actions"><button class="button primary" data-action="classify" ${m.status !== 'ready' || !docs.length ? 'disabled' : ''}>Classer les documents <span aria-hidden="true">↗</span></button>${canPrint ? '<button class="button" data-action="print">Imprimer</button>' : ['submitted', 'uncertain', 'simulated'].includes(m.print_status) ? `<button class="button" data-action="reprint" data-id="${escape(m.id)}">Réimprimer…</button>` : ''}</div><p class="detail-note">${m.historical ? 'Message de l’historique : aucune impression automatique. ' : ''}${model.state?.settings?.dry_run ? 'Mode simulation : aucun papier n’est imprimé. ' : ''}Une soumission confirme l’envoi à l’imprimante, pas la sortie du papier.</p></div>`;
+    panel.innerHTML = `<div class="detail-header"><span>APERÇU DE LA COMMUNICATION</span>${email ? `<button class="button quiet small" data-action="preview" data-id="${escape(email.id)}">Ouvrir le PDF ↗</button>` : ''}</div><div class="detail-content"><h2 class="detail-subject">${escape(m.subject || 'Sans objet')}</h2><dl class="detail-meta"><dt>De</dt><dd>${escape(m.sender || 'Expéditeur inconnu')}</dd><dt>À</dt><dd>${escape(Array.isArray(m.recipients) ? m.recipients.join(', ') : m.recipients || '—')}</dd><dt>Reçu</dt><dd>${escape(dateLabel(m.date, true))}</dd><dt>Client</dt><dd>${escape(client?.name || '—')}</dd></dl><div class="detail-statuses">${chip(m.status === 'ready' ? '✓ PDF disponible' : m.status === 'error' ? 'Export en erreur' : 'Export en attente', m.status === 'error' ? 'error' : m.status === 'queued' ? 'neutral' : '')}${chip(printLabel(m.print_status), printTone(m.print_status))}</div>${m.error ? `<div class="notice error"><span>${escape(m.error)}</span><button class="button small" data-action="process">Reprendre</button></div>` : ''}<div class="document-preview">${escape(m.body || 'Le contenu de ce mail sera disponible après son export.')}</div><h3 class="mini-heading">DOCUMENTS <small>${docs.length} fichier${docs.length > 1 ? 's' : ''}</small></h3><div class="document-list">${docs.length ? docs.map(d => documentCard(d, m)).join('') : '<p class="small subtle">Les documents apparaîtront après l’export.</p>'}</div>${(m.print_jobs || []).length ? `<h3 class="mini-heading">SUIVI DES IMPRESSIONS</h3>${m.print_jobs.map(job => `<p class="detail-note">${escape(docs.find(d => d.id === job.document_id)?.name || 'Document')} · ${escape(printLabel(job.status))}${job.job_id ? ` · ${escape(job.job_id)}` : ''}${job.error ? `<br><strong>${escape(job.error)}</strong>` : ''}</p>`).join('')}` : ''}<p class="detail-note">Cases à gauche : inclure les documents à l’impression. Choisissez le dossier directement sous chaque document.</p><div class="filing-summary${pendingDocs || !docs.length ? ' pending' : ''}"><strong>${docs.length ? (pendingDocs ? `${pendingDocs} document${pendingDocs > 1 ? 's' : ''} à classer` : '✓ Tous les documents sont classés') : 'Téléchargement en attente'}</strong><span>${pendingDocs ? 'Choisissez un dossier pour chaque document surligné.' : docs.length ? 'Les emplacements sont indiqués sur chaque document.' : 'Les documents apparaîtront après leur export.'}</span></div><div class="detail-actions">${canPrint ? '<button class="button" data-action="print">Imprimer</button>' : ['submitted', 'uncertain', 'simulated'].includes(m.print_status) ? `<button class="button" data-action="reprint" data-id="${escape(m.id)}">Réimprimer…</button>` : ''}</div><p class="detail-note">${m.historical ? 'Message de l’historique : aucune impression automatique. ' : ''}${model.state?.settings?.dry_run ? 'Mode simulation : aucun papier n’est imprimé. ' : ''}Une soumission confirme l’envoi à l’imprimante, pas la sortie du papier.</p></div>`;
+    if (model.filing) {
+      const slot = document.getElementById('filing-' + model.filing.documentId);
+      if (previous) { slot.append(previous); if (focused) focused.focus({preventScroll: true}); renderFolders(); }
+      else mountFiling(slot);
+    }
+    $('.detail-content', panel).scrollTop = scroll;
   }
 
   function openModal(title, subtitle, body, footer = '', wide = false) {
@@ -317,43 +345,73 @@
     const selected = $$('input[name="initial_folders"]:checked', modal).length;
     preview.innerHTML = `<b>Messagerie</b> · ${escape(mail)}<br><b>Sur votre Mac</b> · ${escape(settings.archive_root || '')}/${escape(folder)}<br><small>${selected ? `${selected} dossier(s) sélectionné(s) à créer maintenant, avec leurs parents` : 'Aucun dossier vide créé'} · les autres seront créés au premier document</small>`;
   }
-  function chosenForClassify() {
-    const list = selectedMessages();
-    if (!list.length) throw new Error('Sélectionnez d’abord une communication.');
-    if (new Set(list.map(m => m.client_id)).size !== 1) throw new Error('Pour un classement groupé, sélectionnez les mails d’un même client.');
-    if (list.some(m => m.status !== 'ready')) throw new Error('Attendez que tous les mails sélectionnés soient exportés avant de les classer.');
-    return list;
+  function openFiling(button) {
+    if (updatesLocked()) return;
+    if (model.filing?.busy) return;
+    const m = activeMessage();
+    const d = button?.dataset.id ? m?.documents.find(d => d.id === button.dataset.id) : m?.documents.find(d => d.classification !== 'classified') || m?.documents[0];
+    if (!d || m.status !== 'ready') throw new Error('Attendez la fin du téléchargement de ce document.');
+    if (model.filing?.documentId === d.id) { closeFiling(); return; }
+    model.filing = {documentId: d.id, messageId: m.id, clientId: m.client_id, destination: '', query: '', expanded: new Set(), busy: false, error: ''};
+    renderDetail();
+    $('#folder-search').focus({preventScroll: true});
+    $('#inline-filing').scrollIntoView({block: 'nearest'});
   }
-  function openClassify(button) {
-    const documentId = button?.dataset?.id;
-    const list = documentId ? messages().filter(m => m.documents?.some(d => d.id === documentId)) : chosenForClassify();
-    if (!list.length || list.some(m => m.status !== 'ready')) throw new Error('Attendez que les documents soient exportés.');
-    const docs = list.flatMap(m => m.documents || []);
-    const hasPending = docs.some(d => d.classification !== 'classified');
-    if (!docs.length) throw new Error('Aucun document disponible. Attendez la fin du téléchargement.');
-    const client = messageClient(list[0]);
-    if (!client) throw new Error('Le dossier client est introuvable.');
-    model.destination = '';
-    model.foldersQuery = '';
-    modal.dataset.kind = 'classify'; modal.dataset.client = client.id;
-    modal.dataset.messages = JSON.stringify(list.map(m => m.id));
-    openModal('Classer les documents', 'Choisissez le PDF du mail, les pièces jointes ou une sélection à ranger ensemble.', `<div class="selection-summary"><span class="client-initial">${escape(initials(client.name))}</span><div>${escape(client.name)}<small>${list.length} communication${list.length > 1 ? 's' : ''}</small></div></div><div class="template-tree" role="group" aria-label="Documents à classer">${docs.map(d => `<label class="checkbox-field filing-choice${d.classification !== 'classified' ? ' pending' : ''}"><input type="checkbox" data-filing-document value="${escape(d.id)}" ${documentId ? (documentId === d.id ? 'checked' : '') : (!hasPending || d.classification !== 'classified' ? 'checked' : '')}><span><b>${escape(d.original_name || d.name)}</b>${filingBadge(d)}<small>${d.kind === 'email' ? 'PDF du mail' : 'Pièce jointe'} · ${escape(d.destination || '00 - À classer')}</small></span></label>`).join('')}</div><label class="search-field" style="margin-bottom:13px"><span aria-hidden="true">⌕</span><input id="folder-search" type="search" placeholder="Trouver un dossier…" aria-label="Rechercher un dossier de destination" autofocus></label><div id="folder-picker" class="folder-picker"></div><p class="dialog-note" style="margin-top:12px">Toute l’arborescence du modèle est disponible. Les dossiers absents et leurs parents seront créés au classement. ★ Vos favoris restent accessibles. Entrée valide le dossier choisi.</p>`, '<button class="button quiet" data-action="close-modal">Annuler</button><button class="button primary" id="classify-confirm" data-action="confirm-classify">Classer ici</button>');
+  function closeFiling() {
+    if (model.filing?.busy) return;
+    const id = model.filing?.documentId;
+    model.filing = null; renderDetail();
+    $$('[data-action="classify-document"]').find(button => button.dataset.id === id)?.focus({preventScroll: true});
+  }
+  function mountFiling(slot) {
+    slot.innerHTML = `<section id="inline-filing" class="inline-filing" data-document-id="${escape(model.filing.documentId)}" aria-label="Dossier de classement du document"><fieldset class="filing-controls"><legend>Choisir le dossier de ce document</legend><label class="search-field"><span aria-hidden="true">⌕</span><input id="folder-search" type="search" placeholder="Rechercher dans les dossiers…" aria-label="Rechercher un dossier de destination"></label><div id="folder-picker" class="folder-picker"></div><div id="filing-target" class="filing-target" aria-live="polite"></div><div class="filing-actions"><button class="button quiet small" data-action="cancel-filing">Annuler</button><button class="button primary small" id="classify-confirm" data-action="confirm-classify" disabled>Classer ici</button></div></fieldset><p id="filing-error" class="form-error hidden" role="alert"></p></section>`;
+    $('#folder-search').value = model.filing.query;
     renderFolders();
   }
   function renderFolders() {
-    const client = clients().find(c => c.id === modal.dataset.client);
+    const filing = model.filing;
+    const picker = $('#folder-picker');
+    if (!filing || !picker) return;
+    const client = clients().find(c => c.id === filing.clientId);
     if (!client) return;
     const all = sortFolders(client.folders || []);
     const existing = new Set(client.existing_folders || []);
-    const q = model.foldersQuery.toLocaleLowerCase('fr');
-    const filtered = all.filter(f => !q || f.toLocaleLowerCase('fr').includes(q));
-    const favorite = (client.favorites || []).filter(f => filtered.includes(f));
-    const recent = (Array.isArray(model.recent[client.id]) ? model.recent[client.id] : []).filter(f => filtered.includes(f) && !favorite.includes(f)).slice(0, 4);
-    const rest = filtered.filter(f => !favorite.includes(f) && !recent.includes(f));
-    const section = (title, folders) => folders.length ? `<div class="folder-section-title">${title}</div>${folders.map(f => `<div class="folder-row"><button class="folder-choice" data-action="choose-folder" data-folder="${escape(f)}" aria-pressed="${model.destination === f}"><span class="folder-icon" aria-hidden="true">▱</span><span class="folder-label">${escape(leaf(f))}${parentPath(f) ? `<span class="folder-parent">${escape(parentPath(f))}</span>` : ''}<span class="folder-parent">${existing.has(f) ? 'Sur le Mac' : 'Créé au classement'}</span></span></button><button class="icon-button${(client.favorites || []).includes(f) ? ' favorite' : ''}" data-action="favorite" data-folder="${escape(f)}" aria-label="${(client.favorites || []).includes(f) ? 'Retirer des favoris' : 'Ajouter aux favoris'}" title="${(client.favorites || []).includes(f) ? 'Retirer des favoris' : 'Ajouter aux favoris'}">${(client.favorites || []).includes(f) ? '★' : '☆'}</button></div>`).join('')}` : '';
-    $('#folder-picker').innerHTML = section('FAVORIS', favorite) + section('RÉCENTS', recent) + section('ARBORESCENCE COMPLÈTE', rest) || '<p class="dialog-note" style="padding:16px;margin:0">Aucun dossier trouvé. Ajoutez une destination au modèle et enregistrez-le pour la proposer ici.</p>';
-    $('#classify-confirm').disabled = !all.includes(model.destination) || !$$('[data-filing-document]:checked', modal).length;
-    $('#classify-confirm').textContent = model.destination ? `Classer dans « ${leaf(model.destination)} »` : 'Choisissez un dossier';
+    const q = searchKey(filing.query.trim());
+    const favorite = (client.favorites || []).filter(f => all.includes(f) && searchKey(f).includes(q));
+    const recent = (Array.isArray(model.recent[client.id]) ? model.recent[client.id] : []).filter(f => all.includes(f) && !favorite.includes(f) && searchKey(f).includes(q)).slice(0, 3);
+    const row = ({path, depth = 0, hasChildren = false, expanded = false}, shortcut = false) => `<div class="folder-row" style="--folder-depth:${depth}">${hasChildren && !shortcut ? `<button class="folder-toggle" data-action="toggle-folder" data-folder="${escape(path)}" aria-label="${expanded ? 'Replier' : 'Déplier'} ${escape(path)}" aria-expanded="${expanded}" ${q ? 'disabled' : ''}><svg width="20" height="20" viewBox="0 0 24 24" aria-hidden="true"><path d="m9 5 7 7-7 7" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/></svg></button>` : '<span class="folder-toggle-spacer" aria-hidden="true"></span>'}<button class="folder-choice" data-action="choose-folder" data-folder="${escape(path)}" aria-pressed="${filing.destination === path}" title="${escape(path)}"><span class="folder-label">${escape(leaf(path))}${parentPath(path) ? `<span class="folder-parent">${escape(parentPath(path))}</span>` : ''}<span class="folder-existence">${existing.has(path) ? 'Sur le Mac' : 'Sera créé'}</span></span></button><button class="icon-button${(client.favorites || []).includes(path) ? ' favorite' : ''}" data-action="favorite" data-folder="${escape(path)}" aria-label="${(client.favorites || []).includes(path) ? 'Retirer des favoris' : 'Ajouter aux favoris'} : ${escape(path)}">${(client.favorites || []).includes(path) ? '★' : '☆'}</button></div>`;
+    const section = (title, paths) => paths.length ? `<div class="folder-section-title">${title}</div>` + paths.map(path => row({path}, true)).join('') : '';
+    const entries = folderEntries(all, filing.query, filing.expanded);
+    const scroll = picker.scrollTop;
+    const focused = picker.contains(document.activeElement) ? {action: document.activeElement.dataset.action, folder: document.activeElement.dataset.folder} : null;
+    picker.innerHTML = section('FAVORIS', favorite) + section('RÉCENTS', recent) + (entries.length ? '<div class="folder-section-title">ARBORESCENCE COMPLÈTE</div>' + entries.map(entry => row(entry)).join('') : '<p class="folder-empty">Aucun dossier trouvé. Essayez un autre nom.</p>');
+    picker.scrollTop = scroll;
+    if (focused) $$('[data-action]', picker).find(button => button.dataset.action === focused.action && button.dataset.folder === focused.folder)?.focus({preventScroll: true});
+    $('#filing-target').textContent = filing.destination ? `Destination : ${filing.destination}${existing.has(filing.destination) ? '' : ' · sera créée au classement'}` : 'Sélectionnez un dossier. Les branches absentes seront créées au classement.';
+    $('#classify-confirm').disabled = filing.busy || updatesLocked() || !all.includes(filing.destination);
+    $('#classify-confirm').textContent = filing.busy ? 'Classement en cours…' : 'Classer ici';
+    $('.filing-controls').disabled = filing.busy || updatesLocked();
+    $('#filing-error').textContent = filing.error;
+    $('#filing-error').classList.toggle('hidden', !filing.error);
+  }
+  async function confirmFiling() {
+    const filing = model.filing;
+    if (!filing || filing.busy || !filing.destination || updatesLocked()) return;
+    filing.busy = true; filing.error = ''; renderFolders();
+    try {
+      await api('/api/classify', 'POST', {message_ids: [filing.messageId], document_ids: [filing.documentId], destination: filing.destination});
+      rememberFolder(filing.clientId, filing.destination);
+      if (model.filing === filing) model.filing = null;
+      await refresh();
+      if (!model.filing) $$('[data-action="classify-document"]').find(button => button.dataset.id === filing.documentId)?.focus({preventScroll: true});
+      toast('Document classé.');
+    } catch (error) {
+      filing.error = error.message || String(error);
+      if (model.filing !== filing) toast(filing.error, true);
+    } finally {
+      filing.busy = false;
+      if (model.filing === filing) renderFolders();
+    }
   }
   function rememberFolder(client, folder) {
     model.recent[client] = [folder, ...(Array.isArray(model.recent[client]) ? model.recent[client] : []).filter(f => f !== folder)].slice(0, 5);
@@ -364,7 +422,7 @@
     model.templateDefaults = [...(model.state?.template?.initial_folders || [])];
     model.templateSelected = null; model.templateDirty = false;
     modal.dataset.kind = 'template';
-    openModal('Votre modèle de dossiers', 'Une structure commune pour chaque nouveau client. Adaptez-la à votre façon de travailler.', `<details class="dialog-note" style="margin:0 0 20px;font-size:12px;color:#51614e"><summary><b>Repères du modèle du cabinet</b></summary><p>Une entrée par affaire : <b>NOM CLIENT-NOM PARTIE ADVERSE</b>, avec les initiales et la mention div, succ, LRM ou saisie si utile.</p><p>Avant de créer une affaire, renommez <b>[JURIDICTION + lieu]</b> (ex. TJ Paris). Dupliquez cette branche pour plusieurs instances : ses 14 sous-dossiers seront repris. Le modèle courant est proposé pour tous les clients. Seules les branches utilisées sont créées sur le Mac, au premier document.</p><ul><li><b>01 CONSULTATIONS</b> : Word et PDF, jamais dans les correspondances.</li><li><b>02 CORRESPONDANCES</b> : par catégorie du destinataire, jamais par objet ; Avocat comprend les confrères et le postulant.</li><li><b>PDF des mails</b> : choisissez leur dossier de classement comme pour les pièces jointes. La rubrique 03 MAILS (PDF) reste disponible ; aucune destination n’est imposée.</li><li><b>04 PROCÉDURE</b> : LO et MED avec double en correspondances ; actes par juridiction. Dires et rapports d’expert en 11, actes de notaire en 12, lettres au juge en 13.</li><li><b>05 PIÈCES</b> : client, adverses et reçues à trier ; numérotation par bordereau et sous-pièces a, b, c…</li><li><b>06 PROJETS ET VERSIONS DÉFINITIVES</b> : PJT numéroté, initiales et date ; VD et date, AR24 si nécessaire.</li><li><b>07 FACTURES</b> : facture avec exemplaire du mail ou courrier d’envoi ; correspondance aussi en 02.</li><li><b>08 NOTES INTERNES</b> : dossier, objet, initiales de l’auteur et date.</li></ul><p><b>00 - À classer</b> est la zone d’attente des PDF de mails et des pièces jointes. Les noms exportés gardent le préfixe <b>AAAA-MM-JJ - nom d’origine</b>. Remplacez les / par des tirets dans les noms de documents.</p><p>Ces repères guident votre classement. Chaque PDF de mail et chaque pièce jointe peut être rangé séparément ou avec une sélection de documents. Les copies dans plusieurs rubriques et les noms détaillés des actes restent manuels.</p></details><div class="template-toolbar"><span class="version-tag" id="template-version">Version ${escape(model.state?.template?.version || 1)}</span><button class="button small" data-action="template-add-root">＋ Dossier à la racine</button></div><p class="dialog-note">Cochez dans l’arbre les dossiers à préparer par défaut pour un nouveau client. Ces choix pourront être décochés à sa création. Les autres dossiers seront créés au premier document.</p><div id="template-tree" class="template-tree" aria-label="Arborescence du modèle"></div><div id="template-editor" class="template-editor hidden"></div><p class="template-hint">Sélectionnez un dossier pour le renommer, le déplacer, le dupliquer ou ajouter un sous-dossier. Vous pouvez aussi le glisser dans un autre dossier.</p><h3 class="mini-heading" style="margin-top:20px">APERÇU POUR UN NOUVEAU CLIENT</h3><div id="template-preview" class="template-preview"></div>${clients().length ? `<div class="apply-template"><h3>Conserver ce modèle pour un client</h3><p>Toutes les destinations du modèle courant sont déjà proposées. Mémorisez-les pour ce client afin de les retrouver même si le modèle change ensuite. Aucun dossier vide ne sera créé.</p><div class="field-row"><label class="field"><span>Client</span><select id="template-client">${clients().map(c => `<option value="${escape(c.id)}" ${c.id === model.client ? 'selected' : ''}>${escape(c.name)} · v${escape(c.template_version || 1)}</option>`).join('')}</select></label><button class="button" data-action="apply-template">Mémoriser le modèle</button></div></div>` : ''}`, '<button class="button quiet" data-action="close-modal">Fermer</button><button class="button primary" data-action="save-template">Enregistrer le modèle</button>', true);
+    openModal('Votre modèle de dossiers', 'Une structure commune pour chaque nouveau client. Adaptez-la à votre façon de travailler.', `<details class="dialog-note" style="margin:0 0 20px;font-size:12px;color:#51614e"><summary><b>Repères du modèle du cabinet</b></summary><p>Une entrée par affaire : <b>NOM CLIENT-NOM PARTIE ADVERSE</b>, avec les initiales et la mention div, succ, LRM ou saisie si utile.</p><p>Avant de créer une affaire, renommez <b>[JURIDICTION + lieu]</b> (ex. TJ Paris). Dupliquez cette branche pour plusieurs instances : ses 14 sous-dossiers seront repris. Le modèle courant est proposé pour tous les clients. Seules les branches utilisées sont créées sur le Mac, au premier document.</p><ul><li><b>01 CONSULTATIONS</b> : Word et PDF, jamais dans les correspondances.</li><li><b>02 CORRESPONDANCES</b> : par catégorie du destinataire, jamais par objet ; Avocat comprend les confrères et le postulant.</li><li><b>PDF des mails</b> : choisissez leur dossier de classement comme pour les pièces jointes. La rubrique 03 MAILS (PDF) reste disponible ; aucune destination n’est imposée.</li><li><b>04 PROCÉDURE</b> : LO et MED avec double en correspondances ; actes par juridiction. Dires et rapports d’expert en 11, actes de notaire en 12, lettres au juge en 13.</li><li><b>05 PIÈCES</b> : client, adverses et reçues à trier ; numérotation par bordereau et sous-pièces a, b, c…</li><li><b>06 PROJETS ET VERSIONS DÉFINITIVES</b> : PJT numéroté, initiales et date ; VD et date, AR24 si nécessaire.</li><li><b>07 FACTURES</b> : facture avec exemplaire du mail ou courrier d’envoi ; correspondance aussi en 02.</li><li><b>08 NOTES INTERNES</b> : dossier, objet, initiales de l’auteur et date.</li></ul><p><b>00 - À classer</b> est la zone d’attente des PDF de mails et des pièces jointes. Les noms exportés gardent le préfixe <b>AAAA-MM-JJ - nom d’origine</b>. Remplacez les / par des tirets dans les noms de documents.</p><p>Ces repères guident votre classement. Le dossier se choisit directement sous chaque PDF de mail ou pièce jointe. Les copies dans plusieurs rubriques et les noms détaillés des actes restent manuels.</p></details><div class="template-toolbar"><span class="version-tag" id="template-version">Version ${escape(model.state?.template?.version || 1)}</span><button class="button small" data-action="template-add-root">＋ Dossier à la racine</button></div><p class="dialog-note">Cochez dans l’arbre les dossiers à préparer par défaut pour un nouveau client. Ces choix pourront être décochés à sa création. Les autres dossiers seront créés au premier document.</p><div id="template-tree" class="template-tree" aria-label="Arborescence du modèle"></div><div id="template-editor" class="template-editor hidden"></div><p class="template-hint">Sélectionnez un dossier pour le renommer, le déplacer, le dupliquer ou ajouter un sous-dossier. Vous pouvez aussi le glisser dans un autre dossier.</p><h3 class="mini-heading" style="margin-top:20px">APERÇU POUR UN NOUVEAU CLIENT</h3><div id="template-preview" class="template-preview"></div>${clients().length ? `<div class="apply-template"><h3>Conserver ce modèle pour un client</h3><p>Toutes les destinations du modèle courant sont déjà proposées. Mémorisez-les pour ce client afin de les retrouver même si le modèle change ensuite. Aucun dossier vide ne sera créé.</p><div class="field-row"><label class="field"><span>Client</span><select id="template-client">${clients().map(c => `<option value="${escape(c.id)}" ${c.id === model.client ? 'selected' : ''}>${escape(c.name)} · v${escape(c.template_version || 1)}</option>`).join('')}</select></label><button class="button" data-action="apply-template">Mémoriser le modèle</button></div></div>` : ''}`, '<button class="button quiet" data-action="close-modal">Fermer</button><button class="button primary" data-action="save-template">Enregistrer le modèle</button>', true);
     renderTemplate();
   }
   function renderTemplate() {
@@ -529,7 +587,7 @@
       banner.classList.toggle('hidden', !active);
       banner.innerHTML = `<span>${updateMonitor.offline ? 'Le service redémarre. Cette page se reconnectera automatiquement.' : 'Mise à jour en cours. Le classement et les réglages seront disponibles après le redémarrage.'}</span><button class="button quiet small" data-action="updates">Voir l’avancement</button>`;
     }
-    $$('[data-action="sync"], [data-action="process"], [data-action="new-client"], [data-action="classify"], [data-action="classify-document"], [data-action="print"], [data-action="reprint"]').forEach(button => {
+    $$('[data-action="sync"], [data-action="process"], [data-action="new-client"], [data-action="confirm-classify"], [data-action="classify-document"], [data-action="print"], [data-action="reprint"]').forEach(button => {
       if (active) {
         if (!('updateWasDisabled' in button.dataset)) button.dataset.updateWasDisabled = String(button.disabled);
         button.disabled = true;
@@ -537,6 +595,7 @@
         button.disabled = button.dataset.updateWasDisabled === 'true'; delete button.dataset.updateWasDisabled;
       }
     });
+    if ($('.filing-controls')) $('.filing-controls').disabled = active || !!model.filing?.busy;
     if (!modal.open || modal.dataset.kind !== 'updates') return;
     const panel = $('#update-status-panel');
     if (!panel) return;
@@ -593,7 +652,7 @@
 
   function shortcuts() {
     modal.dataset.kind = 'shortcuts';
-    openModal('Quelques raccourcis utiles', 'Ils sont actifs en dehors des champs de saisie.', '<dl class="shortcuts-list"><dt><kbd>/</kbd></dt><dd>Rechercher un client</dd><dt><kbd>J</kbd> / <kbd>K</kbd></dt><dd>Communication suivante / précédente</dd><dt><kbd>C</kbd></dt><dd>Choisir le dossier de destination</dd><dt><kbd>Espace</kbd></dt><dd>Ajouter ou retirer le mail de la sélection</dd><dt><kbd>⌘</kbd> + clic</dt><dd>Sélectionner plusieurs mails du même client</dd><dt><kbd>Échap</kbd></dt><dd>Fermer un dialogue ou vider la sélection</dd></dl>', '<button class="button" data-action="close-modal">Compris</button>');
+    openModal('Quelques raccourcis utiles', 'Ils sont actifs en dehors des champs de saisie.', '<dl class="shortcuts-list"><dt><kbd>/</kbd></dt><dd>Rechercher un client</dd><dt><kbd>J</kbd> / <kbd>K</kbd></dt><dd>Communication suivante / précédente</dd><dt><kbd>C</kbd></dt><dd>Classer le premier document en attente du mail ouvert</dd><dt><kbd>Espace</kbd></dt><dd>Ajouter ou retirer le mail de la sélection</dd><dt><kbd>⌘</kbd> + clic</dt><dd>Sélectionner plusieurs mails du même client</dd><dt><kbd>Échap</kbd></dt><dd>Replier le sélecteur, fermer un dialogue ou vider la sélection</dd></dl>', '<button class="button" data-action="close-modal">Compris</button>');
   }
   function chooseClient(id) { model.client = id; model.active = null; model.selected.clear(); model.query = ''; $('#message-search').value = ''; model.filter = 'all'; render(); }
   function selectMessage(id, extend = false) {
@@ -632,24 +691,30 @@
     'reset-filters': () => { model.filter = 'all'; model.query = ''; $('#message-search').value = ''; renderMessages(); renderDetail(); },
     'clear-selection': () => { model.selected.clear(); renderMessages(); },
     'retry-client': async button => { await api(`/api/clients/${encodeURIComponent(button.dataset.id)}/retry`, 'POST', {}); await refresh(); toast('La création du client a été reprise.'); },
-    classify: openClassify,
-    'classify-document': openClassify,
-    'choose-folder': button => { model.destination = button.dataset.folder; renderFolders(); },
-    'confirm-classify': async () => {
-      if (!model.destination) throw new Error('Choisissez un dossier.');
-      const ids = JSON.parse(modal.dataset.messages || '[]');
-      const documentIds = $$('[data-filing-document]:checked', modal).map(input => input.value);
-      if (!documentIds.length) throw new Error('Sélectionnez au moins un document.');
-      await api('/api/classify', 'POST', {message_ids: ids, destination: model.destination, document_ids: documentIds});
-      rememberFolder(modal.dataset.client, model.destination); closeModal(); model.selected.clear(); await refresh(); toast(`${documentIds.length} document${documentIds.length > 1 ? 's' : ''} classé${documentIds.length > 1 ? 's' : ''}.`);
+    'classify-document': openFiling,
+    'cancel-filing': closeFiling,
+    'choose-folder': button => { if (!model.filing?.busy) { model.filing.destination = button.dataset.folder; model.filing.error = ''; renderFolders(); } },
+    'toggle-folder': button => {
+      const expanded = model.filing?.expanded;
+      if (!expanded) return;
+      if (expanded.has(button.dataset.folder)) expanded.delete(button.dataset.folder); else expanded.add(button.dataset.folder);
+      renderFolders();
     },
+    'confirm-classify': confirmFiling,
     favorite: async button => {
-      const client = clients().find(c => c.id === modal.dataset.client);
+      const filing = model.filing;
+      const client = clients().find(c => c.id === filing?.clientId);
       if (!client) return;
       const favorites = new Set(client.favorites || []);
       if (favorites.has(button.dataset.folder)) favorites.delete(button.dataset.folder); else favorites.add(button.dataset.folder);
-      const updated = await api(`/api/clients/${encodeURIComponent(client.id)}/favorites`, 'PUT', {folders: [...favorites]});
-      client.favorites = updated.favorites; renderFolders();
+      try {
+        const updated = await api(`/api/clients/${encodeURIComponent(client.id)}/favorites`, 'PUT', {folders: [...favorites]});
+        const current = clients().find(c => c.id === client.id);
+        if (current) current.favorites = updated.favorites;
+        if (model.filing === filing) renderFolders();
+      } catch (error) {
+        if (model.filing === filing) { filing.error = error.message; renderFolders(); } else throw error;
+      }
     },
     print: async () => {
       const list = selectedMessages();
@@ -732,7 +797,7 @@
     if (element.id === 'client-search') { model.clientQuery = element.value; renderClients(); }
     if (element.id === 'message-search') { model.query = element.value; renderMessages(); renderDetail(); }
     if (element.id === 'client-name') clientPreview();
-    if (element.id === 'folder-search') { model.foldersQuery = element.value; renderFolders(); }
+    if (element.id === 'folder-search' && model.filing) { model.filing.query = element.value; renderFolders(); }
   });
   document.addEventListener('change', event => {
     const element = event.target;
@@ -753,7 +818,6 @@
       if (element.checked) selected.add(element.dataset.templateDefault); else selected.delete(element.dataset.templateDefault);
       model.templateDefaults = [...selected]; model.templateDirty = true;
     }
-    if (element.matches('[data-filing-document]')) renderFolders();
     if (element.name === 'connector') settingsVisibility();
     if (element.name === 'prefix_format') namingPreview();
     if (element.id === 'reprint-confirm') $('#reprint-submit').disabled = !element.checked;
@@ -796,13 +860,15 @@
   });
   document.addEventListener('keydown', event => {
     const input = event.target.closest('input,textarea,select,[contenteditable=true]');
-    if (modal.open) {
-      if (modal.dataset.kind === 'classify' && event.key === 'Enter' && !event.target.closest('button')) { event.preventDefault(); $('#classify-confirm')?.click(); }
+    if (modal.open) return;
+    if (event.key === 'Escape' && model.filing) { event.preventDefault(); closeFiling(); return; }
+    if (event.target.closest('#inline-filing')) {
+      if (event.key === 'Enter' && event.target.id === 'folder-search') { event.preventDefault(); $('#classify-confirm')?.click(); }
       return;
     }
     if (input || event.altKey || event.metaKey || event.ctrlKey) return;
     if (event.key === '/') { event.preventDefault(); $('#client-search').focus(); }
-    if (event.key.toLowerCase() === 'c' && model.active) { event.preventDefault(); action('classify', openClassify); }
+    if (event.key.toLowerCase() === 'c' && model.active) { event.preventDefault(); action('classify-document', () => openFiling()); }
     if (['j','k'].includes(event.key.toLowerCase())) {
       const list = visibleMessages(); const at = list.findIndex(m => m.id === model.active);
       const next = list[Math.max(0, Math.min(list.length - 1, at + (event.key.toLowerCase() === 'j' ? 1 : -1)))];

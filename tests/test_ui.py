@@ -95,3 +95,19 @@ def test_client_uses_document_ids_and_csrf_contract():
     assert '/api/documents/${encodeURIComponent(id)}/file' in source
     assert not re.search(r'(?:src|href)=[^\n]*\$\{(?:doc|d)\.path\}', source)
     assert 'confirm: true' in source  # A reprint is separate from ordinary printing.
+
+
+def test_filing_tree_collapses_branches_but_keeps_parents_selectable():
+    folders = ['Pièces/Client/Signées', 'Pièces', 'Pièces/Client', 'Factures']
+    data = json.dumps(folders)
+    assert [r['path'] for r in js(f'ui.folderEntries({data}, "", [])')] == ['Factures', 'Pièces']
+    expanded = js(f'ui.folderEntries({data}, "", ["Pièces"])')
+    assert [r['path'] for r in expanded] == ['Factures', 'Pièces', 'Pièces/Client']
+    assert expanded[-1]['hasChildren'] is True
+
+
+def test_filing_search_finds_collapsed_destinations_and_preserves_ancestors():
+    result = js('ui.folderEntries(["Procédure", "Procédure/TJ Paris", "Procédure/TJ Paris/Expertise", "Pièces"], "expertise", [])')
+    assert [r['path'] for r in result] == ['Procédure', 'Procédure/TJ Paris', 'Procédure/TJ Paris/Expertise']
+    assert js('ui.folderEntries(["Pièces", "Pièces/Signées"], "pieces/signees", [])')[-1]['path'] == 'Pièces/Signées'
+    assert js('ui.folderEntries(["Pièces"], "introuvable", [])') == []

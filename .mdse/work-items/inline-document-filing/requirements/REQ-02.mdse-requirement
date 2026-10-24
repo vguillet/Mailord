@@ -1,0 +1,33 @@
+{
+  "mdse": "2.3",
+  "kind": "Requirement",
+  "id": "REQ-02",
+  "name": "Conservation du contexte et reprise des erreurs",
+  "status": "approved",
+  "revision": 1,
+  "createdAt": "2026-10-24",
+  "updatedAt": "2026-10-24",
+  "workItem": "WI-inline-document-filing",
+  "keyword": "SHALL",
+  "statement": "L’interface SHALL préserver le contexte du sélecteur lors des actualisations et garder les erreurs de classement auprès du document concerné.",
+  "priority": "must",
+  "acceptanceCriteria": [
+    {
+      "id": "AC-01",
+      "kind": "failure-path",
+      "given": "un choix de dossier et une recherche en cours",
+      "when": "l’état est actualisé ou le service refuse le classement",
+      "then": "recherche, dossier choisi, focus et défilement sont conservés ; une erreur lisible apparaît sous le même document et permet de réessayer sans le marquer classé"
+    },
+    {
+      "id": "AC-02",
+      "kind": "failure-path",
+      "given": "un sélecteur ouvert ou une requête en cours",
+      "when": "un autre document ou mail est ouvert",
+      "then": "une action reste attachée au document et au client initiaux ; un seul sélecteur est affiché, les doubles soumissions sont empêchées et le clavier permet recherche, choix, validation et fermeture"
+    }
+  ],
+  "verifiedBy": [
+    "VM-02"
+  ]
+}
