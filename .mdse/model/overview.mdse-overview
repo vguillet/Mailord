@@ -4,7 +4,7 @@
   "id": "OVERVIEW",
   "name": "Vue d'ensemble Auto-secretaire",
   "status": "current",
-  "revision": 8,
+  "revision": 9,
   "createdAt": "2026-10-23",
   "updatedAt": "2026-10-24",
   "summary": "Auto-secrétaire automatise localement sur Mac les dossiers de communications clients : PDF, pièces jointes, nommage chronologique, classement et impression avec interface web française.",
@@ -21,7 +21,7 @@
     },
     {
       "name": "Classement ergonomique",
-      "description": "Navigation clients, états et aperçu, lots, recherche, favoris et raccourcis. Chaque destination indique si elle existe sur le Mac ou sera créée au classement. Classement indépendant ou groupé des PDF de mails et pièces jointes ; badges À CLASSER contrastés, noms en gras et fonds ambrés pour les documents en attente.",
+      "description": "Navigation clients, états et aperçu. Sélecteur individuel sous chaque PDF ou pièce jointe, sans dialogue : recherche dans toute l’arborescence, favoris, récents et clavier. Chevrons lisibles de 20 px, zones cliquables de 32 px ; destinations absentes sélectionnables. Contexte conservé au rafraîchissement, erreurs sous le document et requêtes liées à leur document initial. Badges À CLASSER contrastés.",
       "state": "implemented"
     },
     {
@@ -70,7 +70,7 @@
       "description": "Hiérarchie du cabinet, repères et limites de la configuration."
     }
   ],
-  "currentState": "Version locale avec choix manuel de destination pour chaque PDF et pièce jointe, présélections de dossiers conservées et états en attente contrastés ; 197 tests réussis et parcours Chrome fictif. Intégrations matérielles encore à valider.",
+  "currentState": "Version locale avec classement individuel intégré sous chaque document, chevrons agrandis et contexte préservé ; 199 tests réussis et parcours Chrome fictif. Intégrations matérielles encore à valider.",
   "knownGaps": [
     "Les intégrations Orange, Apple Mail et imprimante cible sont testées sur transports simulés ; validation terrain non réalisée.",
     "Rendu HTML en texte structuré et formats Office conservés sans conversion imprimable.",

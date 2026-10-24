@@ -4,7 +4,7 @@
   "id": "PRODUCT",
   "name": "Définition du produit Auto-secretaire",
   "status": "current",
-  "revision": 5,
+  "revision": 6,
   "createdAt": "2026-10-23",
   "updatedAt": "2026-10-24",
   "problem": "La professionnelle classe les communications de ses clients dans des dossiers de messagerie, puis télécharge, renomme, range et imprime manuellement les mails et leurs pièces jointes. Elle doit vérifier ce qui a déjà été enregistré et reproduire une structure de dossiers pour chaque nouveau client.",
@@ -81,7 +81,7 @@
     },
     {
       "id": "NEED-10",
-      "statement": "Choisir rapidement la destination de chaque document, PDF de mail ou pièce jointe, seul ou en groupe, avec recherche, favoris et clavier.",
+      "statement": "Choisir rapidement la destination de chaque PDF de mail ou pièce jointe avec un sélecteur directement sous le document uniquement, recherche, arborescence lisible, favoris et clavier.",
       "persona": "Professionnelle qui gère les communications de ses clients dans Apple Mail sur Mac",
       "priority": "must"
     },
@@ -144,7 +144,7 @@
     },
     {
       "measure": "Ergonomie du classement",
-      "target": "Une session avec l'utilisatrice démontre le classement individuel et par lots ; le gain de temps sera mesuré sur son corpus.",
+      "target": "Une session avec l’utilisatrice démontre le classement individuel directement sous chaque document ; le gain de temps sera mesuré sur son corpus.",
       "current": "Non mesuré ; seuil à établir avec l'utilisatrice."
     }
   ],

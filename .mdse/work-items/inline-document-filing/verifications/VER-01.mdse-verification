@@ -1,0 +1,82 @@
+{
+  "mdse": "2.3",
+  "kind": "Verification",
+  "id": "VER-01",
+  "name": "Classement intégré et contexte vérifiés",
+  "status": "pass",
+  "revision": 1,
+  "createdAt": "2026-10-24",
+  "updatedAt": "2026-10-24",
+  "workItem": "WI-inline-document-filing",
+  "requirements": [
+    "REQ-01",
+    "REQ-02"
+  ],
+  "executions": [
+    "TASK-01-E01"
+  ],
+  "tasks": [],
+  "testRun": {
+    "runner": "pytest",
+    "command": "/Users/vguillet/Documents/Repos/Auto-secretaire/.venv/bin/python -c 'import pytest; raise SystemExit(pytest.main([\"-q\",\"--tb=short\"]))'",
+    "passed": 199,
+    "failed": 0,
+    "skipped": 0
+  },
+  "results": [
+    {
+      "requirement": "REQ-01",
+      "result": "pass",
+      "methods": [
+        "VM-01"
+      ],
+      "acceptanceCriteria": [
+        {
+          "id": "AC-01",
+          "covered": true,
+          "test": "tests/test_ui.py : test_filing_tree_collapses_branches_but_keeps_parents_selectable, test_filing_search_finds_collapsed_destinations_and_preserves_ancestors ; Chrome : sélecteur unique sans dialogue, recherche Expertise, favori et chevrons 20 px dans bouton 32 px."
+        },
+        {
+          "id": "AC-02",
+          "covered": true,
+          "test": "Chrome : pièce jointe classée dans Expertise et PDF dans Factures, chacun seul ; fermeture après réussite, empreinte du contenu servi et travaux impression conservés. Commandes groupées de classement retirées ; cases impression distinctes."
+        },
+        {
+          "id": "AC-03",
+          "covered": true,
+          "test": "Chrome : recherche introuvable, état vide explicite et validation désactivée sans destination."
+        }
+      ]
+    },
+    {
+      "requirement": "REQ-02",
+      "result": "pass",
+      "methods": [
+        "VM-02"
+      ],
+      "acceptanceCriteria": [
+        {
+          "id": "AC-01",
+          "covered": true,
+          "test": "Chrome : actualisation conserve le nœud DOM, recherche, sélection et focus ; refus 503 injecté conserve le choix et affiche une erreur inline sans déplacer le document."
+        },
+        {
+          "id": "AC-02",
+          "covered": true,
+          "test": "Chrome : double validation produit une requête ; après navigation et ouverture du PDF d’un autre mail, la requête retardée classe seulement la pièce initiale et conserve le nouveau sélecteur ; Échap, C et Entrée vérifiés."
+        }
+      ]
+    }
+  ],
+  "evidence": [
+    {
+      "kind": "test-output",
+      "reference": "docs/VALIDATION.md",
+      "description": "199 tests réussis, deux cas de catalogue en TDD, syntaxe JS valide ; parcours Chrome sur démonstration isolée port 8881, empreinte et impressions conservées."
+    }
+  ],
+  "deviationReview": [],
+  "warnings": [
+    "Validation réalisée sur données fictives et dans Chrome ; aucune acceptation humaine ou essai d’imprimante cible revendiqué."
+  ]
+}

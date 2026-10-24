@@ -4,14 +4,14 @@
   "id": "ARCH",
   "name": "Architecture initiale Auto-secretaire",
   "status": "current",
-  "revision": 8,
+  "revision": 9,
   "createdAt": "2026-10-23",
   "updatedAt": "2026-10-24",
   "style": "Service natif macOS modulaire, FastAPI sur boucle locale, interface HTML/CSS/JavaScript et registre SQLite.",
   "components": [
     {
       "name": "InterfaceLocale",
-      "responsibility": "Navigation par client, messages et états, aperçu, classement individuel ou en lots, création de clients, édition visuelle du modèle et des règles de nommage. Arborescence complète sélectionnable, distinction Sur le Mac/Créé au classement et cases de présélection. PDF du mail et pièces jointes classables avec les mêmes actions ; badges, noms et cartes contrastés pour les non-classés. Destination choisie explicitement avant validation.",
+      "responsibility": "Navigation par client, messages, états et aperçu ; création de clients, édition du modèle et du nommage. Classement individuel via un sélecteur attaché au document : recherche, branches dépliables, favoris/récents, choix explicite. Arborescence complète même virtuelle et chevrons 20 px dans boutons 32 px. Un seul sélecteur, conservé par identifiant au rafraîchissement ; erreurs inline et requête capturant document/message/client. Impression sélectionnée séparément ; aucune commande de classement groupé dans l’interface.",
       "state": "existing",
       "dependsOn": [
         "GestionClients",
@@ -101,8 +101,8 @@
       "name": "Classer et imprimer",
       "steps": [
         "Afficher la destination et le statut de chaque PDF et pièce jointe, avec surlignage des documents à classer.",
-        "Choisir un ou plusieurs documents, PDF compris, puis leur destination dans l’arborescence complète.",
-        "Persister leurs intentions puis créer uniquement la branche nécessaire, déplacer et mettre à jour les chemins.",
+        "Ouvrir le sélecteur sous un document, choisir sa destination dans l’arborescence complète et valider explicitement.",
+        "Persister son intention puis créer uniquement la branche nécessaire, déplacer le document et mettre à jour son chemin. Le contrat API multiple reste compatible.",
         "Retirer les ancêtres vides de la source en préservant les dossiers initialement choisis.",
         "Marquer le mail classé lorsque tous ses documents le sont, y compris son PDF même sans pièce jointe.",
         "Soumettre l’impression selon la politique ; après classement attend tous les documents, sans relancer les travaux existants."
@@ -202,7 +202,7 @@
     },
     {
       "concern": "Vérification et limites",
-      "approach": "197 tests passent et parcours Chrome fictif : classement manuel des PDF et annexes, reprises, collisions, archives préservées et contraste des badges mesuré à 8,45:1 ; validation matérielle distincte."
+      "approach": "199 tests passent et parcours Chrome fictif : sélecteur individuel, recherche, clavier, erreur, actualisation et navigation pendant une requête, empreinte et impressions conservées ; validation matérielle distincte."
     },
     {
       "concern": "Mises à jour et compatibilité",
@@ -224,6 +224,7 @@
     "WI-cabinet-template",
     "WI-lazy-folders",
     "WI-correspondence-filing",
-    "WI-manual-document-filing"
+    "WI-manual-document-filing",
+    "WI-inline-document-filing"
   ]
 }

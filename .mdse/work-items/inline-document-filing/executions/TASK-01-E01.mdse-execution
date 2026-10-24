@@ -1,0 +1,91 @@
+{
+  "mdse": "2.3",
+  "kind": "Execution",
+  "id": "TASK-01-E01",
+  "name": "Classement individuel intégré et chevrons lisibles",
+  "status": "succeeded",
+  "revision": 1,
+  "createdAt": "2026-10-24",
+  "updatedAt": "2026-10-24",
+  "workItem": "WI-inline-document-filing",
+  "task": "TASK-01",
+  "attempt": 1,
+  "participants": [
+    {
+      "actor": "agent-codex",
+      "roles": [
+        "performer"
+      ]
+    },
+    {
+      "actor": "person-project-owner",
+      "roles": [
+        "initiator"
+      ]
+    }
+  ],
+  "startedAt": "2026-10-24",
+  "completedAt": "2026-10-24",
+  "summary": "Sélecteur dépliable sous chaque document : recherche, arborescence, favoris/récents, validation explicite, contexte conservé et erreurs locales. Chevrons agrandis. Moteur inchangé.",
+  "commits": [
+    {
+      "hash": "d9bce4e0368b3798050cc71cab829d9e14e9161c",
+      "message": "feat(inline-document-filing): choose folders beneath each document with readable tree toggles (REQ-01, REQ-02)",
+      "type": "feat"
+    }
+  ],
+  "filesChanged": [
+    {
+      "path": "autosecretaire/static/app.js",
+      "action": "update"
+    },
+    {
+      "path": "autosecretaire/static/style.css",
+      "action": "update"
+    },
+    {
+      "path": "autosecretaire/static/index.html",
+      "action": "update"
+    },
+    {
+      "path": "tests/test_ui.py",
+      "action": "update"
+    },
+    {
+      "path": "README.md",
+      "action": "update"
+    },
+    {
+      "path": "docs/INSTALLATION.md",
+      "action": "update"
+    },
+    {
+      "path": "docs/VALIDATION.md",
+      "action": "update"
+    }
+  ],
+  "testing": {
+    "approach": "selective-TDD",
+    "passed": 199,
+    "failed": 0,
+    "skipped": 0
+  },
+  "doneCriteria": [
+    {
+      "id": "DC-01",
+      "met": true
+    },
+    {
+      "id": "DC-02",
+      "met": true
+    }
+  ],
+  "implementationDeviations": [],
+  "evidence": [
+    {
+      "kind": "test-output",
+      "reference": "docs/VALIDATION.md",
+      "description": "Deux tests rouges puis verts ; 199 tests réussis, syntaxe JS valide, parcours Chrome individuel, recherche, clavier, erreur, rafraîchissement, requête retardée et mesure des chevrons."
+    }
+  ]
+}

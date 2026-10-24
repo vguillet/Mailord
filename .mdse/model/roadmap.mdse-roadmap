@@ -4,7 +4,7 @@
   "id": "ROADMAP",
   "name": "Feuille de route Auto-secretaire",
   "status": "current",
-  "revision": 9,
+  "revision": 10,
   "createdAt": "2026-10-23",
   "updatedAt": "2026-10-24",
   "milestones": [
@@ -145,6 +145,18 @@
       ],
       "deliveredDate": "2026-10-24",
       "notes": "197 tests, parcours Chrome de classement partiel et complet, badges mesurés à 8,45:1 ; ancienne règle automatique remplacée, archives existantes conservées."
+    },
+    {
+      "id": "MS-13",
+      "name": "Classement intégré par document",
+      "goal": "Choisir le dossier sous chaque document, avec arborescence lisible et contexte conservé.",
+      "state": "delivered",
+      "order": 13,
+      "workItems": [
+        "WI-inline-document-filing"
+      ],
+      "deliveredDate": "2026-10-24",
+      "notes": "199 tests et parcours Chrome : catalogue virtuel, recherche, erreurs, clavier, rafraîchissement et navigation pendant une requête ; chevrons agrandis à 20 px."
     }
   ],
   "backlog": [

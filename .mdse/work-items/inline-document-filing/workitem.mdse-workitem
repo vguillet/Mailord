@@ -3,8 +3,8 @@
   "kind": "WorkItem",
   "id": "WI-inline-document-filing",
   "name": "Sélecteur de classement sous chaque document",
-  "status": "taskified",
-  "revision": 1,
+  "status": "reconciled",
+  "revision": 4,
   "createdAt": "2026-10-24",
   "updatedAt": "2026-10-24",
   "slug": "inline-document-filing",
@@ -35,8 +35,14 @@
   "tasks": [
     "TASK-01"
   ],
-  "executions": [],
-  "verifications": [],
-  "deliverables": [],
+  "executions": [
+    "TASK-01-E01"
+  ],
+  "verifications": [
+    "VER-01"
+  ],
+  "deliverables": [
+    "DLV-01"
+  ],
   "design": "DESIGN"
 }
