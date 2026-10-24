@@ -166,6 +166,8 @@ def create_app(settings,background=True,*,restart=None,probation=False,health_to
         engine.print_messages([id],reprint=True);return {'ok':True}
     @app.put('/api/documents/{id}')
     def select(id:str,body:dict=Body(...)):return engine.select_document(id,required(body,'selected',bool))
+    @app.post('/api/documents/{id}/undo-filing')
+    def undo_filing(id:str,body:dict=Body(...)):return engine.undo_filing(id,required(body,'token',str))
     @app.post('/api/documents/{id}/print')
     def print_document(id:str):return engine.print_document(id)
     @app.post('/api/documents/{id}/reprint')

@@ -1,0 +1,33 @@
+{
+  "mdse": "2.3",
+  "kind": "Requirement",
+  "id": "REQ-04",
+  "name": "Modèle navigable",
+  "status": "approved",
+  "revision": 1,
+  "createdAt": "2026-10-24",
+  "updatedAt": "2026-10-24",
+  "workItem": "WI-daily-processing",
+  "keyword": "SHALL",
+  "statement": "L’utilisatrice SHALL rechercher et replier les branches du modèle sans modifier ses présélections.",
+  "priority": "must",
+  "acceptanceCriteria": [
+    {
+      "id": "AC-01",
+      "kind": "happy-path",
+      "given": "un modèle imbriqué",
+      "when": "une branche est repliée puis une destination profonde recherchée",
+      "then": "la recherche révèle le résultat et ses parents ; effacer la recherche restaure les branches ouvertes"
+    },
+    {
+      "id": "AC-02",
+      "kind": "edge-case",
+      "given": "une présélection ou branche est masquée par la recherche",
+      "when": "le modèle est enregistré",
+      "then": "les dossiers et choix masqués restent présents"
+    }
+  ],
+  "verifiedBy": [
+    "VM-04"
+  ]
+}

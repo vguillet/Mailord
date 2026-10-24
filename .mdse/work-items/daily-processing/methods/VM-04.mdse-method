@@ -1,0 +1,25 @@
+{
+  "mdse": "2.3",
+  "kind": "Method",
+  "id": "VM-04",
+  "name": "Modèle navigable",
+  "status": "approved",
+  "revision": 1,
+  "createdAt": "2026-10-24",
+  "updatedAt": "2026-10-24",
+  "workItem": "WI-daily-processing",
+  "class": "verification",
+  "method": "demonstration",
+  "automated": false,
+  "requirements": [
+    "REQ-04"
+  ],
+  "passCriteria": [
+    {
+      "id": "PC-01",
+      "statement": "Tous les critères du besoin sont démontrés, y compris les cas limites et refus ; preuves consignées dans docs/VALIDATION.md."
+    }
+  ],
+  "evidenceKind": "inspection-report",
+  "procedure": "Parcours navigateur sur démonstration isolée ; inspecter écran initial, navigation, recherche et absence de modifications des choix masqués."
+}

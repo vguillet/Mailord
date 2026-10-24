@@ -30,6 +30,9 @@ Choisissez la messagerie et le dossier des archives dans **Réglages avant de cr
 - Contrôle les fichiers, reprend les étapes interrompues et répare les exports manquants ou corrompus. Une copie modifiée est conservée dans la quarantaine privée avant réparation.
 - Affiche les clients à gauche, avec étoiles persistantes et favoris en tête, les communications et leurs états, un aperçu et les fichiers. Classement individuel directement sous chaque document, recherche dans l’arborescence, raccourcis, favoris et destinations récentes.
 - Imprime chaque document depuis son icône dédiée à côté de l’aperçu et du Finder, ou selon la politique automatique après classement ou après export. Suit chaque soumission et évite la relance implicite d’un résultat incertain.
+- Affiche les documents avant le corps du mail repliable, avec progression séparée du classement et de l’impression. Les cases « Impression auto / groupée » sont distinctes du bouton individuel.
+- Recherche dans le mail, les noms de pièces et leurs dossiers, sans distinction de casse ou d’accents ; le modèle dispose aussi d’une recherche et de branches repliables.
+- Permet d’annuler le dernier classement de chaque document, même après redémarrage, avec vérification des fichiers et sans écrasement ni nouvelle impression. Disponible pour les classements effectués depuis cette version.
 - Propose le rapprochement explicite des anciens PDF présents dans les dossiers clients.
 
 Les fichiers restent accessibles dans le Finder. Le service cloud habituel synchronise la racine documentaire ; Auto-secrétaire ne prétend pas vérifier cette synchronisation.

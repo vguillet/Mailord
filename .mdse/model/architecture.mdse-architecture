@@ -3,7 +3,7 @@
   "kind": "Architecture",
   "id": "ARCH",
   "name": "Architecture initiale Auto-secretaire",
-  "status": "current",
+  "status": "stale",
   "revision": 10,
   "createdAt": "2026-10-23",
   "updatedAt": "2026-10-24",

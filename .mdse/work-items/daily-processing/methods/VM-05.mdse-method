@@ -1,0 +1,25 @@
+{
+  "mdse": "2.3",
+  "kind": "Method",
+  "id": "VM-05",
+  "name": "Annulation ciblée du dernier classement",
+  "status": "approved",
+  "revision": 1,
+  "createdAt": "2026-10-24",
+  "updatedAt": "2026-10-24",
+  "workItem": "WI-daily-processing",
+  "class": "verification",
+  "method": "test",
+  "automated": true,
+  "requirements": [
+    "REQ-05"
+  ],
+  "passCriteria": [
+    {
+      "id": "PC-01",
+      "statement": "Tous les critères du besoin sont démontrés, y compris les cas limites et refus ; preuves consignées dans docs/VALIDATION.md."
+    }
+  ],
+  "evidenceKind": "test-output",
+  "command": "python -m pytest tests/test_daily_upgrade.py tests/test_ui.py -q"
+}

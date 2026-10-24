@@ -127,3 +127,12 @@ def test_print_control_uses_only_its_document_jobs():
     result = js(f'ui.documentPrintView({json.dumps(doc)}, {json.dumps(jobs)})')
     assert result['reprint'] is True and result['tone'] == 'error'
     assert js('ui.documentPrintView({id:"word", printable:false}, [])')['disabled'] is True
+
+
+def test_message_search_includes_document_names_and_destinations_without_accents():
+    message = {'subject': 'Bonjour', 'documents': [{'original_name': 'Échéancier.pdf', 'name': '2026-10-24 - Échéancier.pdf', 'destination': 'Procédure/TJ Paris'}]}
+    data = json.dumps(message)
+    for query in ['echeancier', '2026-10-24', 'procedure/tj paris']:
+        assert js(f'ui.messageMatches({data}, {json.dumps(query)}, "Camille")') is True
+    assert js(f'ui.messageMatches({data}, "introuvable", "Camille")') is False
+    assert js('ui.messageMatches({}, "", "")') is True

@@ -1,0 +1,33 @@
+{
+  "mdse": "2.3",
+  "kind": "Requirement",
+  "id": "REQ-02",
+  "name": "Espace quotidien centré sur les documents",
+  "status": "approved",
+  "revision": 1,
+  "createdAt": "2026-10-24",
+  "updatedAt": "2026-10-24",
+  "workItem": "WI-daily-processing",
+  "keyword": "SHALL",
+  "statement": "L’utilisatrice SHALL accéder rapidement aux documents, à leur progression et au sens des choix d’impression.",
+  "priority": "must",
+  "acceptanceCriteria": [
+    {
+      "id": "AC-01",
+      "kind": "happy-path",
+      "given": "une fenêtre de bureau de 1280 par 720 et un mail exporté",
+      "when": "un mail est ouvert",
+      "then": "les premiers documents sont visibles sans faire défiler la page ; le corps du mail est repliable, les cases sont libellées et classement/impression sont séparés"
+    },
+    {
+      "id": "AC-02",
+      "kind": "edge-case",
+      "given": "aucun client ou des communications en attente",
+      "when": "la vue d’ensemble est affichée",
+      "then": "le titre et les compteurs indiquent les mails et documents réels sans annoncer un rangement terminé à tort"
+    }
+  ],
+  "verifiedBy": [
+    "VM-02"
+  ]
+}

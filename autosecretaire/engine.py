@@ -338,7 +338,7 @@ class Engine:
                 if src.parent!=dst.parent:self._prune_empty(self.root,src.parent)
                 d.update(path=str(dst),name=dst.name);d.pop('move_to')
                 if 'move_destination' in d:
-                    d['destination']=d.pop('move_destination');d['classification']='classified'
+                    d['destination']=d.pop('move_destination');d['classification']=d.pop('move_classification','classified')
                 self.store.put('document',d['id'],d)
             except (OSError,ValueError) as e:self.event(self.error_text(e),'error')
         for m in self.store.all('message'):
@@ -371,6 +371,10 @@ class Engine:
                     src=within(root,d['path'])
                     target=src if src.parent==dest else self._target(dest,src.name,d['id'],d['sha256'],reserved)
                     reserved.add(str(target).casefold())
+                    if target!=src or d.get('classification')!='classified':
+                        d['undo_filing']={'token':uid(),'path':str(src),'destination':d['destination'],
+                                          'classification':d['classification'],'target_path':str(target)}
+                        d.pop('undo_applied',None)
                     d.update(move_to=str(target),move_destination=destination);self.store.put('document',d['id'],d)
                 for m in ms:
                     m['classification_auto_print']=True;self.store.put('message',m['id'],m)
@@ -379,6 +383,28 @@ class Engine:
             printable_ids=[m['id'] for m in ms if not m['historical'] and self.store.get('message',m['id'])['classification']=='classified']
             if self.settings['print_policy']=='after_classify' and printable_ids:
                 self.print_messages(printable_ids,retry_failed=False)
+
+    def undo_filing(self,id,token):
+        with self.lock:
+            d=self.store.get('document',id)
+            if not d:raise KeyError('Document introuvable.')
+            if d.get('move_to'):raise ValueError('Déplacement incomplet. Relancez le contrôle avant de réessayer.')
+            if token and d.get('undo_applied')==token:return d
+            undo=d.get('undo_filing')
+            if not undo or not token or undo['token']!=token:raise ValueError('Ce classement ne peut plus être annulé. Actualisez la page.')
+            if d['path']!=undo['target_path'] or not self._healthy(d):raise ValueError('Le fichier manque ou a changé. Lancez le contrôle avant annulation.')
+            m=self._messages([d['message_id']])[0]
+            root=Path(self.client(m['client_id'])['folder'])
+            src=within(root,d['path']);target=within(root,undo['path'])
+            if target!=src and target.exists():raise ValueError('Un fichier occupe déjà l’ancien emplacement. Aucun fichier n’a été remplacé.')
+            with self.store.transaction():
+                d.update(move_to=str(target),move_destination=undo['destination'],move_classification=undo['classification'],undo_applied=token)
+                d.pop('undo_filing');self.store.put('document',id,d)
+                m['classification_auto_print']=False;self.store.put('message',m['id'],m)
+            self._recover_moves()
+            result=self.store.get('document',id)
+            if result.get('move_to'):raise ValueError('Annulation à reprendre. Relancez le contrôle des fichiers.')
+            return result
 
     def _messages(self,ids):
         if not isinstance(ids,list) or not ids:raise ValueError('Sélectionnez au moins un message.')
@@ -405,6 +431,10 @@ class Engine:
                     elif not d.get('selected'):continue
                     if not d['printable']:continue
                     pid=d['id']+'-'+generation
+                    if not reprint:
+                        own=[p for p in self.store.all('print') if p['document_id']==d['id']]
+                        # A confirmed reprint supersedes the initial intent, including its failures.
+                        if own:pid=own[-1]['id']
                     previous=self.store.get('print',pid)
                     if previous and not (previous['status']=='preparing' or (previous['status']=='error' and retry_failed)):
                         results.append(previous);continue
@@ -430,12 +460,26 @@ class Engine:
                 m['print_status']=self.print_status(m);self.store.put('message',m['id'],m)
             return results
 
-    def print_status(self,m):
-        ps=[p for p in self.store.all('print') if p['message_id']==m['id']]
-        if not ps:return 'historical' if m['historical'] else 'pending'
-        for status in ['uncertain','error','submitting','submitted','simulated']:
-            if any(p['status']==status for p in ps):return status
-        return 'pending'
+    def print_progress(self,m):
+        latest={p['document_id']:p for p in self.store.all('print') if p['message_id']==m['id']}
+        progress=dict.fromkeys(['total','submitted','simulated','pending','error','uncertain','preparing','submitting'],0)
+        for d in self._docs(m['id']):
+            if not d['printable'] or not (d.get('selected') or d['id'] in latest):continue
+            status=latest.get(d['id'],{}).get('status','pending')
+            if status not in progress:status='uncertain'
+            progress['total']+=1;progress[status]+=1
+        return progress
+
+    def print_status(self,m,progress=None):
+        p=self.print_progress(m) if progress is None else progress
+        if not p['total']:return 'not_selected'
+        for status in ['uncertain','error','submitting','preparing']:
+            if p[status]:return status
+        complete=p['submitted']+p['simulated']
+        if complete and complete<p['total']:return 'partial'
+        if p['submitted'] and p['simulated']:return 'mixed'
+        if complete:return 'submitted' if p['submitted'] else 'simulated'
+        return 'historical' if m['historical'] else 'pending'
 
     def select_document(self,id,selected):
         with self.lock:
@@ -496,7 +540,8 @@ class Engine:
                 c['folders']=self.client_folders(c,c['existing_folders'])
             messages=self.store.all('message')
             for m in messages:
-                m['documents']=self._docs(m['id']);m['print_status']=self.print_status(m)
+                m['documents']=self._docs(m['id']);m['print_progress']=self.print_progress(m)
+                m['print_status']=self.print_status(m,m['print_progress'])
                 m['print_jobs']=[p for p in self.store.all('print') if p['message_id']==m['id']]
                 m.pop('spool',None);m.pop('sources',None)
             meta=self.store.get('meta','scan') or {}
