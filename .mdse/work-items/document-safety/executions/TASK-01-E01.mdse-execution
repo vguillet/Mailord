@@ -1,0 +1,232 @@
+{
+  "mdse": "2.3",
+  "kind": "Execution",
+  "id": "TASK-01-E01",
+  "name": "Conservation et récupération livrées",
+  "status": "succeeded",
+  "revision": 1,
+  "createdAt": "2026-10-24",
+  "updatedAt": "2026-10-24",
+  "workItem": "WI-document-safety",
+  "task": "TASK-01",
+  "attempt": 1,
+  "participants": [
+    {
+      "actor": "agent-codex",
+      "roles": [
+        "performer"
+      ]
+    },
+    {
+      "actor": "person-project-owner",
+      "roles": [
+        "initiator"
+      ]
+    }
+  ],
+  "startedAt": "2026-10-24",
+  "completedAt": "2026-10-24",
+  "summary": "Protocole sans unlink des documents ni rmdir, copies natives vérifiées, confirmation de plans, arrêt sur anomalies Finder et reprises interrompues ; interface de récupération additive. Migration technique incompatible refusée. Intégration et relance 8765 conservent les 13 documents et le travail d’impression existant.",
+  "commits": [
+    {
+      "hash": "1d959264f99e2c565dc8e15bd28267779b3fb2db",
+      "message": "feat(document-safety): confirm verified moves and retain recoverable originals (REQ-01, REQ-02, REQ-03)",
+      "type": "feat"
+    }
+  ],
+  "filesChanged": [
+    {
+      "path": ".mdse/project.mdse-project",
+      "action": "update"
+    },
+    {
+      "path": ".mdse/work-items/lazy-folders/decisions/DEC-01.mdse-decision",
+      "action": "update"
+    },
+    {
+      "path": ".mdse/work-items/lazy-folders/design/design.mdse-design",
+      "action": "update"
+    },
+    {
+      "path": ".mdse/work-items/lazy-folders/requirements/REQ-03.mdse-requirement",
+      "action": "update"
+    },
+    {
+      "path": "README.md",
+      "action": "update"
+    },
+    {
+      "path": "docs/API.md",
+      "action": "update"
+    },
+    {
+      "path": "docs/INSTALLATION.md",
+      "action": "update"
+    },
+    {
+      "path": "mailord/app.py",
+      "action": "update"
+    },
+    {
+      "path": "mailord/config.py",
+      "action": "update"
+    },
+    {
+      "path": "mailord/demo.py",
+      "action": "update"
+    },
+    {
+      "path": "mailord/engine.py",
+      "action": "update"
+    },
+    {
+      "path": "mailord/static/app.js",
+      "action": "update"
+    },
+    {
+      "path": "mailord/static/style.css",
+      "action": "update"
+    },
+    {
+      "path": "mailord/store.py",
+      "action": "update"
+    },
+    {
+      "path": "scripts/relocate_runtime.py",
+      "action": "update"
+    },
+    {
+      "path": "tests/test_api.py",
+      "action": "update"
+    },
+    {
+      "path": "tests/test_client_locations.py",
+      "action": "update"
+    },
+    {
+      "path": "tests/test_correspondence_filing.py",
+      "action": "update"
+    },
+    {
+      "path": "tests/test_daily_upgrade.py",
+      "action": "update"
+    },
+    {
+      "path": "tests/test_engine.py",
+      "action": "update"
+    },
+    {
+      "path": "tests/test_lazy_folders.py",
+      "action": "update"
+    },
+    {
+      "path": "tests/test_manual_document_filing.py",
+      "action": "update"
+    },
+    {
+      "path": "tests/test_print_preferences.py",
+      "action": "update"
+    },
+    {
+      "path": ".mdse/work-items/document-safety/workitem.mdse-workitem",
+      "action": "create"
+    },
+    {
+      "path": ".mdse/work-items/document-safety/design/design.mdse-design",
+      "action": "create"
+    },
+    {
+      "path": ".mdse/work-items/document-safety/tasks/TASK-01.mdse-task",
+      "action": "create"
+    },
+    {
+      "path": ".mdse/work-items/document-safety/methods/VM-01.mdse-method",
+      "action": "create"
+    },
+    {
+      "path": ".mdse/work-items/document-safety/requirements/REQ-01.mdse-requirement",
+      "action": "create"
+    },
+    {
+      "path": ".mdse/work-items/document-safety/requirements/REQ-02.mdse-requirement",
+      "action": "create"
+    },
+    {
+      "path": ".mdse/work-items/document-safety/requirements/REQ-03.mdse-requirement",
+      "action": "create"
+    },
+    {
+      "path": ".mdse/work-items/document-safety/decisions/DEC-01.mdse-decision",
+      "action": "create"
+    },
+    {
+      "path": "tests/test_file_safety.py",
+      "action": "create"
+    },
+    {
+      "path": "tests/filing_helpers.py",
+      "action": "create"
+    },
+    {
+      "path": "docs/FILE_SAFETY.md",
+      "action": "create"
+    },
+    {
+      "path": "mailord/file_safety.py",
+      "action": "create"
+    },
+    {
+      "path": "docs/VALIDATION.md",
+      "action": "update"
+    }
+  ],
+  "testing": {
+    "approach": "selective-TDD",
+    "passed": 286,
+    "failed": 0,
+    "skipped": 0
+  },
+  "doneCriteria": [
+    {
+      "id": "DC-01",
+      "met": true
+    },
+    {
+      "id": "DC-02",
+      "met": true
+    }
+  ],
+  "implementationDeviations": [
+    {
+      "rule": 2,
+      "type": "missing-critical",
+      "found": "Le nom de racine client et de volume pouvait être recréé après disparition ; un ancien script de migration ne sait pas réassocier les nouveaux identifiants de conservation.",
+      "action": "Persister les identités des racines ; refuser leur recréation et les migrations incompatibles. Préserver aussi les copies partielles du script, vérifier les copies compatibles et publier exclusivement.",
+      "resolved": true
+    },
+    {
+      "rule": 3,
+      "type": "blocking",
+      "found": "La démonstration et les tests historiques utilisaient la mutation directe ; les réglages proposaient encore une impression après classement.",
+      "action": "Faire passer les scénarios fictifs par la préparation/confirmation ; adapter les assertions aux nouvelles règles explicitement demandées et présenter l’impression manuelle comme défaut.",
+      "resolved": true
+    }
+  ],
+  "difficulties": [
+    {
+      "issue": "Python macOS ne fournit pas os.listxattr ; l’absence d’ACL étendue renvoie ENOENT.",
+      "resolution": "Lecture par les fonctions natives sur descripteurs, état sans ACL traité explicitement ; validation avec attributs et ACL réels dans les tests."
+    },
+    {
+      "issue": "Les tests de mise à jour lancent des serveurs locaux non autorisés dans le bac à sable.",
+      "resolution": "Suite complète exécutée avec autorisation locale dans des répertoires temporaires : 286 succès."
+    }
+  ],
+  "evidence": [
+    {
+      "kind": "test-output",
+      "reference": "docs/VALIDATION.md",
+      "description": "286 tests complets, 47 tests ciblés après dernier garde de racine ; syntaxe JS ; parcours confirmation/annulation/restauration et contrôle des empreintes après relance."
+    }
+  ]
+}

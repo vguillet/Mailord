@@ -3,8 +3,8 @@
   "kind": "WorkItem",
   "id": "WI-document-safety",
   "name": "Conservation et déplacements confirmés",
-  "status": "implementing",
-  "revision": 2,
+  "status": "reconciled",
+  "revision": 3,
   "createdAt": "2026-10-24",
   "updatedAt": "2026-10-24",
   "slug": "document-safety",
@@ -30,8 +30,12 @@
   "methods": [
     "VM-01"
   ],
-  "executions": [],
-  "verifications": [],
+  "executions": [
+    "TASK-01-E01"
+  ],
+  "verifications": [
+    "VER-01"
+  ],
   "decisions": [
     "DEC-01"
   ]

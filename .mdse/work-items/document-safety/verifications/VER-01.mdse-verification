@@ -1,0 +1,104 @@
+{
+  "mdse": "2.3",
+  "kind": "Verification",
+  "id": "VER-01",
+  "name": "Vérification des protections documentaires",
+  "status": "pass",
+  "revision": 1,
+  "createdAt": "2026-10-24",
+  "updatedAt": "2026-10-24",
+  "workItem": "WI-document-safety",
+  "requirements": [
+    "REQ-01",
+    "REQ-02",
+    "REQ-03"
+  ],
+  "executions": [
+    "TASK-01-E01"
+  ],
+  "testRun": {
+    "runner": "pytest",
+    "command": "python -m pytest -q",
+    "passed": 286,
+    "failed": 0,
+    "skipped": 0,
+    "durationSeconds": 21.65
+  },
+  "results": [
+    {
+      "requirement": "REQ-01",
+      "result": "pass",
+      "methods": [
+        "VM-01"
+      ],
+      "acceptanceCriteria": [
+        {
+          "id": "AC-01",
+          "covered": true,
+          "test": "test_verified_move_keeps_empty_folders_and_independent_recovery"
+        },
+        {
+          "id": "AC-02",
+          "covered": true,
+          "test": "test_faults_never_destroy_a_surviving_version[publication_race]"
+        }
+      ]
+    },
+    {
+      "requirement": "REQ-02",
+      "result": "pass",
+      "methods": [
+        "VM-01"
+      ],
+      "acceptanceCriteria": [
+        {
+          "id": "AC-01",
+          "covered": true,
+          "test": "test_confirmation_api_cannot_be_bypassed; test_undo_requires_new_confirmation_and_retains_directories"
+        },
+        {
+          "id": "AC-02",
+          "covered": true,
+          "test": "test_faults_never_destroy_a_surviving_version; test_macos_metadata_and_no_hardlinked_snapshot"
+        },
+        {
+          "id": "AC-03",
+          "covered": true,
+          "test": "test_expired_and_changed_source_plans_do_nothing; test_restore_is_explicit_additive_and_idempotent"
+        }
+      ]
+    },
+    {
+      "requirement": "REQ-03",
+      "result": "pass",
+      "methods": [
+        "VM-01"
+      ],
+      "acceptanceCriteria": [
+        {
+          "id": "AC-01",
+          "covered": true,
+          "test": "test_restore_is_explicit_additive_and_idempotent"
+        },
+        {
+          "id": "AC-02",
+          "covered": true,
+          "test": "test_crash_journal_preserves_copies_without_auto_resume; test_finder_changes_are_reported_never_repaired"
+        }
+      ]
+    }
+  ],
+  "deviationReview": [
+    {
+      "execution": "TASK-01-E01",
+      "summary": "Identités des dossiers, migration incompatible, démonstration et impression alignées ; vérifications ciblées et complètes réussies.",
+      "state": "resolved"
+    }
+  ],
+  "warnings": [
+    "Les 145 scénarios de la matrice ne sont pas tous certifiés individuellement ; portée et limites dans docs/FILE_SAFETY.md.",
+    "Pas de test matériel de coupure électrique, Orange, imprimante ou fournisseur cloud.",
+    "Copie de récupération sur le même disque : sauvegarde indépendante requise.",
+    "Les anciennes vérifications de WI-lazy-folders conservent leur contenu historique ; limite SM-07 connue."
+  ]
+}

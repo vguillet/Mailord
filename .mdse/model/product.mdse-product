@@ -4,7 +4,7 @@
   "id": "PRODUCT",
   "name": "Définition du produit Mailord",
   "status": "current",
-  "revision": 9,
+  "revision": 10,
   "createdAt": "2026-10-23",
   "updatedAt": "2026-10-24",
   "problem": "La professionnelle classe les communications de ses clients dans des dossiers de messagerie, puis télécharge, renomme, range et imprime manuellement les mails et leurs pièces jointes. Elle doit vérifier ce qui a déjà été enregistré et reproduire une structure de dossiers pour chaque nouveau client.",
@@ -69,7 +69,7 @@
     },
     {
       "id": "NEED-08",
-      "statement": "Vérifier la présence et la validité des PDF attendus, repérer les exports absents ou incomplets et reprendre uniquement les opérations nécessaires grâce à un registre persistant.",
+      "statement": "Vérifier les fichiers attendus, signaler les absents/modifiés sans remplacement automatique et récupérer explicitement les versions conservées.",
       "persona": "Professionnelle qui gère les communications de ses clients dans Apple Mail sur Mac",
       "priority": "must"
     },
@@ -119,6 +119,11 @@
       "id": "NEED-16",
       "statement": "Installer les versions publiées sur Git depuis un bouton local sans utiliser le terminal.",
       "priority": "must"
+    },
+    {
+      "id": "NEED-17",
+      "statement": "Ne supprimer aucun dossier ni écraser aucun document ; confirmer les déplacements, vérifier leurs copies et pouvoir récupérer les versions conservées.",
+      "priority": "must"
     }
   ],
   "successMeasures": [
@@ -130,7 +135,7 @@
     {
       "measure": "Reprise après interruption sur le corpus de validation",
       "target": "Aucun document écrasé et aucune impression relancée automatiquement lorsque son résultat est incertain.",
-      "current": "Cas automatisés de reprise, refus de collision et impression incertaine vérifiés ; annulation interrompue reprise sans impression. Corpus réel de l’utilisatrice non mesuré."
+      "current": "Injections de panne à six phases du journal, conflits et courses concurrentes vérifiés par tests ; après reprise aucune modification documentaire automatique. Copies conservées et restauration explicite ; panne matérielle réelle non testée."
     },
     {
       "measure": "Conformité des créations de clients",

@@ -4,7 +4,7 @@
   "id": "OVERVIEW",
   "name": "Vue d'ensemble Mailord",
   "status": "current",
-  "revision": 17,
+  "revision": 18,
   "createdAt": "2026-10-23",
   "updatedAt": "2026-10-24",
   "summary": "Mailord automatise localement sur Mac les dossiers de communications clients : PDF, pièces jointes, nommage chronologique, classement et impression avec interface web française.",
@@ -16,7 +16,7 @@
     },
     {
       "name": "Surveillance et PDF",
-      "description": "Mails lus/non lus, exports PDF passifs, originaux, préfixes de date, collisions et contrôle des fichiers. Tous les nouveaux documents restent en attente du choix de destination ; anciennes archives conservées à leur emplacement et réparées sans réimpression.",
+      "description": "Mails lus/non lus, exports PDF passifs, originaux, préfixes de date, collisions et contrôle des fichiers. Tous les nouveaux documents restent en attente du choix de destination ; anciennes archives conservées à leur emplacement et contrôlées sans remplacement automatique.",
       "state": "implemented"
     },
     {
@@ -43,6 +43,11 @@
       "name": "Identité et reprise Mailord",
       "description": "Module, commande, variables et guides Mailord ; enveloppe couronnée. Migration hors service avec copie de sauvegarde, correction des seuls champs de chemins et conservation des documents. Ancêtres Git ignorés par la recherche de mise à jour.",
       "state": "implemented"
+    },
+    {
+      "name": "Conservation et récupération",
+      "state": "implemented",
+      "description": "Aucun dossier documentaire supprimé, aucune collision écrasée ; plans confirmés, copies indépendantes vérifiées et originaux conservés. Récupération additive par document, arrêt sur anomalies Finder ou interruption."
     }
   ],
   "entryPoints": [
@@ -81,9 +86,13 @@
     {
       "path": "scripts/relocate_runtime.py",
       "description": "Reprise contrôlée d’un espace local vers un nouvel emplacement, hors service."
+    },
+    {
+      "path": "docs/FILE_SAFETY.md",
+      "description": "Protocole, scénarios, récupération et limites."
     }
   ],
-  "currentState": "Mailord transféré dans le dépôt définitif avec historique et origin conservés ; 239 tests réussis. Service 8765 relancé avec 3 clients, 7 messages et 13 documents inchangés. Identité et paquet Mailord, reprise contrôlée et interface sans avatar. Intégrations matérielles et acceptation d’usage encore à valider. Choix du parent client livré : 258 tests réussis, parcours navigateur et conservation des 13 documents de démonstration contrôlés.",
+  "currentState": "Protections de conservation livrées : 286 tests complets réussis, 47 contrôles ciblés après dernier garde de racine et parcours navigateur. Service 8765 relancé ; 3 clients, 7 mails, 13 documents avec chemins/empreintes identiques, travail d’impression historique inchangé, 13 copies de récupération créées. Validation sur le matériel cible et acceptation d’usage distinctes.",
   "knownGaps": [
     "Les intégrations Orange, Apple Mail et imprimante cible sont testées sur transports simulés ; validation terrain non réalisée.",
     "Rendu HTML en texte structuré et formats Office conservés sans conversion imprimable.",
@@ -92,6 +101,8 @@
     "Copies MIME modifiées par un serveur et messages présents chez plusieurs clients nécessitent revue ; déplacements Finder rapprochés explicitement.",
     "Pas de paquet Docker ni application Mac signée dans cette version.",
     "Accès Git à configurer sur le Mac cible ; nettoyage des anciennes versions manuel ; changements incompatibles exclus des updates automatiques.",
-    "Les doubles classements et règles rédactionnelles du PDF fourni restent manuels."
+    "Les doubles classements et règles rédactionnelles du PDF fourni restent manuels.",
+    "Les copies de récupération ne sont pas une sauvegarde indépendante ; pas de purge automatique, pas de certitude matérielle de durabilité.",
+    "Migration de l’espace complet avec journal de conservation et déplacements inter-volumes non pris en charge ; refus conservateur."
   ]
 }

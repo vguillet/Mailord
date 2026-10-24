@@ -4,7 +4,7 @@
   "id": "ROADMAP",
   "name": "Feuille de route Mailord",
   "status": "current",
-  "revision": 15,
+  "revision": 16,
   "createdAt": "2026-10-23",
   "updatedAt": "2026-10-24",
   "milestones": [
@@ -181,6 +181,18 @@
       ],
       "deliveredDate": "2026-10-24",
       "notes": "224 tests ; parcours IAB et comparaison des données principales après upgrade. Aucune intégration matérielle revendiquée. Retour utilisateur : champs et corps du mail rétablis avant documents ; 34 tests ciblés et navigateur revérifiés. Option 2 et corrections visuelles : 43 tests ciblés, QA et conservation des archives vérifiés ; main 8765 actualisé."
+    },
+    {
+      "id": "MS-16",
+      "name": "Conservation et récupération des documents",
+      "goal": "Conserver tous les dossiers et versions, confirmer et vérifier les déplacements, récupérer sans écraser.",
+      "state": "delivered",
+      "order": 16,
+      "workItems": [
+        "WI-document-safety"
+      ],
+      "deliveredDate": "2026-10-24",
+      "notes": "286 tests, parcours navigateur isolé et relance sans changement des 13 documents de démonstration."
     }
   ],
   "backlog": [
@@ -213,6 +225,11 @@
       "name": "Source de publication Git définitive",
       "rationale": "Configurer le dépôt et la branche de confiance pour le bouton de mise à jour sur le Mac cible.",
       "priority": "high"
+    },
+    {
+      "name": "Migration vérifiée du journal de conservation",
+      "rationale": "Réassocier les identités et vérifier toutes les copies lors du changement d’espace privé ; l’ancien script refuse ces espaces pour préserver leur cohérence.",
+      "priority": "medium"
     }
   ]
 }

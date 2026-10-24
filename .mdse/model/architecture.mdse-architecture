@@ -4,14 +4,14 @@
   "id": "ARCH",
   "name": "Architecture initiale Mailord",
   "status": "current",
-  "revision": 16,
+  "revision": 17,
   "createdAt": "2026-10-23",
   "updatedAt": "2026-10-24",
   "style": "Service natif macOS modulaire, FastAPI sur boucle locale, interface HTML/CSS/JavaScript et registre SQLite.",
   "components": [
     {
       "name": "InterfaceLocale",
-      "responsibility": "Navigation par client, messages, états et aperçu ; création de clients, édition du modèle et du nommage. Classement individuel via un sélecteur attaché au document : recherche, branches dépliables, favoris/récents, choix explicite. Arborescence complète même virtuelle et chevrons 20 px dans boutons 32 px. Un seul sélecteur, conservé par identifiant au rafraîchissement ; erreurs inline et requête capturant document/message/client. Impression sélectionnée séparément ; aucune commande de classement groupé dans l’interface. Icône et état d’impression par document avec confirmation ciblée ; commande globale du détail retirée. Étoiles clients accessibles, favorites en tête avec tri français, recherche et focus conservés. Champs De/À/Reçu/Client puis corps ouvert et repliable, avant PDF et pièces jointes, sélections persistées conservées sans contrôle auto/groupé dans les cartes, progression et recherche documentaire accent-insensible ; modèle recherchable/repliable sans perte des choix masqués. Bouton Annuler le classement ciblé par document et jeton. Mail avec pied PDF et pièces jointes distinctes ; documentControls partagé conserve les identifiants d’action. Icônes Lucide distribuées dans static/icons. messagePrintBadges représente séparément les compteurs métier existants, sans modifier le registre. Identité Mailord, enveloppe couronnée SVG locale ; avatar décoratif retiré.",
+      "responsibility": "Navigation par client, messages, états et aperçu ; création de clients, édition du modèle et du nommage. Classement individuel via un sélecteur attaché au document : recherche, branches dépliables, favoris/récents, choix explicite. Arborescence complète même virtuelle et chevrons 20 px dans boutons 32 px. Un seul sélecteur, conservé par identifiant au rafraîchissement ; erreurs inline et requête capturant document/message/client. Impression sélectionnée séparément ; aucune commande de classement groupé dans l’interface. Icône et état d’impression par document avec confirmation ciblée ; commande globale du détail retirée. Étoiles clients accessibles, favorites en tête avec tri français, recherche et focus conservés. Champs De/À/Reçu/Client puis corps ouvert et repliable, avant PDF et pièces jointes, sélections persistées conservées sans contrôle auto/groupé dans les cartes, progression et recherche documentaire accent-insensible ; modèle recherchable/repliable sans perte des choix masqués. Bouton Annuler le classement ciblé par document et jeton. Mail avec pied PDF et pièces jointes distinctes ; documentControls partagé conserve les identifiants d’action. Icônes Lucide distribuées dans static/icons. messagePrintBadges représente séparément les compteurs métier existants, sans modifier le registre. Identité Mailord, enveloppe couronnée SVG locale ; avatar décoratif retiré. Confirmation distincte des déplacements avec noms et chemins ; Récupération par document, versions vérifiées et historique. Sélecteur inline conservé.",
       "state": "existing",
       "dependsOn": [
         "GestionClients",
@@ -36,7 +36,7 @@
     },
     {
       "name": "TraitementDocuments",
-      "responsibility": "Détection des travaux, conversion PDF, extraction des pièces jointes, contrôle des exports, file persistante et reprises indépendantes du classement et de l’impression. Exporter tous les nouveaux documents en attente ; adapter les métadonnées des anciens registres sans déplacer leurs fichiers ni réimprimer.",
+      "responsibility": "Détection des travaux, conversion PDF, extraction des pièces jointes, contrôle des exports, file persistante et reprises indépendantes du classement et de l’impression. Exporter tous les nouveaux documents en attente ; adapter les métadonnées des anciens registres sans déplacer leurs fichiers ni réimprimer. Les fichiers suivis absents/modifiés ne sont plus régénérés ni remplacés ; signalement pour récupération explicite. Protection additive des fichiers existants sains.",
       "state": "existing",
       "dependsOn": [
         "Messagerie",
@@ -47,12 +47,12 @@
     },
     {
       "name": "ArchivageLocal",
-      "responsibility": "Créer uniquement les parents nécessaires à la publication ou les dossiers initiaux choisis ; enregistrer, nommer, contrôler et déplacer sans collision. Retirer les seuls ancêtres vides d’une branche source, en protégeant les choix initiaux et sans nettoyage global. Classer PDF et pièces jointes indépendamment via intentions persistées et cibles réservées dans un lot. Document.undo_filing conserve un seul état précédent avec jeton ; undo_applied rend la répétition idempotente. POST undo-filing valide empreinte, confinement et absence de collision, persiste move_classification et réutilise la reprise ; désactive classification_auto_print sans toucher aux travaux existants.",
+      "responsibility": "Publication exclusive et vérifiée, copie indépendante et capture originale dans la récupération privée. Aucun dossier documentaire supprimé, aucun document écrasé. Plans expirants et confirmation serveur pour classement/annulation/restauration ; journal durable séparé des notifications. Après interruption, suspension pour revue. Restauration additive à la racine du client. Volumes locaux APFS/HFS+ et même volume requis ; racines remplacées ou absentes refusées.",
       "state": "existing"
     },
     {
       "name": "Impression",
-      "responsibility": "Préparer et soumettre les documents compatibles, mémoriser les identifiants et retours disponibles et signaler une issue incertaine sans nouvelle soumission implicite. Transmettre les préférences recto verso et couleur par document avec traduction des options de pilote reconnues. print_document réutilise print_messages avec document_ids explicite, ignore les cases sans les modifier et retourne le travail ciblé ; génération initiale idempotente, réimpression confirmée par route dédiée. print_progress compte le dernier essai des documents imprimables cochés ou déjà tentés ; partial/mixed/not_selected explicites, incertitudes décochées visibles. Les commandes ordinaires reprennent seulement la dernière intention ; les générations dépassées restent historiques.",
+      "responsibility": "Préparer et soumettre les documents compatibles, mémoriser les identifiants et retours disponibles et signaler une issue incertaine sans nouvelle soumission implicite. Transmettre les préférences recto verso et couleur par document avec traduction des options de pilote reconnues. print_document réutilise print_messages avec document_ids explicite, ignore les cases sans les modifier et retourne le travail ciblé ; génération initiale idempotente, réimpression confirmée par route dédiée. print_progress compte le dernier essai des documents imprimables cochés ou déjà tentés ; partial/mixed/not_selected explicites, incertitudes décochées visibles. Les commandes ordinaires reprennent seulement la dernière intention ; les générations dépassées restent historiques. Les classements, annulations et restaurations ne déclenchent aucune impression ; after_classify est désormais traité comme manuel.",
       "state": "existing"
     },
     {
@@ -73,6 +73,12 @@
         "MisesAJour",
         "Registre"
       ]
+    },
+    {
+      "name": "ConservationFichiers",
+      "state": "existing",
+      "path": "mailord/file_safety.py",
+      "responsibility": "Primitives par descripteurs : copie native des données/ACL/xattrs, empreinte, contrôle des métadonnées, renommage exclusif, pas de suppression de document ni dossier."
     }
   ],
   "dataFlows": [
@@ -100,21 +106,19 @@
     {
       "name": "Classer et imprimer",
       "steps": [
-        "Afficher la destination et le statut de chaque PDF et pièce jointe, avec surlignage des documents à classer.",
-        "Ouvrir le sélecteur sous un document, choisir sa destination dans l’arborescence complète et valider explicitement.",
-        "Persister son intention puis créer uniquement la branche nécessaire, déplacer le document et mettre à jour son chemin. Le contrat API multiple reste compatible.",
-        "Retirer les ancêtres vides de la source en préservant les dossiers initialement choisis.",
-        "Marquer le mail classé lorsque tous ses documents le sont, y compris son PDF même sans pièce jointe.",
-        "Soumettre l’impression selon la politique ; après classement attend tous les documents, sans relancer les travaux existants."
+        "Choisir la destination inline puis vérifier et confirmer le plan affichant départ/arrivée.",
+        "Journaliser et vérifier une copie indépendante privée, puis publier une copie vérifiée sans écrasement.",
+        "Capturer l’entrée source par renommage exclusif dans la récupération, vérifier à nouveau et actualiser le registre.",
+        "Conserver tous les dossiers, mêmes vides, et les versions de récupération ; aucune impression implicite."
       ]
     },
     {
       "name": "Contrôle et reprise",
       "steps": [
-        "Au démarrage et périodiquement, rapprocher registre, messages et fichiers.",
-        "Détecter les PDF absents, invalides ou déplacés.",
-        "Reprendre les étapes nécessaires sans réimprimer un travail déjà soumis.",
-        "Présenter les divergences et résultats incertains à l'utilisatrice."
+        "Contrôler le registre et les fichiers.",
+        "Protéger les anciens fichiers sains par copie additive.",
+        "Signaler les fichiers absents/modifiés et les opérations interrompues ; ne pas régénérer ni retirer de source automatiquement.",
+        "Proposer une restauration additive avec confirmation, en conservant tous les fichiers existants."
       ]
     },
     {
@@ -241,6 +245,7 @@
     "WI-inline-document-filing",
     "WI-document-client-actions",
     "WI-daily-processing",
-    "WI-mailord-rename"
+    "WI-mailord-rename",
+    "WI-document-safety"
   ]
 }
