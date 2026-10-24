@@ -3,15 +3,15 @@
   "kind": "Architecture",
   "id": "ARCH",
   "name": "Architecture initiale Auto-secretaire",
-  "status": "stale",
-  "revision": 10,
+  "status": "current",
+  "revision": 11,
   "createdAt": "2026-10-23",
   "updatedAt": "2026-10-24",
   "style": "Service natif macOS modulaire, FastAPI sur boucle locale, interface HTML/CSS/JavaScript et registre SQLite.",
   "components": [
     {
       "name": "InterfaceLocale",
-      "responsibility": "Navigation par client, messages, états et aperçu ; création de clients, édition du modèle et du nommage. Classement individuel via un sélecteur attaché au document : recherche, branches dépliables, favoris/récents, choix explicite. Arborescence complète même virtuelle et chevrons 20 px dans boutons 32 px. Un seul sélecteur, conservé par identifiant au rafraîchissement ; erreurs inline et requête capturant document/message/client. Impression sélectionnée séparément ; aucune commande de classement groupé dans l’interface. Icône et état d’impression par document avec confirmation ciblée ; commande globale du détail retirée. Étoiles clients accessibles, favorites en tête avec tri français, recherche et focus conservés.",
+      "responsibility": "Navigation par client, messages, états et aperçu ; création de clients, édition du modèle et du nommage. Classement individuel via un sélecteur attaché au document : recherche, branches dépliables, favoris/récents, choix explicite. Arborescence complète même virtuelle et chevrons 20 px dans boutons 32 px. Un seul sélecteur, conservé par identifiant au rafraîchissement ; erreurs inline et requête capturant document/message/client. Impression sélectionnée séparément ; aucune commande de classement groupé dans l’interface. Icône et état d’impression par document avec confirmation ciblée ; commande globale du détail retirée. Étoiles clients accessibles, favorites en tête avec tri français, recherche et focus conservés. Documents avant corps repliable, cases auto/groupé libellées, progression et recherche documentaire accent-insensible ; modèle recherchable/repliable sans perte des choix masqués. Bouton Annuler le classement ciblé par document et jeton.",
       "state": "existing",
       "dependsOn": [
         "GestionClients",
@@ -47,12 +47,12 @@
     },
     {
       "name": "ArchivageLocal",
-      "responsibility": "Créer uniquement les parents nécessaires à la publication ou les dossiers initiaux choisis ; enregistrer, nommer, contrôler et déplacer sans collision. Retirer les seuls ancêtres vides d’une branche source, en protégeant les choix initiaux et sans nettoyage global. Classer PDF et pièces jointes indépendamment via intentions persistées et cibles réservées dans un lot.",
+      "responsibility": "Créer uniquement les parents nécessaires à la publication ou les dossiers initiaux choisis ; enregistrer, nommer, contrôler et déplacer sans collision. Retirer les seuls ancêtres vides d’une branche source, en protégeant les choix initiaux et sans nettoyage global. Classer PDF et pièces jointes indépendamment via intentions persistées et cibles réservées dans un lot. Document.undo_filing conserve un seul état précédent avec jeton ; undo_applied rend la répétition idempotente. POST undo-filing valide empreinte, confinement et absence de collision, persiste move_classification et réutilise la reprise ; désactive classification_auto_print sans toucher aux travaux existants.",
       "state": "existing"
     },
     {
       "name": "Impression",
-      "responsibility": "Préparer et soumettre les documents compatibles, mémoriser les identifiants et retours disponibles et signaler une issue incertaine sans nouvelle soumission implicite. Transmettre les préférences recto verso et couleur par document avec traduction des options de pilote reconnues. print_document réutilise print_messages avec document_ids explicite, ignore les cases sans les modifier et retourne le travail ciblé ; génération initiale idempotente, réimpression confirmée par route dédiée.",
+      "responsibility": "Préparer et soumettre les documents compatibles, mémoriser les identifiants et retours disponibles et signaler une issue incertaine sans nouvelle soumission implicite. Transmettre les préférences recto verso et couleur par document avec traduction des options de pilote reconnues. print_document réutilise print_messages avec document_ids explicite, ignore les cases sans les modifier et retourne le travail ciblé ; génération initiale idempotente, réimpression confirmée par route dédiée. print_progress compte le dernier essai des documents imprimables cochés ou déjà tentés ; partial/mixed/not_selected explicites, incertitudes décochées visibles. Les commandes ordinaires reprennent seulement la dernière intention ; les générations dépassées restent historiques.",
       "state": "existing"
     },
     {
@@ -134,6 +134,15 @@
         "En cas d’échec revenir au précédent ; sinon enregistrer la version active puis autoriser le traitement.",
         "Recharger automatiquement l’interface et conserver le même registre et les documents."
       ]
+    },
+    {
+      "name": "Annuler un classement",
+      "steps": [
+        "Conserver le chemin et le statut antérieurs lors d’un classement, avec jeton propre au document.",
+        "À la demande, vérifier le jeton courant, le contenu et la disponibilité de l’ancien emplacement.",
+        "Persister l’intention inverse et la reprendre sans écrasement ; rétablir aussi le statut pending ou classified.",
+        "Recalculer le statut du mail sans lancer d’impression ; même jeton répété sans nouvel effet."
+      ]
     }
   ],
   "stack": [
@@ -202,7 +211,7 @@
     },
     {
       "concern": "Vérification et limites",
-      "approach": "211 tests et parcours Chrome fictif : classement intégré, impression individuelle avec options/reprise/confirmation et étoiles persistantes ; intégration matérielle à vérifier séparément."
+      "approach": "224 tests et parcours IAB fictifs : progression, reprises, annulation, recherche et modèle ; conservation des 13 archives et registres suivis après redémarrage. Intégrations matérielles et acceptation de l’utilisatrice distinctes."
     },
     {
       "concern": "Mises à jour et compatibilité",
@@ -226,6 +235,7 @@
     "WI-correspondence-filing",
     "WI-manual-document-filing",
     "WI-inline-document-filing",
-    "WI-document-client-actions"
+    "WI-document-client-actions",
+    "WI-daily-processing"
   ]
 }

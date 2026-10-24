@@ -4,7 +4,7 @@
   "id": "ROADMAP",
   "name": "Feuille de route Auto-secretaire",
   "status": "current",
-  "revision": 11,
+  "revision": 12,
   "createdAt": "2026-10-23",
   "updatedAt": "2026-10-24",
   "milestones": [
@@ -169,6 +169,18 @@
       ],
       "deliveredDate": "2026-10-24",
       "notes": "211 tests et parcours Chrome : portée impression, double clic, confirmation, options, étoiles persistantes, recherche, retrait et contexte conservé."
+    },
+    {
+      "id": "MS-15",
+      "name": "Traitement quotidien après revue",
+      "goal": "Rendre progression, recherche et classement fiables et rapides, avec modèle navigable et annulation.",
+      "state": "delivered",
+      "order": 15,
+      "workItems": [
+        "WI-daily-processing"
+      ],
+      "deliveredDate": "2026-10-24",
+      "notes": "224 tests ; parcours IAB et comparaison des données principales après upgrade. Aucune intégration matérielle revendiquée."
     }
   ],
   "backlog": [
@@ -186,6 +198,21 @@
       "name": "Suggestions de destinations et aide aux règles par correspondant",
       "rationale": "Amélioration optionnelle ; les règles se configurent aujourd’hui dans Apple Mail.",
       "priority": "low"
+    },
+    {
+      "name": "Installation guidée et reprise des dossiers existants",
+      "rationale": "Créer un espace réel séparé de la démonstration, guider les correspondances mail/local et aligner les dossiers avec un aperçu des changements.",
+      "priority": "high"
+    },
+    {
+      "name": "Paramètres par affaire et clients archivés",
+      "rationale": "Personnaliser juridiction/lieu sans changer le modèle global et sortir les affaires terminées du parcours quotidien.",
+      "priority": "medium"
+    },
+    {
+      "name": "Source de publication Git définitive",
+      "rationale": "Configurer le dépôt et la branche de confiance pour le bouton de mise à jour sur le Mac cible.",
+      "priority": "high"
     }
   ]
 }

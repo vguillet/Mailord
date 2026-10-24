@@ -10,3 +10,5 @@
 L’installation guidée d’un nouvel espace, les variables de juridiction, l’alignement des anciens dossiers, les suggestions, les affaires archivées et la source Git réelle restent des améliorations ultérieures. Elles ne sont pas requises pour cette mise à niveau du traitement quotidien.
 
 Implémentation vérifiée : 224 tests, parcours navigateur isolés et contrôle des données existantes au redémarrage. Voir `docs/VALIDATION.md` et le work item `WI-daily-processing`.
+
+Suivi MDSE réconcilié. Proposition de prochain point de référence : baseline « as-built » de ce lot vérifié, à approuver explicitement par le responsable si souhaité ; aucune baseline approuvée automatiquement.

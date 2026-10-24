@@ -4,7 +4,7 @@
   "id": "PRODUCT",
   "name": "Définition du produit Auto-secretaire",
   "status": "current",
-  "revision": 7,
+  "revision": 8,
   "createdAt": "2026-10-23",
   "updatedAt": "2026-10-24",
   "problem": "La professionnelle classe les communications de ses clients dans des dossiers de messagerie, puis télécharge, renomme, range et imprime manuellement les mails et leurs pièces jointes. Elle doit vérifier ce qui a déjà été enregistré et reproduire une structure de dossiers pour chaque nouveau client.",
@@ -130,7 +130,7 @@
     {
       "measure": "Reprise après interruption sur le corpus de validation",
       "target": "Aucun document écrasé et aucune impression relancée automatiquement lorsque son résultat est incertain.",
-      "current": "Non mesuré."
+      "current": "Cas automatisés de reprise, refus de collision et impression incertaine vérifiés ; annulation interrompue reprise sans impression. Corpus réel de l’utilisatrice non mesuré."
     },
     {
       "measure": "Conformité des créations de clients",
@@ -145,7 +145,7 @@
     {
       "measure": "Ergonomie du classement",
       "target": "Une session avec l’utilisatrice démontre le classement individuel directement sous chaque document ; le gain de temps sera mesuré sur son corpus.",
-      "current": "Non mesuré ; seuil à établir avec l'utilisatrice."
+      "current": "Parcours démontré par Codex sur données fictives : documents visibles, recherche, annulation et modèle navigable. Gain de temps et acceptation de l’utilisatrice non mesurés."
     }
   ],
   "nonGoals": [
