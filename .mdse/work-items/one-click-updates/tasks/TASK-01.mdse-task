@@ -4,9 +4,9 @@
   "id": "TASK-01",
   "name": "Préparation et superviseur",
   "status": "done",
-  "revision": 1,
+  "revision": 2,
   "createdAt": "2026-10-23",
-  "updatedAt": "2026-10-23",
+  "updatedAt": "2026-10-24",
   "workItem": "WI-one-click-updates",
   "order": 1,
   "type": "software",
@@ -32,11 +32,11 @@
   ],
   "files": [
     {
-      "path": "autosecretaire/updates.py",
+      "path": "mailord/updates.py",
       "action": "create"
     },
     {
-      "path": "autosecretaire/supervisor.py",
+      "path": "mailord/supervisor.py",
       "action": "create"
     },
     {

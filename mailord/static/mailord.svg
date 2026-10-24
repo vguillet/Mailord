@@ -1,0 +1,7 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" fill="none">
+  <title>Mailord — Le seigneur des emails.</title>
+  <rect width="64" height="64" rx="18" fill="#2D5545"/>
+  <path d="m20 26-2-13 9 6 5-10 5 10 9-6-2 13H20Z" fill="#D9BA76" stroke="#D9BA76" stroke-width="2" stroke-linejoin="round"/>
+  <rect x="13" y="32" width="38" height="22" rx="4" stroke="#F7F6EB" stroke-width="2.8"/>
+  <path d="m14 34 15.5 10a4.5 4.5 0 0 0 5 0L50 34" stroke="#F7F6EB" stroke-width="2.8" stroke-linecap="round" stroke-linejoin="round"/>
+</svg>

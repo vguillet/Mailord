@@ -4,7 +4,7 @@
   "id": "TASK-01",
   "name": "Améliorer le traitement quotidien",
   "status": "done",
-  "revision": 2,
+  "revision": 3,
   "createdAt": "2026-10-24",
   "updatedAt": "2026-10-24",
   "workItem": "WI-daily-processing",
@@ -45,23 +45,23 @@
   ],
   "files": [
     {
-      "path": "autosecretaire/engine.py",
+      "path": "mailord/engine.py",
       "action": "update"
     },
     {
-      "path": "autosecretaire/app.py",
+      "path": "mailord/app.py",
       "action": "update"
     },
     {
-      "path": "autosecretaire/static/app.js",
+      "path": "mailord/static/app.js",
       "action": "update"
     },
     {
-      "path": "autosecretaire/static/style.css",
+      "path": "mailord/static/style.css",
       "action": "update"
     },
     {
-      "path": "autosecretaire/static/index.html",
+      "path": "mailord/static/index.html",
       "action": "update"
     },
     {

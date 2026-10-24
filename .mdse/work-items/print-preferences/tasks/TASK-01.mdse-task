@@ -4,7 +4,7 @@
   "id": "TASK-01",
   "name": "Préférences, interface et vérification",
   "status": "done",
-  "revision": 1,
+  "revision": 2,
   "createdAt": "2026-10-24",
   "updatedAt": "2026-10-24",
   "workItem": "WI-print-preferences",
@@ -39,19 +39,19 @@
   ],
   "files": [
     {
-      "path": "autosecretaire/config.py",
+      "path": "mailord/config.py",
       "action": "update"
     },
     {
-      "path": "autosecretaire/printing.py",
+      "path": "mailord/printing.py",
       "action": "update"
     },
     {
-      "path": "autosecretaire/engine.py",
+      "path": "mailord/engine.py",
       "action": "update"
     },
     {
-      "path": "autosecretaire/static/app.js",
+      "path": "mailord/static/app.js",
       "action": "update"
     },
     {

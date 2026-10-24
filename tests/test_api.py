@@ -1,6 +1,6 @@
 from fastapi.testclient import TestClient
-from autosecretaire.app import create_app
-from autosecretaire.config import defaults
+from mailord.app import create_app
+from mailord.config import defaults
 
 
 def test_local_api_csrf_config_and_files(tmp_path):
@@ -33,7 +33,7 @@ def test_second_instance_cannot_mutate_registry(tmp_path):
 
 
 def test_demo_seed_and_http_document_workflow(tmp_path):
-    from autosecretaire.demo import seed
+    from mailord.demo import seed
     app=create_app(defaults(tmp_path),background=False)
     with TestClient(app,base_url='http://127.0.0.1:8765') as c:
         seed(app.state.engine);seed(app.state.engine)

@@ -4,9 +4,9 @@
   "id": "TASK-01",
   "name": "Socle et contrat",
   "status": "done",
-  "revision": 2,
+  "revision": 3,
   "createdAt": "2026-10-23",
-  "updatedAt": "2026-10-23",
+  "updatedAt": "2026-10-24",
   "workItem": "WI-local-v1",
   "order": 1,
   "type": "software",
@@ -40,15 +40,15 @@
       "action": "create"
     },
     {
-      "path": "autosecretaire/__init__.py",
+      "path": "mailord/__init__.py",
       "action": "create"
     },
     {
-      "path": "autosecretaire/store.py",
+      "path": "mailord/store.py",
       "action": "create"
     },
     {
-      "path": "autosecretaire/config.py",
+      "path": "mailord/config.py",
       "action": "create"
     },
     {

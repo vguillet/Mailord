@@ -3,7 +3,7 @@ requires = ["setuptools>=68"]
 build-backend = "setuptools.build_meta"
 
 [project]
-name = "auto-secretaire"
+name = "mailord"
 version = "0.1.0"
 description = "Archivage et impression de communications clients, localement sur Mac"
 requires-python = ">=3.11"
@@ -13,13 +13,13 @@ dependencies = ["fastapi>=0.110,<1", "uvicorn>=0.27,<1", "reportlab>=4,<5", "pyp
 test = ["pytest>=8,<10", "httpx>=0.27,<1"]
 
 [project.scripts]
-auto-secretaire = "autosecretaire.__main__:main"
+mailord = "mailord.__main__:main"
 
 [tool.setuptools.packages.find]
-include = ["autosecretaire*"]
+include = ["mailord*"]
 
 [tool.setuptools.package-data]
-autosecretaire = ["static/*", "static/icons/*"]
+mailord = ["static/*", "static/icons/*"]
 
 [tool.pytest.ini_options]
 testpaths = ["tests"]

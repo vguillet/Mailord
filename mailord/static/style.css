@@ -120,7 +120,7 @@ kbd {
   gap:11px;
   text-decoration:none;
   color:#294334;
-  font-size:17px;
+  font-size:21px;
   font-weight:650;
   letter-spacing:-.6px;
   margin:0 0 37px 6px;
@@ -135,20 +135,10 @@ kbd {
   margin-top:1px
 }
 .brand-mark {
-  display:flex;
-  align-items:center;
-  justify-content:center;
-  background:var(--forest);
-  color:#fff;
-  border-radius:12px;
+  display:block;
+  flex-shrink:0;
   width:36px;
-  height:36px;
-  font:italic 29px Georgia,serif
-}
-.brand-mark span {
-  color:#c7d5a5;
-  font-size:28px;
-  margin-left:-2px
+  height:36px
 }
 .nav-item {
   display:flex;
@@ -1653,7 +1643,7 @@ main {
     padding:0 24px
   }
   .brand {
-    font-size:15px
+    font-size:20px
   }
   .workbench {
     grid-template-columns:minmax(300px,1fr) minmax(290px,.95fr)
@@ -1691,7 +1681,7 @@ main {
     padding-right:12px
   }
   .brand {
-    font-size:13px;
+    font-size:19px;
     gap:7px;
     margin-left:2px
   }
@@ -1784,7 +1774,7 @@ main {
   }
   .brand {
     margin:0;
-    font-size:17px
+    font-size:21px
   }
   .brand small {
     font-size:9px

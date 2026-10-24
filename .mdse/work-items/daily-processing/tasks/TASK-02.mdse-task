@@ -1,6 +1,6 @@
 {
   "mdse": "2.3",
-  "revision": 1,
+  "revision": 2,
   "createdAt": "2026-10-24",
   "updatedAt": "2026-10-24",
   "workItem": "WI-daily-processing",
@@ -33,11 +33,11 @@
   ],
   "files": [
     {
-      "path": "autosecretaire/static/app.js",
+      "path": "mailord/static/app.js",
       "action": "update"
     },
     {
-      "path": "autosecretaire/static/style.css",
+      "path": "mailord/static/style.css",
       "action": "update"
     },
     {

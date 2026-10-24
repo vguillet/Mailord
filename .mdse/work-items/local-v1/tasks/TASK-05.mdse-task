@@ -4,9 +4,9 @@
   "id": "TASK-05",
   "name": "Moteur et API",
   "status": "done",
-  "revision": 3,
+  "revision": 4,
   "createdAt": "2026-10-23",
-  "updatedAt": "2026-10-23",
+  "updatedAt": "2026-10-24",
   "workItem": "WI-local-v1",
   "order": 5,
   "type": "software",
@@ -43,11 +43,11 @@
   ],
   "files": [
     {
-      "path": "autosecretaire/engine.py",
+      "path": "mailord/engine.py",
       "action": "create"
     },
     {
-      "path": "autosecretaire/app.py",
+      "path": "mailord/app.py",
       "action": "create"
     },
     {

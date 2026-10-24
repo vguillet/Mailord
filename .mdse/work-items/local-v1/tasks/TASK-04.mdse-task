@@ -4,9 +4,9 @@
   "id": "TASK-04",
   "name": "Interface locale",
   "status": "done",
-  "revision": 4,
+  "revision": 5,
   "createdAt": "2026-10-23",
-  "updatedAt": "2026-10-23",
+  "updatedAt": "2026-10-24",
   "workItem": "WI-local-v1",
   "order": 4,
   "type": "software",
@@ -37,15 +37,15 @@
   ],
   "files": [
     {
-      "path": "autosecretaire/static/index.html",
+      "path": "mailord/static/index.html",
       "action": "create"
     },
     {
-      "path": "autosecretaire/static/style.css",
+      "path": "mailord/static/style.css",
       "action": "create"
     },
     {
-      "path": "autosecretaire/static/app.js",
+      "path": "mailord/static/app.js",
       "action": "create"
     },
     {

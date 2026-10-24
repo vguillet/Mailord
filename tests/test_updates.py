@@ -2,7 +2,7 @@ import json
 import subprocess
 from pathlib import Path
 import pytest
-from autosecretaire.updates import UpdateManager, UpdateError, atomic_json, validate_source
+from mailord.updates import UpdateManager, UpdateError, atomic_json, validate_source
 
 
 def git(root,*args):
@@ -13,8 +13,8 @@ def repository(tmp_path):
     root=tmp_path/'origin';root.mkdir();git(root,'init','-b','main');git(root,'config','user.email','test@example.invalid');git(root,'config','user.name','Test')
     (root/'update.json').write_text('{"update_protocol":1,"data_schema":1}')
     (root/'requirements.lock').write_text('')
-    (root/'autosecretaire').mkdir();(root/'autosecretaire/__main__.py').write_text('')
-    git(root,'add','update.json','requirements.lock','autosecretaire/__main__.py');git(root,'commit','-m','initial')
+    (root/'mailord').mkdir();(root/'mailord/__main__.py').write_text('')
+    git(root,'add','update.json','requirements.lock','mailord/__main__.py');git(root,'commit','-m','initial')
     return root
 
 @pytest.mark.parametrize('url,branch', [('ext::evil','main'),('https://user:secret@example.com/a','main'),('http://example.com/a','main'),('https://example.com/a','--upload-pack=x'),('https://example.com/a','a..b'),('https://example.com/a','main\n')])

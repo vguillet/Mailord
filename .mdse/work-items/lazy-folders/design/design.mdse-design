@@ -4,7 +4,7 @@
   "id": "DESIGN",
   "name": "Destinations virtuelles et matérialisation locale",
   "status": "approved",
-  "revision": 1,
+  "revision": 2,
   "createdAt": "2026-10-24",
   "updatedAt": "2026-10-24",
   "workItem": "WI-lazy-folders",
@@ -22,19 +22,19 @@
     {
       "name": "GestionClients",
       "state": "modified",
-      "path": "autosecretaire/engine.py",
+      "path": "mailord/engine.py",
       "responsibility": "Réserver les destinations sans mkdir et exposer tous les chemins disponibles."
     },
     {
       "name": "ArchivageLocal",
       "state": "modified",
-      "path": "autosecretaire/engine.py",
+      "path": "mailord/engine.py",
       "responsibility": "Créer au premier fichier ; retirer uniquement les parents vides sur les branches concernées, sans suivre les liens."
     },
     {
       "name": "InterfaceLocale",
       "state": "modified",
-      "path": "autosecretaire/static/app.js",
+      "path": "mailord/static/app.js",
       "responsibility": "Distinguer les destinations présentes de celles à créer et expliquer le modèle virtuel."
     }
   ],

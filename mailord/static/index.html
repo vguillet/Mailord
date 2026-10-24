@@ -5,8 +5,10 @@
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <meta name="color-scheme" content="light">
   <meta name="theme-color" content="#f6f7f2">
-  <title>Auto-secrétaire · Mon espace</title>
-  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 40 40'%3E%3Crect width='40' height='40' rx='12' fill='%232d5545'/%3E%3Cpath d='M10 14h20v15H10zM10 14l10 8 10-8' fill='none' stroke='%23fff' stroke-width='2' stroke-linejoin='round'/%3E%3C/svg%3E">
+  <title>Mailord · Mon espace</title>
+  <meta name="application-name" content="Mailord">
+  <meta name="description" content="Mailord — Le seigneur des emails. Classement et impression de vos communications, sur votre Mac.">
+  <link rel="icon" type="image/svg+xml" href="/static/mailord.svg">
   <link rel="stylesheet" href="/static/style.css">
   <script src="/static/app.js" defer></script>
 </head>
@@ -14,7 +16,7 @@
   <a class="skip-link" href="#main">Aller aux communications</a>
   <div class="app-shell">
     <aside class="sidebar" aria-label="Navigation principale">
-      <a class="brand" href="/" aria-label="Auto-secrétaire, accueil"><span class="brand-mark" aria-hidden="true">a<span>·</span></span><span>auto-secrétaire<small>Votre bureau, en ordre.</small></span></a>
+      <a class="brand" href="/" aria-label="Mailord, accueil"><img class="brand-mark" src="/static/mailord.svg" width="36" height="36" alt=""><span>Mailord<small>Le seigneur des emails.</small></span></a>
       <button class="nav-item active" id="all-clients" data-action="all-clients"><span class="nav-icon" aria-hidden="true">▦</span>Vue d’ensemble<span id="all-count" class="count">0</span></button>
       <div class="nav-heading"><span>MES CLIENTS</span></div>
       <label class="search-field sidebar-search"><span aria-hidden="true">⌕</span><input id="client-search" type="search" placeholder="Rechercher un client" aria-label="Rechercher un client" autocomplete="off"><kbd>/</kbd></label>
@@ -29,7 +31,7 @@
       </div>
     </aside>
     <main id="main" tabindex="-1">
-      <header class="topbar"><div class="breadcrumb">Mon espace <span>/</span> <span id="breadcrumb-current">Vue d’ensemble</span></div><div class="topbar-right"><button class="button small update-topbar hidden" id="update-available-button" data-action="updates">Nouvelle version ↗</button><span id="mode-label" class="mode-label">Local</span><span class="avatar" title="Espace local" aria-label="Espace local">AS</span></div></header>
+      <header class="topbar"><div class="breadcrumb">Mon espace <span>/</span> <span id="breadcrumb-current">Vue d’ensemble</span></div><div class="topbar-right"><button class="button small update-topbar hidden" id="update-available-button" data-action="updates">Nouvelle version ↗</button><span id="mode-label" class="mode-label">Local</span><span class="avatar" title="Espace local Mailord" aria-label="Espace local Mailord">M</span></div></header>
       <div class="page-content">
         <section class="page-heading"><div><div class="eyebrow">COMMUNICATIONS CLIENTS</div><h1 id="page-title">Votre espace documentaire</h1><p id="page-subtitle">Choisissez un mail, puis classez ses documents.</p></div><button class="button primary" id="sync-button" data-action="sync"><svg width="16" height="16" viewBox="0 0 24 24" aria-hidden="true"><path d="M20 7v5h-5M4 17v-5h5M6.1 7a7 7 0 0 1 11.6-1L20 9M4 15l2.3 3A7 7 0 0 0 18 17" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>Relever les mails</button></section>
         <div id="update-banner" class="notice hidden" role="status"></div>

@@ -7,7 +7,7 @@ from pathlib import Path
 import pytest
 
 ROOT = Path(__file__).resolve().parents[1]
-SCRIPT = ROOT / 'autosecretaire/static/app.js'
+SCRIPT = ROOT / 'mailord/static/app.js'
 NODE = shutil.which('node')
 
 
@@ -124,12 +124,12 @@ def test_lost_request_with_no_job_unlocks_without_resubmitting():
 
 def test_frontend_has_explicit_controls_and_persistent_recovery():
     script = SCRIPT.read_text()
-    html = (ROOT / 'autosecretaire/static/index.html').read_text()
+    html = (ROOT / 'mailord/static/index.html').read_text()
     assert 'data-action="updates"' in html
     assert 'id="update-banner"' in html
     assert "api('/api/updates/install', 'POST', {commit})" in script
-    assert "sessionStorage.setItem('autosecretaire.update'" in script
-    assert "sessionStorage.removeItem('autosecretaire.update')" in script
+    assert "sessionStorage.setItem('mailord.update'" in script
+    assert "sessionStorage.removeItem('mailord.update')" in script
     assert 'window.location.reload()' in script
     assert 'section id="update-status-panel"' in script
     assert "const fresh = await api('/api/state')" in script

@@ -4,10 +4,10 @@ from pathlib import Path
 import pytest
 from fastapi.testclient import TestClient
 
-from autosecretaire.app import create_app
-from autosecretaire.config import defaults
-from autosecretaire.engine import Engine, digest
-from autosecretaire.store import Store
+from mailord.app import create_app
+from mailord.config import defaults
+from mailord.engine import Engine, digest
+from mailord.store import Store
 from test_engine import add_mail
 
 
@@ -233,7 +233,7 @@ def test_legacy_adaptation_preserves_filed_attachments_and_print_intents(engine,
     record = engine.store.get('message', m['id']);record.pop('filing_version');record['destination']='07 FACTURES'
     engine.store.put('message', m['id'], record)
     with monkeypatch.context() as patch:
-        patch.setattr('autosecretaire.engine.os.link', lambda *a: (_ for _ in ()).throw(OSError('disque occupé')))
+        patch.setattr('mailord.engine.os.link', lambda *a: (_ for _ in ()).throw(OSError('disque occupé')))
         engine.process()
     assert engine.state()['messages'][0]['status'] == 'ready'
     assert old.exists()

@@ -87,9 +87,9 @@ class Supervisor:
         python = root/'.venv/bin/python'
         executable = str(python) if python.is_file() else sys.executable
         self.token = secrets.token_urlsafe(32)
-        env = dict(os.environ, AUTOSECRETAIRE_MANAGED='1', AUTOSECRETAIRE_HEALTH_TOKEN=self.token,
-                   AUTOSECRETAIRE_PROBATION='1' if probation else '0', PYTHONPATH=str(root))
-        self.child = subprocess.Popen([executable, '-m', 'autosecretaire', '--worker', *self.arguments], cwd=root, env=env)
+        env = dict(os.environ, MAILORD_MANAGED='1', MAILORD_HEALTH_TOKEN=self.token,
+                   MAILORD_PROBATION='1' if probation else '0', PYTHONPATH=str(root))
+        self.child = subprocess.Popen([executable, '-m', 'mailord', '--worker', *self.arguments], cwd=root, env=env)
         return self.child
 
     def request(self, path, method='GET'):

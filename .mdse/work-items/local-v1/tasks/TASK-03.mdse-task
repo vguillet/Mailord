@@ -4,9 +4,9 @@
   "id": "TASK-03",
   "name": "Conversion documentaire",
   "status": "done",
-  "revision": 4,
+  "revision": 5,
   "createdAt": "2026-10-23",
-  "updatedAt": "2026-10-23",
+  "updatedAt": "2026-10-24",
   "workItem": "WI-local-v1",
   "order": 3,
   "type": "software",
@@ -38,7 +38,7 @@
   ],
   "files": [
     {
-      "path": "autosecretaire/documents.py",
+      "path": "mailord/documents.py",
       "action": "create"
     },
     {

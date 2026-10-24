@@ -4,7 +4,7 @@
   "id": "TASK-01",
   "name": "Créer les dossiers uniquement au besoin",
   "status": "done",
-  "revision": 1,
+  "revision": 2,
   "createdAt": "2026-10-24",
   "updatedAt": "2026-10-24",
   "workItem": "WI-lazy-folders",
@@ -42,11 +42,11 @@
   ],
   "files": [
     {
-      "path": "autosecretaire/engine.py",
+      "path": "mailord/engine.py",
       "action": "update"
     },
     {
-      "path": "autosecretaire/static/app.js",
+      "path": "mailord/static/app.js",
       "action": "update"
     },
     {
@@ -82,7 +82,7 @@
       "action": "update"
     },
     {
-      "path": "autosecretaire/app.py",
+      "path": "mailord/app.py",
       "action": "update"
     }
   ],

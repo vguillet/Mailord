@@ -1,9 +1,9 @@
 from email.message import EmailMessage
 from pathlib import Path
 import pytest
-from autosecretaire.config import defaults
-from autosecretaire.store import Store
-from autosecretaire.engine import Engine
+from mailord.config import defaults
+from mailord.store import Store
+from mailord.engine import Engine
 
 
 def mail(subject='Contrat'):
@@ -69,7 +69,7 @@ def test_provision_failure_resumes_same_client(engine,monkeypatch):
 
 
 def test_uncertain_submission_never_auto_retries(engine,monkeypatch):
-    from autosecretaire import printing
+    from mailord import printing
     c=engine.create_client('Client');engine.scan();add_mail(engine,c);engine.scan();engine.process();m=engine.state()['messages'][0]
     monkeypatch.setattr(printing,'submit',lambda *a,**k: (_ for _ in ()).throw(printing.PrintUncertain('timeout')))
     engine.print_messages([m['id']]);assert engine.state()['messages'][0]['print_status']=='uncertain'
@@ -103,7 +103,7 @@ def test_resume_partial_move_intent(engine):
 
 
 def test_retry_failed_print_only(engine,monkeypatch):
-    from autosecretaire import printing
+    from mailord import printing
     c=engine.create_client('Camille');engine.scan();add_mail(engine,c);engine.scan();engine.process();m=engine.state()['messages'][0]
     actual=printing.submit;calls=[]
     def first(path,printer,dry_run=False,**options):
@@ -121,7 +121,7 @@ def test_crash_submitting_is_uncertain(engine):
 
 
 def test_print_failure_exposes_actionable_details(engine,monkeypatch):
-    from autosecretaire import printing
+    from mailord import printing
     c=engine.create_client('Camille');engine.scan();add_mail(engine,c);engine.scan();engine.process();m=engine.state()['messages'][0]
     monkeypatch.setattr(printing,'submit',lambda *a,**k: (_ for _ in ()).throw(printing.PrintError('Imprimante hors ligne')))
     engine.print_messages([m['id']]);m=engine.state()['messages'][0]

@@ -8,7 +8,7 @@ from pathlib import Path
 
 import pytest
 
-STATIC = Path(__file__).resolve().parents[1] / 'autosecretaire' / 'static'
+STATIC = Path(__file__).resolve().parents[1] / 'mailord' / 'static'
 NODE = shutil.which('node')
 
 

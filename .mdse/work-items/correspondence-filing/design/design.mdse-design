@@ -4,7 +4,7 @@
   "id": "DESIGN",
   "name": "Modèle avec présélections et destinations par document",
   "status": "approved",
-  "revision": 1,
+  "revision": 2,
   "createdAt": "2026-10-24",
   "updatedAt": "2026-10-24",
   "workItem": "WI-correspondence-filing",
@@ -20,25 +20,25 @@
     {
       "name": "GestionClients",
       "state": "modified",
-      "path": "autosecretaire/engine.py",
+      "path": "mailord/engine.py",
       "responsibility": "Modèle versionné avec initial_folders et email_folder ; choix par défaut et reprise client figée."
     },
     {
       "name": "TraitementDocuments",
       "state": "modified",
-      "path": "autosecretaire/engine.py",
+      "path": "mailord/engine.py",
       "responsibility": "PDF au dossier Correspondances, pièces jointes en attente, adaptation des archives suivies et réparations à leur destination."
     },
     {
       "name": "ArchivageLocal",
       "state": "modified",
-      "path": "autosecretaire/engine.py",
+      "path": "mailord/engine.py",
       "responsibility": "Intentions par pièce, reprises et contrôles avant déplacement, nettoyage protégé."
     },
     {
       "name": "InterfaceLocale",
       "state": "modified",
-      "path": "autosecretaire/static/app.js",
+      "path": "mailord/static/app.js",
       "responsibility": "Cases du modèle, rôle Correspondances, présélections client modifiables, statut et classement par pièce."
     }
   ],

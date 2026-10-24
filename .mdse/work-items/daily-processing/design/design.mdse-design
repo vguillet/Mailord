@@ -4,7 +4,7 @@
   "id": "DESIGN",
   "name": "Traitement quotidien fiable",
   "status": "approved",
-  "revision": 5,
+  "revision": 6,
   "createdAt": "2026-10-24",
   "updatedAt": "2026-10-24",
   "workItem": "WI-daily-processing",
@@ -24,19 +24,19 @@
     {
       "name": "InterfaceLocale",
       "state": "modified",
-      "path": "autosecretaire/static/app.js",
+      "path": "mailord/static/app.js",
       "responsibility": "Mail dans un bloc avec sujet, De/À/Reçu/Client et corps ouvert repliable ; pied sauge attaché au corps pour les commandes du PDF, sans carte PDF dupliquée. Section et compteur propres aux pièces jointes ; classement, impression et annulation restent individuels. Compteurs globaux distincts ; recherche noms/destinations et modèle repliable conservés. Noms de pièces sur une ligne dédiée ; icônes Lucide locales alignées avec les badges, destination dessous. Contrôle auto/groupé retiré sans mutation des choix ; suivi À imprimer, Transmis à l’imprimante et Simulation dans la liste et le détail. Barre latérale : modèle, mises à jour, réglages, voyant local et aide réunis en une ligne compacte en bas ; libellés au survol et au clavier."
     },
     {
       "name": "Impression",
       "state": "modified",
-      "path": "autosecretaire/engine.py",
+      "path": "mailord/engine.py",
       "responsibility": "Progression dérivée du dernier essai par document ; distinguer partiel, simulation et soumission. Les reprises utilisent la dernière intention, sans rejouer les anciennes."
     },
     {
       "name": "ArchivageLocal",
       "state": "modified",
-      "path": "autosecretaire/engine.py",
+      "path": "mailord/engine.py",
       "responsibility": "Mémoriser un seul classement antérieur par document et le restaurer via intention persistée, jeton idempotent, contrôles de contenu et refus des collisions, sans impression."
     }
   ],

@@ -4,7 +4,7 @@
   "id": "TASK-01",
   "name": "Sélecteur individuel intégré et parcours vérifié",
   "status": "done",
-  "revision": 2,
+  "revision": 3,
   "createdAt": "2026-10-24",
   "updatedAt": "2026-10-24",
   "workItem": "WI-inline-document-filing",
@@ -31,15 +31,15 @@
   ],
   "files": [
     {
-      "path": "autosecretaire/static/app.js",
+      "path": "mailord/static/app.js",
       "action": "update"
     },
     {
-      "path": "autosecretaire/static/style.css",
+      "path": "mailord/static/style.css",
       "action": "update"
     },
     {
-      "path": "autosecretaire/static/index.html",
+      "path": "mailord/static/index.html",
       "action": "update"
     },
     {

@@ -1,10 +1,10 @@
 {
   "mdse": "2.3",
   "kind": "Project",
-  "id": "PROJ-auto-secretaire",
-  "name": "Auto-secretaire",
+  "id": "PROJ-mailord",
+  "name": "Mailord",
   "status": "current",
-  "revision": 13,
+  "revision": 16,
   "createdAt": "2026-10-23",
   "updatedAt": "2026-10-24",
   "description": "Service local sur Mac pour convertir les communications clients en PDF, les classer et les imprimer, avec une interface web locale et un suivi MDSE léger.",
@@ -24,7 +24,8 @@
     "WI-manual-document-filing",
     "WI-inline-document-filing",
     "WI-document-client-actions",
-    "WI-daily-processing"
+    "WI-daily-processing",
+    "WI-mailord-rename"
   ],
   "workspaces": [],
   "todos": [],

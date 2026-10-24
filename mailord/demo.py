@@ -15,7 +15,7 @@ def seed(engine):
         for i,subject in enumerate(subjects[n]):
             stamp=datetime.now(timezone.utc)-timedelta(days=(n*2+i+1))
             msg=EmailMessage();msg['From']=f"{c['name']} <client{n+1}@example.test>";msg['To']='Votre cabinet <cabinet@example.test>';msg['Subject']=subject;msg['Message-ID']=f'<demo-{n}-{i}@example.test>';msg['Date']=stamp
-            msg.set_content(f"Bonjour,\n\nVous trouverez ci-joint les éléments évoqués lors de notre échange.\nMerci de les ajouter à mon dossier. Je reste à votre disposition pour toute précision.\n\nBien cordialement,\n{c['name']}\n\nCeci est un exemple fictif pour découvrir Auto-secrétaire.")
+            msg.set_content(f"Bonjour,\n\nVous trouverez ci-joint les éléments évoqués lors de notre échange.\nMerci de les ajouter à mon dossier. Je reste à votre disposition pour toute précision.\n\nBien cordialement,\n{c['name']}\n\nCeci est un exemple fictif pour découvrir Mailord.")
             if i==0:msg.add_attachment(b'Liste des documents\n- Justificatif\n- Contrat signe\n',maintype='text',subtype='plain',filename='Liste des documents.txt')
             if i==1:msg.add_attachment(_pdf_bytes({'subject':'Document de démonstration','body':'Exemple fictif sans valeur contractuelle.','sender':c['name'],'recipients':'Votre cabinet','date':stamp.isoformat()}),maintype='application',subtype='pdf',filename='Contrat signé.pdf')
             p=Path(engine.settings['runtime'])/'mailboxes'/c['mailbox']/f'{i+1}.eml';p.write_bytes(msg.as_bytes());os.utime(p,(stamp.timestamp(),stamp.timestamp()))

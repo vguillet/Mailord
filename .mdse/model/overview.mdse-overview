@@ -2,12 +2,12 @@
   "mdse": "2.3",
   "kind": "Overview",
   "id": "OVERVIEW",
-  "name": "Vue d'ensemble Auto-secretaire",
+  "name": "Vue d'ensemble Mailord",
   "status": "current",
-  "revision": 13,
+  "revision": 15,
   "createdAt": "2026-10-23",
   "updatedAt": "2026-10-24",
-  "summary": "Auto-secrétaire automatise localement sur Mac les dossiers de communications clients : PDF, pièces jointes, nommage chronologique, classement et impression avec interface web française.",
+  "summary": "Mailord automatise localement sur Mac les dossiers de communications clients : PDF, pièces jointes, nommage chronologique, classement et impression avec interface web française.",
   "capabilities": [
     {
       "name": "Clients et modèles",
@@ -50,7 +50,7 @@
       "description": "Démonstration locale."
     },
     {
-      "path": "autosecretaire/__main__.py",
+      "path": "mailord/__main__.py",
       "description": "Service natif et options de lancement."
     },
     {

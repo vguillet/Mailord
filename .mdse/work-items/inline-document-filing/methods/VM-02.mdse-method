@@ -4,7 +4,7 @@
   "id": "VM-02",
   "name": "Contexte et erreurs inline",
   "status": "approved",
-  "revision": 1,
+  "revision": 2,
   "createdAt": "2026-10-24",
   "updatedAt": "2026-10-24",
   "workItem": "WI-inline-document-filing",
@@ -14,7 +14,7 @@
   "requirements": [
     "REQ-02"
   ],
-  "command": "node --check autosecretaire/static/app.js",
+  "command": "node --check mailord/static/app.js",
   "passCriteria": [
     {
       "id": "PC-01",

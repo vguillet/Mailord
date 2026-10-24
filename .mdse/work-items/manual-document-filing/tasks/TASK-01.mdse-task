@@ -4,7 +4,7 @@
   "id": "TASK-01",
   "name": "Classement manuel uniforme et visibilité",
   "status": "done",
-  "revision": 1,
+  "revision": 2,
   "createdAt": "2026-10-24",
   "updatedAt": "2026-10-24",
   "workItem": "WI-manual-document-filing",
@@ -43,19 +43,19 @@
   ],
   "files": [
     {
-      "path": "autosecretaire/engine.py",
+      "path": "mailord/engine.py",
       "action": "update"
     },
     {
-      "path": "autosecretaire/static/app.js",
+      "path": "mailord/static/app.js",
       "action": "update"
     },
     {
-      "path": "autosecretaire/static/style.css",
+      "path": "mailord/static/style.css",
       "action": "update"
     },
     {
-      "path": "autosecretaire/static/index.html",
+      "path": "mailord/static/index.html",
       "action": "update"
     },
     {

@@ -4,11 +4,11 @@ from pathlib import Path
 import pytest
 from fastapi.testclient import TestClient
 
-from autosecretaire import printing
-from autosecretaire.app import create_app
-from autosecretaire.config import defaults
-from autosecretaire.demo import seed
-from autosecretaire.engine import Engine, digest
+from mailord import printing
+from mailord.app import create_app
+from mailord.config import defaults
+from mailord.demo import seed
+from mailord.engine import Engine, digest
 
 
 @pytest.fixture

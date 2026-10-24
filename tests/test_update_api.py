@@ -1,7 +1,7 @@
 from fastapi.testclient import TestClient
-from autosecretaire.app import create_app
-from autosecretaire.config import defaults
-from autosecretaire.store import Store
+from mailord.app import create_app
+from mailord.config import defaults
+from mailord.store import Store
 
 
 def test_update_api_security_and_configuration(tmp_path):

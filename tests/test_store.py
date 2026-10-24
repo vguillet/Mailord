@@ -1,5 +1,5 @@
 import pytest
-from autosecretaire.store import Store
+from mailord.store import Store
 
 
 def test_persistence_and_rollback(tmp_path):

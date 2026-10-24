@@ -1,4 +1,8 @@
-# Installer et utiliser Auto-secrétaire sur Mac
+# Installer et utiliser Mailord sur Mac
+
+Le dépôt, le module Python et la commande utilisent désormais le nom Mailord (`mailord` pour les commandes). Les variables de configuration utilisent le préfixe `MAILORD_` et le démarrage automatique le label `fr.mailord.local`.
+
+Pour déplacer un ancien espace local, arrêtez d’abord son service puis utilisez `python scripts/relocate_runtime.py CHEMIN_SOURCE CHEMIN_DESTINATION`. La destination doit être absente. L’outil copie les fichiers et le registre, adapte les champs de chemins internes et conserve la source comme sauvegarde ; il ne modifie ni les mails ni les fichiers archivés et ne lance aucune impression. Les espaces contenant des liens symboliques ou une version activée par l’ancien mécanisme de mise à jour nécessitent une migration spécifique. Reconfigurez au besoin la variable du mot de passe IMAP dans Réglages et recréez le LaunchAgent avec les nouveaux chemins ; ne laissez pas l’ancien service actif.
 
 ## Installation
 
@@ -7,9 +11,9 @@ Prérequis : macOS, Python 3.11 ou plus, un navigateur récent. Le service doit 
 1. Copiez le projet dans un dossier permanent du Mac.
 2. Exécutez `bash scripts/install-macos.sh` dans ce dossier. L’installation crée un environnement Python isolé et installe les dépendances. Une connexion internet est nécessaire pour cette étape.
 3. Double-cliquez `scripts/start.command` pour essayer la démonstration. Lors du premier essai, macOS peut demander d’autoriser l’ouverture du script.
-4. Pour l’espace réel, lancez `.venv/bin/python -m autosecretaire --open`. Ce lancement est distinct de la démonstration. Une seule instance peut utiliser un même espace ; utilisez un autre port si la démo tourne encore.
+4. Pour l’espace réel, lancez `.venv/bin/python -m mailord --open`. Ce lancement est distinct de la démonstration. Une seule instance peut utiliser un même espace ; utilisez un autre port si la démo tourne encore.
 
-Par défaut, le registre et les messages originaux résident dans `~/Library/Application Support/Auto-secretaire/data`. La démonstration utilise `.../demo`. Une racine `Archives` est créée dans cet espace jusqu’à modification. Ces données ne sont jamais enregistrées dans le dépôt de code.
+Par défaut, le registre et les messages originaux résident dans `~/Library/Application Support/Mailord/data`. La démonstration utilise `.../demo`. Une racine `Archives` est créée dans cet espace jusqu’à modification. Ces données ne sont jamais enregistrées dans le dépôt de code.
 
 Options utiles : `--data-dir /chemin/prive` pour un autre espace, `--archive-root /chemin/archives` lors de son premier lancement, `--port 8766` pour une seconde instance distincte. Une racine déjà enregistrée dans les réglages reste prioritaire.
 
@@ -19,15 +23,15 @@ Options utiles : `--data-dir /chemin/prive` pour un autre espace, `--archive-roo
 
 À la première connexion, macOS peut demander l’autorisation de contrôler Mail. Acceptez-la pour le processus de lancement utilisé. En cas de refus, vérifiez Réglages Système → Confidentialité et sécurité → Automatisation, pour Terminal ou le processus Python concerné. Mail doit avoir téléchargé le contenu intégral des messages et pièces jointes. L’adaptateur utilise le dictionnaire de script public de Mail, jamais sa base privée. Vérifiez sur quelques mails représentatifs le contenu et les caractères accentués, notamment les anciens encodages.
 
-**Orange IMAP** convient si les dossiers existent sur le serveur Orange : serveur `imap.orange.fr`, port `993`, connexion TLS, adresse mail complète. Les dossiers uniquement « Sur mon Mac » ne sont pas visibles par IMAP. Le mot de passe dédié aux applications est configuré hors du navigateur, via la variable `AUTOSECRETAIRE_IMAP_PASSWORD` au lancement. Ne le saisissez pas dans le champ « Nom de la variable » : ce champ contient uniquement le nom de la variable.
+**Orange IMAP** convient si les dossiers existent sur le serveur Orange : serveur `imap.orange.fr`, port `993`, connexion TLS, adresse mail complète. Les dossiers uniquement « Sur mon Mac » ne sont pas visibles par IMAP. Le mot de passe dédié aux applications est configuré hors du navigateur, via la variable `MAILORD_IMAP_PASSWORD` au lancement. Ne le saisissez pas dans le champ « Nom de la variable » : ce champ contient uniquement le nom de la variable.
 
 Exemple de lancement interactif zsh, sans enregistrer le mot de passe dans l’historique :
 
 ```sh
-read -s 'AUTOSECRETAIRE_IMAP_PASSWORD?Mot de passe dédié Orange : '
-export AUTOSECRETAIRE_IMAP_PASSWORD
-.venv/bin/python -m autosecretaire --open
-unset AUTOSECRETAIRE_IMAP_PASSWORD
+read -s 'MAILORD_IMAP_PASSWORD?Mot de passe dédié Orange : '
+export MAILORD_IMAP_PASSWORD
+.venv/bin/python -m mailord --open
+unset MAILORD_IMAP_PASSWORD
 ```
 
 Cette variable doit rester disponible dans l’environnement du service pendant son fonctionnement. Le LaunchAgent fourni ne stocke pas le secret : pour un démarrage automatique IMAP, préparez un mécanisme local de chargement du secret, ou utilisez Apple Mail qui gère déjà le compte. Ne placez pas les identifiants dans le dépôt, les archives ou le fichier LaunchAgent.
@@ -73,14 +77,14 @@ Dans un client, « Retrouver des PDF existants » liste les PDF locaux non suivi
 Après essai de l’espace réel, générez son LaunchAgent :
 
 ```sh
-.venv/bin/python scripts/launchagent.py --data-dir "$HOME/Library/Application Support/Auto-secretaire/data"
-launchctl bootstrap "gui/$(id -u)" "$HOME/Library/LaunchAgents/fr.autosecretaire.local.plist"
+.venv/bin/python scripts/launchagent.py --data-dir "$HOME/Library/Application Support/Mailord/data"
+launchctl bootstrap "gui/$(id -u)" "$HOME/Library/LaunchAgents/fr.mailord.local.plist"
 ```
 
 Le générateur refuse d’écraser un fichier existant. Il ne lance rien lui-même. Pour désactiver le lancement :
 
 ```sh
-launchctl bootout "gui/$(id -u)" "$HOME/Library/LaunchAgents/fr.autosecretaire.local.plist"
+launchctl bootout "gui/$(id -u)" "$HOME/Library/LaunchAgents/fr.mailord.local.plist"
 ```
 
 Les journaux sont dans l’espace privé. Les autorisations Mail du lancement automatique doivent être testées séparément. Le dossier du projet doit rester au même endroit, car le LaunchAgent référence son environnement Python.

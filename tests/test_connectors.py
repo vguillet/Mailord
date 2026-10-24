@@ -7,7 +7,7 @@ from types import SimpleNamespace
 
 import pytest
 
-from autosecretaire.connectors import (
+from mailord.connectors import (
     AppleMailConnector, ConnectorError, DemoConnector, IMAPConnector,
     SourceMessage, decode_mailbox, encode_mailbox, make_connector,
 )
@@ -108,7 +108,7 @@ def imap_setup(monkeypatch):
         options.update(host=host, port=port, **kwargs)
         return fake
 
-    monkeypatch.setattr('autosecretaire.connectors.imaplib.IMAP4_SSL', connect)
+    monkeypatch.setattr('mailord.connectors.imaplib.IMAP4_SSL', connect)
     monkeypatch.setenv('TEST_MAIL_PASSWORD', 'secret-do-not-log')
     connector = IMAPConnector({'imap_host': 'imap.example.test', 'imap_port': 993,
                               'imap_user': 'test@example.test', 'imap_password_env': 'TEST_MAIL_PASSWORD'})
@@ -155,7 +155,7 @@ def test_imap_failed_response_not_an_empty_mailbox(imap_setup):
 
 def test_imap_requires_secret_before_network(monkeypatch):
     monkeypatch.delenv('TEST_MAIL_PASSWORD', raising=False)
-    monkeypatch.setattr('autosecretaire.connectors.imaplib.IMAP4_SSL', lambda *a, **k: pytest.fail('network called'))
+    monkeypatch.setattr('mailord.connectors.imaplib.IMAP4_SSL', lambda *a, **k: pytest.fail('network called'))
     with pytest.raises(ConnectorError, match='TEST_MAIL_PASSWORD'):
         IMAPConnector({'imap_user': 'test', 'imap_password_env': 'TEST_MAIL_PASSWORD'}).list_folders()
 
@@ -177,7 +177,7 @@ def test_apple_mail_payload_not_interpolated_into_script(monkeypatch):
         calls.append((command, kwargs))
         return SimpleNamespace(returncode=0, stdout=json.dumps(responses.pop(0)), stderr='')
 
-    monkeypatch.setattr('autosecretaire.connectors.subprocess.run', run)
+    monkeypatch.setattr('mailord.connectors.subprocess.run', run)
     connector = AppleMailConnector('Orange')
     assert connector.list_folders() == [folder, folder + '/2026']
     assert connector.create_folder(folder) == folder
@@ -192,10 +192,10 @@ def test_apple_mail_payload_not_interpolated_into_script(monkeypatch):
 
 
 def test_apple_mail_reports_denied_permission_and_bad_json(monkeypatch):
-    monkeypatch.setattr('autosecretaire.connectors.subprocess.run', lambda *a, **k: SimpleNamespace(returncode=1, stdout='', stderr='Not authorized (-1743)'))
+    monkeypatch.setattr('mailord.connectors.subprocess.run', lambda *a, **k: SimpleNamespace(returncode=1, stdout='', stderr='Not authorized (-1743)'))
     with pytest.raises(ConnectorError, match='Automatisation'):
         AppleMailConnector('').list_folders()
-    monkeypatch.setattr('autosecretaire.connectors.subprocess.run', lambda *a, **k: SimpleNamespace(returncode=0, stdout='nonsense', stderr=''))
+    monkeypatch.setattr('mailord.connectors.subprocess.run', lambda *a, **k: SimpleNamespace(returncode=0, stdout='nonsense', stderr=''))
     with pytest.raises(ConnectorError):
         AppleMailConnector('').list_folders()
 
@@ -242,6 +242,6 @@ def test_apple_mail_timeout_is_visible(monkeypatch):
     def timeout(*args, **kwargs):
         raise subprocess.TimeoutExpired(args[0], 120)
 
-    monkeypatch.setattr('autosecretaire.connectors.subprocess.run', timeout)
+    monkeypatch.setattr('mailord.connectors.subprocess.run', timeout)
     with pytest.raises(ConnectorError, match='répond pas'):
         AppleMailConnector('').list_folders()

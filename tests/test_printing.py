@@ -3,7 +3,7 @@ from types import SimpleNamespace
 
 import pytest
 
-from autosecretaire import printing
+from mailord import printing
 
 
 @pytest.fixture

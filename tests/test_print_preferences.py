@@ -3,11 +3,11 @@ from pathlib import Path
 from types import SimpleNamespace
 import pytest
 from fastapi.testclient import TestClient
-from autosecretaire import printing
-from autosecretaire.app import create_app
-from autosecretaire.config import defaults
-from autosecretaire.engine import Engine
-from autosecretaire.store import Store
+from mailord import printing
+from mailord.app import create_app
+from mailord.config import defaults
+from mailord.engine import Engine
+from mailord.store import Store
 
 
 @pytest.fixture

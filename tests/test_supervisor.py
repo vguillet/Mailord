@@ -2,8 +2,8 @@ import json
 import sqlite3
 from pathlib import Path
 import pytest
-from autosecretaire.supervisor import Supervisor
-from autosecretaire.updates import atomic_json
+from mailord.supervisor import Supervisor
+from mailord.updates import atomic_json
 
 
 def registry(runtime,value):

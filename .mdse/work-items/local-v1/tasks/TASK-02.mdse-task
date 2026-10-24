@@ -4,9 +4,9 @@
   "id": "TASK-02",
   "name": "Connecteurs et impression",
   "status": "done",
-  "revision": 4,
+  "revision": 5,
   "createdAt": "2026-10-23",
-  "updatedAt": "2026-10-23",
+  "updatedAt": "2026-10-24",
   "workItem": "WI-local-v1",
   "order": 2,
   "type": "software",
@@ -38,11 +38,11 @@
   ],
   "files": [
     {
-      "path": "autosecretaire/connectors.py",
+      "path": "mailord/connectors.py",
       "action": "create"
     },
     {
-      "path": "autosecretaire/printing.py",
+      "path": "mailord/printing.py",
       "action": "create"
     },
     {

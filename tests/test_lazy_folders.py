@@ -3,11 +3,11 @@ from pathlib import Path
 import pytest
 from fastapi.testclient import TestClient
 
-from autosecretaire import documents
-from autosecretaire.app import create_app
-from autosecretaire.config import defaults
-from autosecretaire.engine import Engine
-from autosecretaire.store import Store
+from mailord import documents
+from mailord.app import create_app
+from mailord.config import defaults
+from mailord.engine import Engine
+from mailord.store import Store
 from test_engine import add_mail
 
 
@@ -141,7 +141,7 @@ def test_failed_publication_cleans_empty_target_but_can_resume(engine, monkeypat
     c = engine.create_client('Client')
     m = exported(engine, c)
     with monkeypatch.context() as patch:
-        patch.setattr('autosecretaire.engine.os.link', lambda *a: (_ for _ in ()).throw(OSError('disque occupé')))
+        patch.setattr('mailord.engine.os.link', lambda *a: (_ for _ in ()).throw(OSError('disque occupé')))
         with pytest.raises(ValueError, match='incomplet'):
             engine.classify([m['id']], 'Procédure/TJ Paris/Conclusions')
     assert not (Path(c['folder']) / 'Procédure').exists()

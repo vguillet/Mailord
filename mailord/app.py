@@ -61,7 +61,7 @@ def create_app(settings,background=True,*,restart=None,probation=False,health_to
             store.close()
             fcntl.flock(lock,fcntl.LOCK_UN);lock.close()
 
-    app=FastAPI(title='Auto-secrétaire',docs_url=None,redoc_url=None,openapi_url=None,lifespan=lifespan)
+    app=FastAPI(title='Mailord',docs_url=None,redoc_url=None,openapi_url=None,lifespan=lifespan)
     app.state.engine=engine
     app.state.updates=updates
     app.add_middleware(TrustedHostMiddleware,allowed_hosts=['127.0.0.1','localhost','[::1]'])

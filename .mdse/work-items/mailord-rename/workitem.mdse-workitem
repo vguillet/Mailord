@@ -1,0 +1,36 @@
+{
+  "mdse": "2.3",
+  "kind": "WorkItem",
+  "id": "WI-mailord-rename",
+  "name": "Identité et dépôt Mailord",
+  "status": "implementing",
+  "revision": 1,
+  "createdAt": "2026-10-24",
+  "updatedAt": "2026-10-24",
+  "slug": "mailord-rename",
+  "purpose": "Renommer intégralement le produit et transférer le code dans le dépôt Git Mailord fourni par le propriétaire, avec conservation des données locales.",
+  "testingApproach": "selective-TDD",
+  "requirements": [
+    "REQ-01"
+  ],
+  "methods": [
+    "VM-01"
+  ],
+  "constraints": [],
+  "decisions": [],
+  "tasks": [
+    "TASK-01"
+  ],
+  "executions": [],
+  "verifications": [],
+  "deliverables": [],
+  "design": "DESIGN",
+  "userStories": [
+    {
+      "id": "US-01",
+      "role": "propriétaire",
+      "capability": "publier et utiliser le produit sous le nom Mailord",
+      "benefit": "disposer d’un dépôt et d’une identité cohérents sans perdre les données existantes"
+    }
+  ]
+}

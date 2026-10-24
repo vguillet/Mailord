@@ -1,0 +1,40 @@
+{
+  "mdse": "2.3",
+  "kind": "Requirement",
+  "id": "REQ-01",
+  "name": "Mailord dans le produit et son installation",
+  "status": "approved",
+  "revision": 1,
+  "createdAt": "2026-10-24",
+  "updatedAt": "2026-10-24",
+  "workItem": "WI-mailord-rename",
+  "keyword": "SHALL",
+  "statement": "Le produit SHALL être nommé Mailord, utiliser le module et la commande mailord et être installé dans le dépôt Mailord, avec les données existantes conservées.",
+  "priority": "must",
+  "acceptanceCriteria": [
+    {
+      "id": "AC-01",
+      "kind": "happy-path",
+      "given": "l’interface et les guides",
+      "when": "l’utilisatrice les ouvre",
+      "then": "Mailord, Le seigneur des emails. et une enveloppe couronnée remplacent l’ancienne identité"
+    },
+    {
+      "id": "AC-02",
+      "kind": "happy-path",
+      "given": "le dépôt cloné Mailord",
+      "when": "le service et les mises à jour démarrent",
+      "then": "les imports, commandes, scripts, ressources et références utilisent mailord ; le dépôt conserve son origin GitHub"
+    },
+    {
+      "id": "AC-03",
+      "kind": "failure-path",
+      "given": "un espace existant",
+      "when": "son emplacement change",
+      "then": "la source est conservée ; identifiants, contenu des documents, classements, favoris et travaux sont conservés ; les services actifs et destinations occupées sont refusés"
+    }
+  ],
+  "verifiedBy": [
+    "VM-01"
+  ]
+}

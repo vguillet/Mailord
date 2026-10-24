@@ -4,7 +4,7 @@
   "id": "DESIGN",
   "name": "Préférences de sortie par document",
   "status": "approved",
-  "revision": 1,
+  "revision": 2,
   "createdAt": "2026-10-24",
   "updatedAt": "2026-10-24",
   "workItem": "WI-print-preferences",
@@ -19,19 +19,19 @@
     {
       "name": "Impression",
       "state": "modified",
-      "path": "autosecretaire/printing.py",
+      "path": "mailord/printing.py",
       "responsibility": "Valider et traduire des choix bornés vers les options CUPS, sans shell ni modification des paramètres globaux."
     },
     {
       "name": "TraitementDocuments",
       "state": "modified",
-      "path": "autosecretaire/engine.py",
+      "path": "mailord/engine.py",
       "responsibility": "Persister les préférences, prendre un instantané des nouvelles intentions et conserver sélection et idempotence."
     },
     {
       "name": "InterfaceLocale",
       "state": "modified",
-      "path": "autosecretaire/static/app.js",
+      "path": "mailord/static/app.js",
       "responsibility": "Deux listes explicites dans Impression et explication du périmètre mail/pièces jointes."
     }
   ],

@@ -82,7 +82,7 @@ def validate_release(root):
         manifest = read_json(root/'update.json')
         if manifest != {'update_protocol': 1, 'data_schema': 1}:
             raise ValueError()
-        for name in ('update.json', 'requirements.lock', 'autosecretaire/__main__.py'):
+        for name in ('update.json', 'requirements.lock', 'mailord/__main__.py'):
             path = root/name
             if not path.is_file() or path.is_symlink() or any(p.is_symlink() for p in path.parents if p != root.parent):
                 raise ValueError()
@@ -180,7 +180,7 @@ class UpdateManager:
         command([python, '-m', 'pip', 'install', '--requirement', str(release/'requirements.lock')], cwd=release, timeout=900)
         # The launch uses source directly; no executable project packaging hooks are needed.
         self._set(progress='Vérification du démarrage…')
-        command([python, '-c', 'import autosecretaire.app; import autosecretaire.__main__'], cwd=release, timeout=60)
+        command([python, '-c', 'import mailord.app; import mailord.__main__'], cwd=release, timeout=60)
 
     def install(self, commit):
         release = self.directory/'releases'/(str(commit)+'-'+uuid.uuid4().hex[:8])

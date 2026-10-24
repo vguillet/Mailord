@@ -4,9 +4,9 @@
   "id": "TASK-02",
   "name": "Interface de mise à jour",
   "status": "done",
-  "revision": 1,
+  "revision": 2,
   "createdAt": "2026-10-23",
-  "updatedAt": "2026-10-23",
+  "updatedAt": "2026-10-24",
   "workItem": "WI-one-click-updates",
   "order": 2,
   "type": "software",
@@ -30,15 +30,15 @@
   ],
   "files": [
     {
-      "path": "autosecretaire/static/app.js",
+      "path": "mailord/static/app.js",
       "action": "update"
     },
     {
-      "path": "autosecretaire/static/index.html",
+      "path": "mailord/static/index.html",
       "action": "update"
     },
     {
-      "path": "autosecretaire/static/style.css",
+      "path": "mailord/static/style.css",
       "action": "update"
     },
     {

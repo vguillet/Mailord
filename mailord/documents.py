@@ -214,7 +214,7 @@ def safe_path(root: Path, relative) -> Path:
 
 
 def _font():
-    name = "AutoSecretaireUnicode"
+    name = "MailordUnicode"
     if name not in pdfmetrics.getRegisteredFontNames():
         candidates = [Path("/System/Library/Fonts/Supplemental/Arial.ttf"),
                       Path("/usr/share/fonts/truetype/dejavu/DejaVuSans.ttf"),
@@ -236,7 +236,7 @@ def _pdf_bytes(parsed):
                                   textColor=colors.HexColor("#3f4755"))
     document = SimpleDocTemplate(buffer, pagesize=A4, leftMargin=44, rightMargin=44,
                                  topMargin=42, bottomMargin=40, title=parsed.get("subject", "Mail"),
-                                 author="Auto-secrétaire", invariant=1)
+                                 author="Mailord", invariant=1)
     story = [Paragraph(escape(str(parsed.get("subject", "Sans objet"))), title_style)]
     for label, key in (("Expéditeur", "sender"), ("Destinataires", "recipients"), ("Copie", "cc"), ("Date", "date")):
         value = parsed.get(key)
@@ -266,7 +266,7 @@ def _publish(content: bytes, target: Path):
     target.parent.mkdir(parents=True, exist_ok=True)
     temporary = None
     try:
-        with tempfile.NamedTemporaryFile(prefix=".auto-secretaire-", suffix=".tmp", dir=target.parent, delete=False) as stream:
+        with tempfile.NamedTemporaryFile(prefix=".mailord-", suffix=".tmp", dir=target.parent, delete=False) as stream:
             temporary = Path(stream.name)
             stream.write(content)
             stream.flush()

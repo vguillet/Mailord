@@ -49,6 +49,6 @@ DEFAULT_FOLDERS = [
 def defaults(runtime: Path):
     return dict(runtime=str(runtime.resolve()), archive_root=str((runtime / 'Archives').resolve()), connector='demo',
                 mail_account='', imap_host='imap.orange.fr', imap_port=993, imap_user='',
-                imap_password_env='AUTOSECRETAIRE_IMAP_PASSWORD', print_policy='after_classify',
+                imap_password_env='MAILORD_IMAP_PASSWORD', print_policy='after_classify',
                 printer='', dry_run=True, print_sides='printer', print_color_mode='printer', poll_seconds=60, date_source='received', prefix_format='%Y-%m-%d',
                 timezone='Europe/Paris', client_folder_pattern='{name}', print_attachments=True)

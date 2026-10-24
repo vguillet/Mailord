@@ -1,4 +1,6 @@
-# Auto-secrétaire
+# Mailord
+
+**Le seigneur des emails.**
 
 Un bureau local pour les communications clients : surveiller les dossiers mail, conserver les messages en PDF et leurs pièces jointes, ranger les documents et piloter leur impression depuis le Mac.
 
@@ -16,7 +18,7 @@ L’interface s’ouvre sur **http://127.0.0.1:8765** avec trois clients fictifs
 Pour lancer un espace réel vierge :
 
 ```sh
-.venv/bin/python -m autosecretaire --open
+.venv/bin/python -m mailord --open
 ```
 
 Choisissez la messagerie et le dossier des archives dans **Réglages avant de créer les clients**. Le [guide d’installation](docs/INSTALLATION.md) décrit Apple Mail, Orange IMAP, le démarrage automatique et les sauvegardes.
@@ -35,7 +37,7 @@ Choisissez la messagerie et le dossier des archives dans **Réglages avant de cr
 - Permet d’annuler le dernier classement de chaque document, même après redémarrage, avec vérification des fichiers et sans écrasement ni nouvelle impression. Disponible pour les classements effectués depuis cette version.
 - Propose le rapprochement explicite des anciens PDF présents dans les dossiers clients.
 
-Les fichiers restent accessibles dans le Finder. Le service cloud habituel synchronise la racine documentaire ; Auto-secrétaire ne prétend pas vérifier cette synchronisation.
+Les fichiers restent accessibles dans le Finder. Le service cloud habituel synchronise la racine documentaire ; Mailord ne prétend pas vérifier cette synchronisation.
 
 ## Portée de cette version
 
@@ -46,6 +48,8 @@ Le rendu des mails est un **PDF de texte structuré avec en-têtes**, pas une re
 Les adaptateurs Orange IMAP, Apple Mail et CUPS sont implémentés et testés avec transports simulés. **La connexion au compte et l’impression sur le Mac de l’utilisatrice restent à vérifier sur place.** Voir le [rapport de validation](docs/VALIDATION.md).
 
 ## Développement et suivi
+
+Le dépôt est nommé `Mailord`, le module Python et la commande sont `mailord`. Le service conserve son registre dans `~/Library/Application Support/Mailord/`.
 
 ```sh
 .venv/bin/python -m pytest -q

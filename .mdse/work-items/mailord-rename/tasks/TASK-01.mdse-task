@@ -1,0 +1,65 @@
+{
+  "mdse": "2.3",
+  "kind": "Task",
+  "id": "TASK-01",
+  "name": "Renommer, transférer et vérifier Mailord",
+  "status": "in-progress",
+  "revision": 1,
+  "createdAt": "2026-10-24",
+  "updatedAt": "2026-10-24",
+  "workItem": "WI-mailord-rename",
+  "order": 1,
+  "type": "software",
+  "objective": "Livrer le produit renommé dans le dépôt du propriétaire et redémarrer avec le même espace documentaire.",
+  "requirements": [
+    "REQ-01"
+  ],
+  "design": "DESIGN",
+  "decisions": [],
+  "constraints": [],
+  "dependsOn": [],
+  "designReferences": [
+    {
+      "section": "components",
+      "item": "Identite"
+    },
+    {
+      "section": "components",
+      "item": "Paquet"
+    },
+    {
+      "section": "components",
+      "item": "Reprise"
+    }
+  ],
+  "files": [
+    {
+      "path": "mailord/",
+      "action": "create"
+    },
+    {
+      "path": "pyproject.toml",
+      "action": "update"
+    },
+    {
+      "path": "scripts/relocate_runtime.py",
+      "action": "create"
+    },
+    {
+      "path": "tests/test_runtime_relocation.py",
+      "action": "create"
+    }
+  ],
+  "doneCriteria": [
+    {
+      "id": "DC-01",
+      "statement": "Code, ressources, tests et guides cohérents dans le nouveau dépôt."
+    },
+    {
+      "id": "DC-02",
+      "statement": "Service local redémarré ; clients, documents et impressions conservés."
+    }
+  ],
+  "priority": "high",
+  "outputs": []
+}

@@ -4,7 +4,7 @@
   "id": "DESIGN",
   "name": "Actions par document et favoris clients",
   "status": "approved",
-  "revision": 1,
+  "revision": 2,
   "createdAt": "2026-10-24",
   "updatedAt": "2026-10-24",
   "workItem": "WI-document-client-actions",
@@ -19,19 +19,19 @@
     {
       "name": "InterfaceLocale",
       "state": "modified",
-      "path": "autosecretaire/static/app.js",
+      "path": "mailord/static/app.js",
       "responsibility": "Icône impression par fichier, état et confirmation de réimpression, erreurs ; étoiles accessibles hors bouton de navigation, favoris en tête et maintien du contexte."
     },
     {
       "name": "Impression",
       "state": "modified",
-      "path": "autosecretaire/engine.py",
+      "path": "mailord/engine.py",
       "responsibility": "Portée document explicite, sélection habituelle conservée, même génération initiale et options, résultats individuels."
     },
     {
       "name": "GestionClients",
       "state": "modified",
-      "path": "autosecretaire/engine.py",
+      "path": "mailord/engine.py",
       "responsibility": "Étoile booléenne persistée dans le registre, défaut false compatible sans modifier les favoris de dossiers."
     }
   ],

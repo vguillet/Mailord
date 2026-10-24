@@ -1,6 +1,6 @@
 # Mettre à jour depuis l’interface
 
-Après la première installation sur le Mac, ouvrir **Mises à jour** dans Auto-secrétaire. Le mainteneur configure une fois l’adresse du dépôt de confiance et la branche publiée (par exemple `main`). Le dépôt peut être public en HTTPS, ou privé avec un accès Git déjà préparé sur ce Mac (trousseau ou clé SSH). Ne jamais mettre de mot de passe ou jeton dans l’adresse.
+Après la première installation sur le Mac, ouvrir **Mises à jour** dans Mailord. Le mainteneur configure une fois l’adresse du dépôt de confiance et la branche publiée (par exemple `main`). Le dépôt peut être public en HTTPS, ou privé avec un accès Git déjà préparé sur ce Mac (trousseau ou clé SSH). Ne jamais mettre de mot de passe ou jeton dans l’adresse.
 
 Le service recherche une nouvelle version au démarrage puis toutes les heures tant qu’il tourne. **Vérifier les versions** permet de ne pas attendre. Un commit doit être **poussé** sur le dépôt distant : les commits restés sur l’ordinateur du développeur ne sont pas visibles chez l’utilisatrice.
 

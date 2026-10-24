@@ -4,7 +4,7 @@
   "id": "DESIGN",
   "name": "Documents uniformes et statut visible",
   "status": "approved",
-  "revision": 1,
+  "revision": 2,
   "createdAt": "2026-10-24",
   "updatedAt": "2026-10-24",
   "workItem": "WI-manual-document-filing",
@@ -19,25 +19,25 @@
     {
       "name": "TraitementDocuments",
       "state": "modified",
-      "path": "autosecretaire/engine.py",
+      "path": "mailord/engine.py",
       "responsibility": "Version 3, exports tous en attente, conservation des destinations et réparations."
     },
     {
       "name": "ArchivageLocal",
       "state": "modified",
-      "path": "autosecretaire/engine.py",
+      "path": "mailord/engine.py",
       "responsibility": "Classement du PDF et des annexes via les mêmes intentions et reprises."
     },
     {
       "name": "GestionClients",
       "state": "modified",
-      "path": "autosecretaire/engine.py",
+      "path": "mailord/engine.py",
       "responsibility": "Présélections conservées ; ancien email_folder sans routage ni dossier imposé."
     },
     {
       "name": "InterfaceLocale",
       "state": "modified",
-      "path": "autosecretaire/static/app.js",
+      "path": "mailord/static/app.js",
       "responsibility": "Actions pour tous les documents, libellés neutres au type et statuts en attente fortement contrastés."
     }
   ],

@@ -6,7 +6,7 @@ import pytest
 from PIL import Image
 from pypdf import PdfReader
 
-from autosecretaire.documents import (
+from mailord.documents import (
     convert_for_print, export_message, filename, parse_message, render_pdf,
     safe_path, valid_pdf,
 )

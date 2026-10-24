@@ -4,7 +4,7 @@
   "id": "DESIGN",
   "name": "Sélecteur attaché au document",
   "status": "approved",
-  "revision": 1,
+  "revision": 2,
   "createdAt": "2026-10-24",
   "updatedAt": "2026-10-24",
   "workItem": "WI-inline-document-filing",
@@ -19,7 +19,7 @@
     {
       "name": "InterfaceLocale",
       "state": "modified",
-      "path": "autosecretaire/static/app.js",
+      "path": "mailord/static/app.js",
       "responsibility": "État document/message/client, recherche, branches dépliées, choix, requête et erreur ; rendu inline et parcours clavier. Chevrons SVG de 20 px et trait de 2,4 px dans des boutons de 32 × 32 px, agrandis à la demande de l’utilisateur pour rester lisibles à côté du texte."
     }
   ],

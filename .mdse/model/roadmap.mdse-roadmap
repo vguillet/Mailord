@@ -2,9 +2,9 @@
   "mdse": "2.3",
   "kind": "Roadmap",
   "id": "ROADMAP",
-  "name": "Feuille de route Auto-secretaire",
+  "name": "Feuille de route Mailord",
   "status": "current",
-  "revision": 14,
+  "revision": 15,
   "createdAt": "2026-10-23",
   "updatedAt": "2026-10-24",
   "milestones": [

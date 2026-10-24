@@ -197,7 +197,7 @@ class IMAPConnector:
 
     @contextmanager
     def _connection(self):
-        secret_name = self.settings.get('imap_password_env', 'AUTOSECRETAIRE_IMAP_PASSWORD')
+        secret_name = self.settings.get('imap_password_env', 'MAILORD_IMAP_PASSWORD')
         password = os.environ.get(secret_name, '')
         if not password:
             raise ConnectorError(f'Mot de passe absent : configurez la variable {secret_name}.')

@@ -3,10 +3,10 @@ from pathlib import Path
 import pytest
 from fastapi.testclient import TestClient
 
-from autosecretaire.app import create_app
-from autosecretaire.config import defaults
-from autosecretaire.engine import Engine, digest
-from autosecretaire.store import Store
+from mailord.app import create_app
+from mailord.config import defaults
+from mailord.engine import Engine, digest
+from mailord.store import Store
 from test_correspondence_filing import receive
 
 

@@ -4,9 +4,9 @@
   "id": "TASK-06",
   "name": "Intégration et installation",
   "status": "done",
-  "revision": 7,
+  "revision": 8,
   "createdAt": "2026-10-23",
-  "updatedAt": "2026-10-23",
+  "updatedAt": "2026-10-24",
   "workItem": "WI-local-v1",
   "order": 6,
   "type": "software",
@@ -42,11 +42,11 @@
   ],
   "files": [
     {
-      "path": "autosecretaire/__main__.py",
+      "path": "mailord/__main__.py",
       "action": "create"
     },
     {
-      "path": "autosecretaire/demo.py",
+      "path": "mailord/demo.py",
       "action": "create"
     },
     {
@@ -90,11 +90,11 @@
       "action": "create"
     },
     {
-      "path": "autosecretaire/engine.py",
+      "path": "mailord/engine.py",
       "action": "update"
     },
     {
-      "path": "autosecretaire/static/app.js",
+      "path": "mailord/static/app.js",
       "action": "update"
     },
     {
