@@ -662,6 +662,7 @@
     const view = updateView(state, {offline: updateMonitor.offline, stalled});
     const active = updatesLocked();
     $('#updates-dot')?.classList.toggle('hidden', view.status !== 'available');
+    $('#updates-nav')?.setAttribute('aria-label', view.status === 'available' ? 'Mises à jour — Nouvelle version disponible' : 'Mises à jour');
     $('#update-available-button')?.classList.toggle('hidden', view.status !== 'available' || active);
     const banner = $('#update-banner');
     if (banner) {

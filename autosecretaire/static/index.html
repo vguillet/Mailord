@@ -21,10 +21,11 @@
       <nav id="client-list" class="client-list" aria-label="Clients"><p class="subtle small loading-text">Chargement de vos clients…</p></nav>
       <button class="add-client" data-action="new-client"><span aria-hidden="true">＋</span> Nouveau client</button>
       <div class="sidebar-bottom">
-        <button class="nav-item" data-action="template"><span class="nav-icon" aria-hidden="true">▧</span>Modèle de dossiers</button>
-        <button class="nav-item" id="updates-nav" data-action="updates"><span class="nav-icon" aria-hidden="true">↻</span>Mises à jour<span class="update-dot hidden" id="updates-dot" aria-label="Nouvelle version disponible"></span></button>
-        <button class="nav-item" data-action="settings"><span class="nav-icon" aria-hidden="true">⚙</span>Réglages</button>
-        <div class="local-status"><span id="connection-dot" class="status-dot"></span><div id="connection-label">Connexion au service…<small>Sur cet ordinateur</small></div><button class="icon-button" data-action="shortcuts" title="Raccourcis clavier" aria-label="Raccourcis clavier">?</button></div>
+        <button class="sidebar-tool" data-action="template" aria-label="Modèle de dossiers"><span class="sidebar-tool-icon icon-folder-tree" aria-hidden="true"></span><span class="sidebar-tooltip" aria-hidden="true">Modèle de dossiers</span></button>
+        <button class="sidebar-tool" id="updates-nav" data-action="updates" aria-label="Mises à jour"><span class="sidebar-tool-icon icon-refresh" aria-hidden="true"></span><span class="sidebar-tooltip" aria-hidden="true">Mises à jour</span><span class="update-dot hidden" id="updates-dot" aria-label="Nouvelle version disponible"></span></button>
+        <button class="sidebar-tool" data-action="settings" aria-label="Réglages"><span class="sidebar-tool-icon icon-settings" aria-hidden="true"></span><span class="sidebar-tooltip" aria-hidden="true">Réglages</span></button>
+        <div class="local-status" tabindex="0" role="status" aria-labelledby="connection-label"><span id="connection-dot" class="status-dot" aria-hidden="true"></span><div id="connection-label" class="sidebar-tooltip">Connexion au service…<small>Sur cet ordinateur</small></div></div>
+        <button class="sidebar-tool" data-action="shortcuts" aria-label="Raccourcis clavier"><span class="sidebar-tool-icon icon-help" aria-hidden="true"></span><span class="sidebar-tooltip" aria-hidden="true">Raccourcis clavier</span></button>
       </div>
     </aside>
     <main id="main" tabindex="-1">

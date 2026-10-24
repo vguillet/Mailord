@@ -44,3 +44,11 @@ No blocking visual questions. Physical printer and Apple Mail integration remain
 final result: passed
 
 **Main app handoff:** http://127.0.0.1:8765/ refreshed and verified after fast-forward. Main screenshot: `/Users/vguillet/.codex/.chatgpt-projects/g-p-697effec50fc8191bf4d72dc8d4e8afc/outputs/auto-secretaire-upgrade-2026-10-24/16-main-app-final.png`. No document or stored preference changes during deployment.
+
+## Barre latérale compacte — 24 octobre 2026
+
+- Demande : regrouper modèle, mises à jour, réglages, état du service et aide en bas du panneau, sur une seule ligne.
+- Réalisation : quatre boutons Lucide locaux, voyant local, noms accessibles et infobulles au survol/focus ; indicateur de version disponible conservé et annoncé dans le nom du bouton.
+- Vérification dans le navigateur de démonstration : chaque bouton ouvre le bon dialogue ; navigation au clavier vers Mises à jour et infobulle affichée ; dialogues refermés sans enregistrement.
+- Rangée de 49 px à 1280 × 720 et 720 × 634, de 45 px à 390 × 844 ; aucun débordement horizontal, cinq éléments alignés.
+- Contrôles : 31 tests existants dans tests/test_ui.py réussis ; aucune impression, aucun classement, aucun réglage changé pendant ce contrôle.

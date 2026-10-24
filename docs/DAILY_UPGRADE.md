@@ -14,3 +14,5 @@ Implémentation vérifiée : 224 tests, parcours navigateur isolés et contrôle
 Suivi MDSE réconcilié. Proposition de prochain point de référence : baseline « as-built » de ce lot vérifié, à approuver explicitement par le responsable si souhaité ; aucune baseline approuvée automatiquement.
 
 Ajustement visuel du 24 octobre : option 2 et commentaires successifs intégrés ; 43 tests ciblés réussis, 9 scénarios supplémentaires de badges, parcours PDF et comparaison visuelle documentés dans `design-qa.md`. Les 224 tests ci-dessus désignent la précédente exécution complète.
+
+Ajustement de navigation du 24 octobre : les commandes de bas de barre latérale sont réunies sur une ligne d’icônes Lucide locales, avec voyant du service et infobulles accessibles au clavier. Aucun changement des actions ou des données ; contrôle de la rangée sur fenêtres de 1280, 720 et 390 px. Les 31 tests UI existants passent.

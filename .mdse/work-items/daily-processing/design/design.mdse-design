@@ -4,7 +4,7 @@
   "id": "DESIGN",
   "name": "Traitement quotidien fiable",
   "status": "approved",
-  "revision": 4,
+  "revision": 5,
   "createdAt": "2026-10-24",
   "updatedAt": "2026-10-24",
   "workItem": "WI-daily-processing",
@@ -25,7 +25,7 @@
       "name": "InterfaceLocale",
       "state": "modified",
       "path": "autosecretaire/static/app.js",
-      "responsibility": "Mail dans un bloc avec sujet, De/À/Reçu/Client et corps ouvert repliable ; pied sauge attaché au corps pour les commandes du PDF, sans carte PDF dupliquée. Section et compteur propres aux pièces jointes ; classement, impression et annulation restent individuels. Compteurs globaux distincts ; recherche noms/destinations et modèle repliable conservés. Noms de pièces sur une ligne dédiée ; icônes Lucide locales alignées avec les badges, destination dessous. Contrôle auto/groupé retiré sans mutation des choix ; suivi À imprimer, Transmis à l’imprimante et Simulation dans la liste et le détail."
+      "responsibility": "Mail dans un bloc avec sujet, De/À/Reçu/Client et corps ouvert repliable ; pied sauge attaché au corps pour les commandes du PDF, sans carte PDF dupliquée. Section et compteur propres aux pièces jointes ; classement, impression et annulation restent individuels. Compteurs globaux distincts ; recherche noms/destinations et modèle repliable conservés. Noms de pièces sur une ligne dédiée ; icônes Lucide locales alignées avec les badges, destination dessous. Contrôle auto/groupé retiré sans mutation des choix ; suivi À imprimer, Transmis à l’imprimante et Simulation dans la liste et le détail. Barre latérale : modèle, mises à jour, réglages, voyant local et aide réunis en une ligne compacte en bas ; libellés au survol et au clavier."
     },
     {
       "name": "Impression",
