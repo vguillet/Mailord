@@ -139,6 +139,8 @@ def create_app(settings,background=True,*,restart=None,probation=False,health_to
     def apply(id:str):return engine.apply_template(id)
     @app.put('/api/clients/{id}/favorites')
     def favorites(id:str,body:dict=Body(...)):return engine.favorites(id,required(body,'folders',list))
+    @app.put('/api/clients/{id}/star')
+    def star_client(id:str,body:dict=Body(...)):return engine.star_client(id,required(body,'starred',bool))
     @app.put('/api/template')
     def template(body:dict=Body(...)):
         return engine.save_template(required(body,'folders',list),
@@ -164,6 +166,12 @@ def create_app(settings,background=True,*,restart=None,probation=False,health_to
         engine.print_messages([id],reprint=True);return {'ok':True}
     @app.put('/api/documents/{id}')
     def select(id:str,body:dict=Body(...)):return engine.select_document(id,required(body,'selected',bool))
+    @app.post('/api/documents/{id}/print')
+    def print_document(id:str):return engine.print_document(id)
+    @app.post('/api/documents/{id}/reprint')
+    def reprint_document(id:str,body:dict=Body(...)):
+        if body.get('confirm') is not True:raise ValueError('Confirmez explicitement la nouvelle impression après vérification de la file.')
+        return engine.print_document(id,reprint=True)
     def document_path(id):
         d=store.get('document',id)
         if not d:raise KeyError('Document introuvable.')

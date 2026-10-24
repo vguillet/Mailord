@@ -1,0 +1,25 @@
+{
+  "mdse": "2.3",
+  "kind": "Method",
+  "id": "VM-01",
+  "name": "Impression ciblée et reprise",
+  "status": "approved",
+  "revision": 1,
+  "createdAt": "2026-10-24",
+  "updatedAt": "2026-10-24",
+  "workItem": "WI-document-client-actions",
+  "class": "verification",
+  "method": "review",
+  "automated": true,
+  "requirements": [
+    "REQ-01"
+  ],
+  "command": "python -m pytest tests/test_document_client_actions.py tests/test_ui.py -q",
+  "passCriteria": [
+    {
+      "id": "PC-01",
+      "statement": "Tests de portée, idempotence, réimpression, formats et options verts ; Chrome en simulation vérifie bouton par document, résultat et absence de commande globale du détail."
+    }
+  ],
+  "evidenceKind": "inspection-report"
+}

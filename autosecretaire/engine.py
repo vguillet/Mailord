@@ -165,6 +165,11 @@ class Engine:
             if any(p not in allowed for p in folders):raise ValueError('Un favori ne correspond à aucun dossier.')
             c['favorites']=list(dict.fromkeys(folders));self.store.put('client',id,c);return c
 
+    def star_client(self,id,starred):
+        with self.lock:
+            if type(starred)!=bool:raise ValueError('Étoile invalide.')
+            c=self.client(id);c['starred']=starred;self.store.put('client',id,c);return c
+
     def list_folders(self):
         with self.lock:self.folders=self.connector.list_folders();return self.folders
 
@@ -381,16 +386,28 @@ class Engine:
         if any(m is None for m in ms):raise KeyError('Message introuvable.')
         return ms
 
-    def print_messages(self,ids,reprint=False,retry_failed=True):
+    def print_document(self,id,reprint=False):
         with self.lock:
+            d=self.store.get('document',id)
+            if not d:raise KeyError('Document introuvable.')
+            if not d['printable']:raise ValueError('Ce format ne peut pas être imprimé ici. Ouvrez-le dans son application.')
+            return self.print_messages([d['message_id']],reprint=reprint,document_ids={id})[0]
+
+    def print_messages(self,ids,reprint=False,retry_failed=True,*,document_ids=None):
+        with self.lock:
+            results=[]
             for m in self._messages(ids):
                 if m['status']!='ready':raise ValueError('Les documents doivent être exportés avant impression.')
                 generation=uid() if reprint else 'initial'
                 for d in self._docs(m['id']):
-                    if not d.get('selected') or not d['printable']:continue
+                    if document_ids is not None:
+                        if d['id'] not in document_ids:continue
+                    elif not d.get('selected'):continue
+                    if not d['printable']:continue
                     pid=d['id']+'-'+generation
                     previous=self.store.get('print',pid)
-                    if previous and not (previous['status']=='preparing' or (previous['status']=='error' and retry_failed)):continue
+                    if previous and not (previous['status']=='preparing' or (previous['status']=='error' and retry_failed)):
+                        results.append(previous);continue
                     if not self._healthy(d):raise ValueError('Fichier manquant ou modifié ; effectuez un contrôle.')
                     options={'sides':self.settings.get('print_sides','printer'),'color_mode':self.settings.get('print_color_mode','printer')}
                     p={'message_id':m['id'],'document_id':d['id'],'status':'preparing','created_at':now(),'error':'','job_id':'',
@@ -409,7 +426,9 @@ class Engine:
                     except printing.PrintError as e:p.update(status='error',error=self.error_text(e))
                     except Exception as e:p.update(status='uncertain' if p['status']=='submitting' else 'error',error=self.error_text(e))
                     self.store.put('print',pid,p)
+                    results.append(self.store.get('print',pid))
                 m['print_status']=self.print_status(m);self.store.put('message',m['id'],m)
+            return results
 
     def print_status(self,m):
         ps=[p for p in self.store.all('print') if p['message_id']==m['id']]
@@ -472,6 +491,7 @@ class Engine:
         with self.lock:
             clients=self.store.all('client')
             for c in clients:
+                c.setdefault('starred',False)
                 c['existing_folders']=self.existing_folders(c)
                 c['folders']=self.client_folders(c,c['existing_folders'])
             messages=self.store.all('message')

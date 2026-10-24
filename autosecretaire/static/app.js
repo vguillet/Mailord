@@ -25,6 +25,16 @@
       return true;
     }).map(path => ({path, depth: path.split('/').length - 1, hasChildren: all.some(other => other.startsWith(path + '/')), expanded: !!q || open.has(path)}));
   }
+  const sortClients = items => [...items].sort((a, b) => Number(b.starred === true) - Number(a.starred === true) || a.name.localeCompare(b.name, 'fr'));
+  function documentPrintView(doc, jobs = []) {
+    const own = jobs.filter(job => job.document_id === doc.id);
+    const latest = own[own.length - 1];
+    const reprint = own.some(job => ['submitted', 'simulated', 'uncertain', 'submitting'].includes(job.status));
+    const sending = own.some(job => job.status === 'submitting');
+    const status = latest?.status || 'pending';
+    const description = {pending: 'Pas encore imprimé', preparing: 'Préparation en cours', submitting: 'Envoi en cours…', submitted: 'Envoyé à l’imprimante', simulated: 'Impression simulée', uncertain: 'Impression à vérifier', error: 'Échec de l’impression'};
+    return {reprint, disabled: !doc.printable || sending, label: !doc.printable ? 'Format non imprimable' : sending ? 'Envoi en cours…' : reprint ? 'Réimprimer…' : status === 'error' ? 'Réessayer' : 'Imprimer', status, description: doc.printable ? description[status] || 'État à vérifier' : 'Format non imprimable ici', tone: ['uncertain', 'error'].includes(status) ? 'error' : '', error: latest?.error || ''};
+  }
   function checkedFolder(path) {
     const value = String(path).trim();
     if (!value || value.startsWith('/') || value.includes('\\') || /[\x00-\x1f]/.test(value) || value.split('/').some(part => !part.trim() || part === '.' || part === '..')) {
@@ -90,7 +100,7 @@
   }
 
   // Export deterministic transformations for focused tests without a browser.
-  if (typeof module !== 'undefined' && module.exports) module.exports = {escape, folderEntries, checkedFolder, withParents, changeBranch, updateView, updateRecovery, sessionRequest};
+  if (typeof module !== 'undefined' && module.exports) module.exports = {escape, sortClients, documentPrintView, folderEntries, checkedFolder, withParents, changeBranch, updateView, updateRecovery, sessionRequest};
   if (typeof document === 'undefined') return;
 
   const $ = (selector, root = document) => root.querySelector(selector);
@@ -236,11 +246,15 @@
   }
   function renderClients() {
     const q = model.clientQuery.toLocaleLowerCase('fr');
-    const items = clients().filter(c => c.name.toLocaleLowerCase('fr').includes(q)).sort((a,b) => a.name.localeCompare(b.name, 'fr'));
-    $('#client-list').innerHTML = items.length ? items.map(c => {
+    const items = sortClients(clients().filter(c => c.name.toLocaleLowerCase('fr').includes(q)));
+    const hasStars = items.some(c => c.starred);
+    const focusedStar = document.activeElement?.dataset.action === 'star-client' ? document.activeElement.dataset.id : null;
+    $('#client-list').innerHTML = items.length ? items.map((c, index) => {
       const count = messages().filter(m => m.client_id === c.id && m.classification !== 'classified').length;
-      return `<button class="client-item${model.client === c.id ? ' active' : ''}" data-action="client" data-id="${escape(c.id)}" aria-current="${model.client === c.id ? 'page' : 'false'}" title="${escape(c.name)}"><span class="client-initial" aria-hidden="true">${escape(initials(c.name))}</span><span class="client-name">${escape(c.name)}</span>${count ? `<span class="count" title="${count} à classer">${count}</span>` : ''}${c.status === 'error' ? '<span aria-label="Création incomplète">!</span>' : ''}</button>`;
+      const heading = hasStars && (index === 0 || !!c.starred !== !!items[index - 1].starred) ? `<div class="client-group-label">${c.starred ? 'FAVORIS' : 'AUTRES CLIENTS'}</div>` : '';
+      return `${heading}<div class="client-entry${model.client === c.id ? ' active' : ''}"><button class="client-item${model.client === c.id ? ' active' : ''}" data-action="client" data-id="${escape(c.id)}" aria-current="${model.client === c.id ? 'page' : 'false'}" title="${escape(c.name)}"><span class="client-initial" aria-hidden="true">${escape(initials(c.name))}</span><span class="client-name">${escape(c.name)}</span>${count ? `<span class="count" title="${count} à classer">${count}</span>` : ''}${c.status === 'error' ? '<span aria-label="Création incomplète">!</span>' : ''}</button><button class="icon-button client-star${c.starred ? ' starred' : ''}" data-action="star-client" data-id="${escape(c.id)}" aria-pressed="${!!c.starred}" title="${c.starred ? 'Retirer des clients favoris' : 'Ajouter aux clients favoris'}" aria-label="${c.starred ? 'Retirer des favoris' : 'Ajouter aux favoris'} : ${escape(c.name)}" ${model.busy.has('star-client:' + c.id) || updatesLocked() ? 'disabled' : ''}>${c.starred ? '★' : '☆'}</button></div>`;
     }).join('') : `<p class="subtle small loading-text">${q ? 'Aucun client ne correspond.' : 'Votre premier client commence ici.'}</p>`;
+    if (focusedStar) $$('#client-list [data-action="star-client"]').find(button => button.dataset.id === focusedStar)?.focus({preventScroll: true});
   }
   function renderSummary() {
     const list = scopeMessages();
@@ -287,7 +301,10 @@
   function documentCard(d, message) {
     const pending = d.classification !== 'classified' || !!d.move_to;
     const open = model.filing?.documentId === d.id;
-    return `<div class="document${pending ? ' pending' : ''}" data-document-id="${escape(d.id)}"><div class="document-row"><input type="checkbox" data-document-select="${escape(d.id)}" aria-label="Inclure ${escape(d.original_name || d.name)} à l’impression" ${d.selected ? 'checked' : ''} ${!d.printable ? 'disabled' : ''}><span class="document-icon" aria-hidden="true">${escape(d.name.split('.').pop().slice(0, 4).toUpperCase())}</span><div class="document-info"><p class="document-name">${escape(d.name)}</p>${filingBadge(d)}<small>${d.kind === 'email' ? 'Mail en PDF' : d.inline ? 'Image intégrée au message' : 'Pièce jointe originale'}${!d.printable ? ' · format non imprimable ici' : ''}</small></div><button class="icon-button" data-action="preview" data-id="${escape(d.id)}" title="Consulter le document" aria-label="Consulter ${escape(d.original_name || d.name)}">↗</button><button class="icon-button" data-action="reveal" data-id="${escape(d.id)}" title="Afficher dans le Finder" aria-label="Afficher dans le Finder">▱</button></div><button class="document-destination" data-action="classify-document" data-id="${escape(d.id)}" aria-expanded="${open}" aria-controls="filing-${escape(d.id)}" ${message.status !== 'ready' ? 'disabled' : ''}><span>${pending ? 'Choisir un dossier…' : `Dossier : ${escape(d.destination || parentPath(d.path))}`}</span><span aria-hidden="true">${open ? '⌃' : '⌄'}</span></button><div id="filing-${escape(d.id)}" class="filing-slot"></div></div>`;
+    const print = documentPrintView(d, message.print_jobs);
+    const printBusy = model.busy.has('print-document:' + d.id);
+    const printerIcon = '<svg viewBox="0 0 24 24" width="20" height="20" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M6 9V3h12v6M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2"/><path d="M6 14h12v7H6zM18 12h.01"/></svg>';
+    return `<div class="document${pending ? ' pending' : ''}" data-document-id="${escape(d.id)}"><div class="document-row"><input type="checkbox" data-document-select="${escape(d.id)}" aria-label="Inclure ${escape(d.original_name || d.name)} à l’impression" ${d.selected ? 'checked' : ''} ${!d.printable ? 'disabled' : ''}><span class="document-icon" aria-hidden="true">${escape(d.name.split('.').pop().slice(0, 4).toUpperCase())}</span><div class="document-info"><p class="document-name">${escape(d.name)}</p>${filingBadge(d)}<small>${d.kind === 'email' ? 'Mail en PDF' : d.inline ? 'Image intégrée au message' : 'Pièce jointe originale'}</small><small class="document-print-status ${print.tone}">${escape(print.description)}${print.error ? ` · ${escape(print.error)}` : ''}</small></div><div class="document-actions"><button class="icon-button" data-action="preview" data-id="${escape(d.id)}" title="Consulter le document" aria-label="Consulter ${escape(d.original_name || d.name)}">↗</button><button class="icon-button" data-action="reveal" data-id="${escape(d.id)}" title="Afficher dans le Finder" aria-label="Afficher dans le Finder">▱</button><button class="icon-button document-print" data-action="print-document" data-id="${escape(d.id)}" title="${escape(print.label)}" aria-label="${escape(print.label)} : ${escape(d.original_name || d.name)}" ${print.disabled || printBusy || message.status !== 'ready' || updatesLocked() ? 'disabled' : ''} ${printBusy ? 'aria-busy="true"' : ''}>${printerIcon}</button></div></div><button class="document-destination" data-action="classify-document" data-id="${escape(d.id)}" aria-expanded="${open}" aria-controls="filing-${escape(d.id)}" ${message.status !== 'ready' ? 'disabled' : ''}><span>${pending ? 'Choisir un dossier…' : `Dossier : ${escape(d.destination || parentPath(d.path))}`}</span><span aria-hidden="true">${open ? '⌃' : '⌄'}</span></button><div id="filing-${escape(d.id)}" class="filing-slot"></div></div>`;
   }
   function renderDetail() {
     const m = activeMessage();
@@ -302,8 +319,7 @@
     const focused = previous?.contains(document.activeElement) ? document.activeElement : null;
     const scroll = $('.detail-content', panel)?.scrollTop || 0;
     const pendingDocs = docs.filter(d => d.classification !== 'classified' || d.move_to).length;
-    const canPrint = m.status === 'ready' && !['submitted', 'uncertain', 'simulated'].includes(m.print_status);
-    panel.innerHTML = `<div class="detail-header"><span>APERÇU DE LA COMMUNICATION</span>${email ? `<button class="button quiet small" data-action="preview" data-id="${escape(email.id)}">Ouvrir le PDF ↗</button>` : ''}</div><div class="detail-content"><h2 class="detail-subject">${escape(m.subject || 'Sans objet')}</h2><dl class="detail-meta"><dt>De</dt><dd>${escape(m.sender || 'Expéditeur inconnu')}</dd><dt>À</dt><dd>${escape(Array.isArray(m.recipients) ? m.recipients.join(', ') : m.recipients || '—')}</dd><dt>Reçu</dt><dd>${escape(dateLabel(m.date, true))}</dd><dt>Client</dt><dd>${escape(client?.name || '—')}</dd></dl><div class="detail-statuses">${chip(m.status === 'ready' ? '✓ PDF disponible' : m.status === 'error' ? 'Export en erreur' : 'Export en attente', m.status === 'error' ? 'error' : m.status === 'queued' ? 'neutral' : '')}${chip(printLabel(m.print_status), printTone(m.print_status))}</div>${m.error ? `<div class="notice error"><span>${escape(m.error)}</span><button class="button small" data-action="process">Reprendre</button></div>` : ''}<div class="document-preview">${escape(m.body || 'Le contenu de ce mail sera disponible après son export.')}</div><h3 class="mini-heading">DOCUMENTS <small>${docs.length} fichier${docs.length > 1 ? 's' : ''}</small></h3><div class="document-list">${docs.length ? docs.map(d => documentCard(d, m)).join('') : '<p class="small subtle">Les documents apparaîtront après l’export.</p>'}</div>${(m.print_jobs || []).length ? `<h3 class="mini-heading">SUIVI DES IMPRESSIONS</h3>${m.print_jobs.map(job => `<p class="detail-note">${escape(docs.find(d => d.id === job.document_id)?.name || 'Document')} · ${escape(printLabel(job.status))}${job.job_id ? ` · ${escape(job.job_id)}` : ''}${job.error ? `<br><strong>${escape(job.error)}</strong>` : ''}</p>`).join('')}` : ''}<p class="detail-note">Cases à gauche : inclure les documents à l’impression. Choisissez le dossier directement sous chaque document.</p><div class="filing-summary${pendingDocs || !docs.length ? ' pending' : ''}"><strong>${docs.length ? (pendingDocs ? `${pendingDocs} document${pendingDocs > 1 ? 's' : ''} à classer` : '✓ Tous les documents sont classés') : 'Téléchargement en attente'}</strong><span>${pendingDocs ? 'Choisissez un dossier pour chaque document surligné.' : docs.length ? 'Les emplacements sont indiqués sur chaque document.' : 'Les documents apparaîtront après leur export.'}</span></div><div class="detail-actions">${canPrint ? '<button class="button" data-action="print">Imprimer</button>' : ['submitted', 'uncertain', 'simulated'].includes(m.print_status) ? `<button class="button" data-action="reprint" data-id="${escape(m.id)}">Réimprimer…</button>` : ''}</div><p class="detail-note">${m.historical ? 'Message de l’historique : aucune impression automatique. ' : ''}${model.state?.settings?.dry_run ? 'Mode simulation : aucun papier n’est imprimé. ' : ''}Une soumission confirme l’envoi à l’imprimante, pas la sortie du papier.</p></div>`;
+    panel.innerHTML = `<div class="detail-header"><span>APERÇU DE LA COMMUNICATION</span>${email ? `<button class="button quiet small" data-action="preview" data-id="${escape(email.id)}">Ouvrir le PDF ↗</button>` : ''}</div><div class="detail-content"><h2 class="detail-subject">${escape(m.subject || 'Sans objet')}</h2><dl class="detail-meta"><dt>De</dt><dd>${escape(m.sender || 'Expéditeur inconnu')}</dd><dt>À</dt><dd>${escape(Array.isArray(m.recipients) ? m.recipients.join(', ') : m.recipients || '—')}</dd><dt>Reçu</dt><dd>${escape(dateLabel(m.date, true))}</dd><dt>Client</dt><dd>${escape(client?.name || '—')}</dd></dl><div class="detail-statuses">${chip(m.status === 'ready' ? '✓ PDF disponible' : m.status === 'error' ? 'Export en erreur' : 'Export en attente', m.status === 'error' ? 'error' : m.status === 'queued' ? 'neutral' : '')}${chip(printLabel(m.print_status), printTone(m.print_status))}</div>${m.error ? `<div class="notice error"><span>${escape(m.error)}</span><button class="button small" data-action="process">Reprendre</button></div>` : ''}<div class="document-preview">${escape(m.body || 'Le contenu de ce mail sera disponible après son export.')}</div><h3 class="mini-heading">DOCUMENTS <small>${docs.length} fichier${docs.length > 1 ? 's' : ''}</small></h3><div class="document-list">${docs.length ? docs.map(d => documentCard(d, m)).join('') : '<p class="small subtle">Les documents apparaîtront après l’export.</p>'}</div>${(m.print_jobs || []).length ? `<h3 class="mini-heading">SUIVI DES IMPRESSIONS</h3>${m.print_jobs.map(job => `<p class="detail-note">${escape(docs.find(d => d.id === job.document_id)?.name || 'Document')} · ${escape(printLabel(job.status))}${job.job_id ? ` · ${escape(job.job_id)}` : ''}${job.error ? `<br><strong>${escape(job.error)}</strong>` : ''}</p>`).join('')}` : ''}<p class="detail-note">L’icône imprimante imprime uniquement ce document. Les cases servent aux impressions automatiques ou des mails sélectionnés. Choisissez le dossier directement sous chaque document.</p><div class="filing-summary${pendingDocs || !docs.length ? ' pending' : ''}"><strong>${docs.length ? (pendingDocs ? `${pendingDocs} document${pendingDocs > 1 ? 's' : ''} à classer` : '✓ Tous les documents sont classés') : 'Téléchargement en attente'}</strong><span>${pendingDocs ? 'Choisissez un dossier pour chaque document surligné.' : docs.length ? 'Les emplacements sont indiqués sur chaque document.' : 'Les documents apparaîtront après leur export.'}</span></div><p class="detail-note">${m.historical ? 'Message de l’historique : aucune impression automatique. ' : ''}${model.state?.settings?.dry_run ? 'Mode simulation : aucun papier n’est imprimé. ' : ''}Une soumission confirme l’envoi à l’imprimante, pas la sortie du papier.</p></div>`;
     if (model.filing) {
       const slot = document.getElementById('filing-' + model.filing.documentId);
       if (previous) { slot.append(previous); if (focused) focused.focus({preventScroll: true}); renderFolders(); }
@@ -499,11 +515,16 @@
     modal.dataset.kind = 'preview';
     openModal(name, doc.path || '', `<div class="preview-tools"><button class="button small" data-action="reveal" data-id="${escape(id)}">Afficher dans le Finder</button><a class="button small" href="${file}?download=true" download>Télécharger</a></div>${isPDF ? `<iframe class="pdf-preview" title="Aperçu du PDF ${escape(name)}" src="${file}"></iframe>` : isImage ? `<img src="${file}" alt="${escape(name)}" style="max-width:100%;max-height:60dvh;display:block;margin:auto">` : empty('Ce format s’ouvre dans son application.', 'Le fichier original est conservé. Téléchargez-le ou affichez-le dans le Finder pour le consulter.')}`, '<button class="button" data-action="close-modal">Fermer</button>', true);
   }
-  function openReprint(id) {
-    const m = messages().find(message => message.id === id);
-    if (!m) return;
-    modal.dataset.kind = 'reprint';
-    openModal('Lancer une nouvelle impression ?', 'Cette action crée une nouvelle soumission, même si le document a déjà été envoyé à l’imprimante.', `<div class="notice warning"><span>${m.print_status === 'uncertain' ? 'Le résultat précédent est incertain. Vérifiez d’abord la file de l’imprimante et les feuilles déjà sorties.' : 'Vérifiez que vous avez besoin d’un nouvel exemplaire avant de continuer.'}</span></div><p class="dialog-note">${escape(m.subject || 'Sans objet')}</p><label class="checkbox-field"><input id="reprint-confirm" type="checkbox"><span>J’ai vérifié et je souhaite une nouvelle impression.</span></label>`, `<button class="button quiet" data-action="close-modal">Annuler</button><button class="button primary" id="reprint-submit" data-action="confirm-reprint" data-id="${escape(id)}" disabled>Réimprimer</button>`);
+  function openDocumentReprint(doc, view) {
+    modal.dataset.kind = 'document-reprint';
+    openModal('Imprimer un nouvel exemplaire ?', 'Seul ce document sera imprimé, avec les réglages actuels.', `<div class="notice warning"><span>${view.status === 'uncertain' ? 'Le résultat précédent est incertain. Vérifiez d’abord la file de l’imprimante et les feuilles déjà sorties.' : 'Ce document a déjà fait l’objet d’une impression. Vérifiez que vous souhaitez un nouvel exemplaire.'}</span></div><p class="dialog-note">${escape(doc.name)}</p><label class="checkbox-field"><input id="reprint-confirm" type="checkbox"><span>J’ai vérifié et je souhaite une nouvelle impression.</span></label>`, `<button class="button quiet" data-action="close-modal">Annuler</button><button class="button primary" id="reprint-submit" data-action="confirm-document-reprint" data-id="${escape(doc.id)}" disabled>Réimprimer ce document</button>`);
+  }
+  async function submitDocumentPrint(id, reprint = false) {
+    const job = await api(`/api/documents/${encodeURIComponent(id)}/${reprint ? 'reprint' : 'print'}`, 'POST', reprint ? {confirm: true} : {});
+    if (modal.dataset.kind === 'document-reprint' && $('#reprint-submit')?.dataset.id === id) closeModal();
+    await refresh();
+    const failed = ['error', 'uncertain'].includes(job.status);
+    toast(failed ? job.error || 'L’impression demande votre attention.' : job.status === 'simulated' ? 'Impression de ce document simulée.' : 'Document envoyé à l’imprimante.', failed);
   }
   function storedUpdate() {
     try {
@@ -587,7 +608,7 @@
       banner.classList.toggle('hidden', !active);
       banner.innerHTML = `<span>${updateMonitor.offline ? 'Le service redémarre. Cette page se reconnectera automatiquement.' : 'Mise à jour en cours. Le classement et les réglages seront disponibles après le redémarrage.'}</span><button class="button quiet small" data-action="updates">Voir l’avancement</button>`;
     }
-    $$('[data-action="sync"], [data-action="process"], [data-action="new-client"], [data-action="confirm-classify"], [data-action="classify-document"], [data-action="print"], [data-action="reprint"]').forEach(button => {
+    $$('[data-action="sync"], [data-action="process"], [data-action="new-client"], [data-action="confirm-classify"], [data-action="classify-document"], [data-action="print"], [data-action="print-document"], [data-action="confirm-document-reprint"], [data-action="star-client"]').forEach(button => {
       if (active) {
         if (!('updateWasDisabled' in button.dataset)) button.dataset.updateWasDisabled = String(button.disabled);
         button.disabled = true;
@@ -678,6 +699,14 @@
     'updates-install': beginUpdate,
     'all-clients': () => chooseClient(null),
     client: button => chooseClient(button.dataset.id),
+    'star-client': async button => {
+      const id = button.dataset.id;
+      const client = clients().find(c => c.id === id);
+      if (!client) throw new Error('Ce client est introuvable.');
+      const updated = await api(`/api/clients/${encodeURIComponent(id)}/star`, 'PUT', {starred: !client.starred});
+      const current = clients().find(c => c.id === id);
+      if (current) current.starred = updated.starred;
+    },
     'new-client': newClient,
     'initial-folders-all': () => { $$('input[name="initial_folders"]', modal).forEach(input => { input.checked = true; }); clientPreview(); },
     'initial-folders-none': () => { $$('input[name="initial_folders"]', modal).forEach(input => { input.checked = false; }); clientPreview(); },
@@ -723,8 +752,17 @@
       await api('/api/print', 'POST', {message_ids: list.map(m => m.id)}); await refresh();
       toast(model.state?.settings?.dry_run ? 'Demande simulée. Consultez les états d’impression.' : 'Demande traitée. Consultez les états d’impression.');
     },
-    reprint: button => openReprint(button.dataset.id),
-    'confirm-reprint': async button => { if (!$('#reprint-confirm')?.checked) return; await api(`/api/messages/${encodeURIComponent(button.dataset.id)}/reprint`, 'POST', {confirm: true}); closeModal(); await refresh(); toast('Nouvelle demande d’impression traitée.'); },
+    'print-document': async button => {
+      const id = button.dataset.id;
+      const message = messages().find(m => m.documents.some(d => d.id === id));
+      const doc = message?.documents.find(d => d.id === id);
+      if (!doc) throw new Error('Ce document est introuvable.');
+      const view = documentPrintView(doc, message.print_jobs);
+      if (view.disabled) return;
+      if (view.reprint) openDocumentReprint(doc, view);
+      else await submitDocumentPrint(id);
+    },
+    'confirm-document-reprint': async button => { if ($('#reprint-confirm')?.checked) await submitDocumentPrint(button.dataset.id, true); },
     reveal: async button => { await api(`/api/documents/${encodeURIComponent(button.dataset.id)}/reveal`, 'POST', {}); toast('Document révélé dans le Finder.'); },
     preview: button => openPreview(button.dataset.id),
     'refresh-folders': async () => {
@@ -785,7 +823,20 @@
     const button = event.target.closest('[data-action]');
     if (button && !button.disabled) {
       const handler = actions[button.dataset.action];
-      if (handler) { event.preventDefault(); action(button.dataset.action, () => handler(button), button); }
+      if (handler) {
+        event.preventDefault();
+        const name = button.dataset.action;
+        const restoreFocus = document.activeElement === button;
+        const documentPrint = ['print-document', 'confirm-document-reprint'].includes(name);
+        const key = documentPrint ? 'print-document:' + button.dataset.id : name === 'star-client' ? name + ':' + button.dataset.id : name;
+        action(key, () => handler(button), button).then(() => {
+          if (documentPrint) { renderDetail(); renderUpdateControls(); }
+          if (name === 'star-client') { renderClients(); renderUpdateControls(); }
+          if (restoreFocus && document.activeElement === document.body && (documentPrint || name === 'star-client')) {
+            $$(`[data-action="${documentPrint ? 'print-document' : 'star-client'}"]`).find(item => item.dataset.id === button.dataset.id)?.focus({preventScroll: true});
+          }
+        });
+      }
       return;
     }
     const row = event.target.closest('[data-message]');

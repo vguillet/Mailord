@@ -28,8 +28,8 @@ Choisissez la messagerie et le dossier des archives dans **Réglages avant de cr
 - Édite un modèle hiérarchique de dossiers : ajout, renommage, déplacement, duplication, suppression et versions. Toutes les destinations sont proposées aux clients existants, même absentes du Mac ; seules les branches utilisées ou cochées à la création sont créées.
 - Surveille les messages lus comme non lus. Génère le PDF du mail, conserve les pièces jointes et préfixe les noms avec `AAAA-MM-JJ -`.
 - Contrôle les fichiers, reprend les étapes interrompues et répare les exports manquants ou corrompus. Une copie modifiée est conservée dans la quarantaine privée avant réparation.
-- Affiche les clients à gauche, les communications et leurs états, un aperçu et les fichiers. Classement individuel directement sous chaque document, recherche dans l’arborescence, raccourcis, favoris et destinations récentes.
-- Imprime à la demande, après classement ou après export. Suit chaque soumission et évite la relance implicite d’un résultat incertain.
+- Affiche les clients à gauche, avec étoiles persistantes et favoris en tête, les communications et leurs états, un aperçu et les fichiers. Classement individuel directement sous chaque document, recherche dans l’arborescence, raccourcis, favoris et destinations récentes.
+- Imprime chaque document depuis son icône dédiée à côté de l’aperçu et du Finder, ou selon la politique automatique après classement ou après export. Suit chaque soumission et évite la relance implicite d’un résultat incertain.
 - Propose le rapprochement explicite des anciens PDF présents dans les dossiers clients.
 
 Les fichiers restent accessibles dans le Finder. Le service cloud habituel synchronise la racine documentaire ; Auto-secrétaire ne prétend pas vérifier cette synchronisation.

@@ -1,0 +1,48 @@
+{
+  "mdse": "2.3",
+  "kind": "WorkItem",
+  "id": "WI-document-client-actions",
+  "name": "Impression par document et clients favoris",
+  "status": "taskified",
+  "revision": 1,
+  "createdAt": "2026-10-24",
+  "updatedAt": "2026-10-24",
+  "slug": "document-client-actions",
+  "purpose": "Imprimer directement un document depuis ses actions et retrouver les clients favoris en tête de navigation.",
+  "testingApproach": "selective-TDD",
+  "userStories": [
+    {
+      "id": "US-01",
+      "role": "utilisatrice",
+      "capability": "imprimer un seul document à côté de son aperçu",
+      "benefit": "éviter de modifier les cases et de chercher une commande globale"
+    },
+    {
+      "id": "US-02",
+      "role": "utilisatrice",
+      "capability": "marquer ses clients favoris",
+      "benefit": "les retrouver immédiatement dans la barre latérale"
+    }
+  ],
+  "requirements": [
+    "REQ-01",
+    "REQ-02"
+  ],
+  "methods": [
+    "VM-01",
+    "VM-02"
+  ],
+  "constraints": [
+    "CON-01"
+  ],
+  "decisions": [
+    "DEC-01"
+  ],
+  "tasks": [
+    "TASK-01"
+  ],
+  "executions": [],
+  "verifications": [],
+  "deliverables": [],
+  "design": "DESIGN"
+}

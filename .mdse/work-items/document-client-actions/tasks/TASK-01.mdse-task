@@ -1,0 +1,95 @@
+{
+  "mdse": "2.3",
+  "kind": "Task",
+  "id": "TASK-01",
+  "name": "Livrer les actions document et client",
+  "status": "pending",
+  "revision": 1,
+  "createdAt": "2026-10-24",
+  "updatedAt": "2026-10-24",
+  "workItem": "WI-document-client-actions",
+  "order": 1,
+  "type": "software",
+  "objective": "Implémenter les routes ciblées, leur interface, les tests et la documentation sans altérer les archives.",
+  "requirements": [
+    "REQ-01",
+    "REQ-02"
+  ],
+  "design": "DESIGN",
+  "decisions": [
+    "DEC-01"
+  ],
+  "constraints": [
+    "CON-01"
+  ],
+  "dependsOn": [],
+  "designReferences": [
+    {
+      "section": "components",
+      "item": "InterfaceLocale"
+    }
+  ],
+  "files": [
+    {
+      "path": "autosecretaire/app.py",
+      "action": "update"
+    },
+    {
+      "path": "autosecretaire/engine.py",
+      "action": "update"
+    },
+    {
+      "path": "autosecretaire/static/app.js",
+      "action": "update"
+    },
+    {
+      "path": "autosecretaire/static/style.css",
+      "action": "update"
+    },
+    {
+      "path": "tests/test_document_client_actions.py",
+      "action": "create"
+    },
+    {
+      "path": "tests/test_ui.py",
+      "action": "update"
+    },
+    {
+      "path": "README.md",
+      "action": "update"
+    },
+    {
+      "path": "docs/API.md",
+      "action": "update"
+    },
+    {
+      "path": "docs/INSTALLATION.md",
+      "action": "update"
+    },
+    {
+      "path": "docs/VALIDATION.md",
+      "action": "update"
+    }
+  ],
+  "doneCriteria": [
+    {
+      "id": "DC-01",
+      "statement": "Tests ciblés en TDD et suite complète passent ; portée, reprise, options et persistance démontrées."
+    },
+    {
+      "id": "DC-02",
+      "statement": "Parcours Chrome en simulation : impression indépendante, confirmation, erreurs, étoile/retrait/recherche et contexte conservé ; guides actualisés."
+    }
+  ],
+  "priority": "high",
+  "plannedEffort": "1h",
+  "plannedStart": "2026-10-24",
+  "plannedEnd": "2026-10-24",
+  "outputs": [
+    {
+      "name": "Actions rapides document et client",
+      "kind": "source-code",
+      "deliverable": true
+    }
+  ]
+}

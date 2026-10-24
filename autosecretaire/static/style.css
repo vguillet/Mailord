@@ -290,17 +290,19 @@ kbd {
   font-size:10px;
   font-weight:650
 }
-.client-item:nth-child(3n + 2) .client-initial {
+.client-entry:nth-of-type(3n + 2) .client-initial {
   background:#e9e6da;
   border-color:#e1ddcd;
   color:#86744c
 }
-.client-item:nth-child(3n) .client-initial {
+.client-entry:nth-of-type(3n) .client-initial {
   background:#dde7e3;
   border-color:#d0dfd7;
   color:#4b7460
 }
 .client-name {
+  min-width:0;
+  flex:1;
   white-space:nowrap;
   overflow:hidden;
   text-overflow:ellipsis
@@ -2166,3 +2168,17 @@ main {
 .inline-filing .form-error { margin:10px 0 0; font-size:12px }
 .folder-empty { padding:14px; font-size:12px; color:#52604c }
 .filing-controls:disabled { opacity:.75 }
+
+/* Keep stars separate from the client navigation target. */
+.client-entry { display:flex; align-items:center; gap:1px; border-radius:8px; margin-bottom:3px; padding-right:3px }
+.client-entry.active { background:#dce5d5 }
+.client-entry .client-item { flex:1; min-width:0; width:auto; margin:0; padding-right:3px }
+.client-entry .client-item.active { background:transparent }
+.client-star { flex:0 0 30px; width:30px; height:32px; color:#6b765e; font-size:20px }
+.client-star.starred { color:#92701d }
+.client-group-label { margin:10px 10px 5px; font-size:10px; font-weight:700; letter-spacing:.08em; color:#607252 }
+.document-actions { display:flex; flex-shrink:0; align-items:center; gap:2px }
+.document-actions .icon-button { width:28px; height:32px }
+.document-print svg { display:block; width:20px; height:20px }
+.document-print-status { margin-top:4px; color:#51614e; overflow-wrap:anywhere }
+.document-info .document-print-status.error { color:#a23c20; font-weight:600 }

@@ -1,0 +1,33 @@
+{
+  "mdse": "2.3",
+  "kind": "Requirement",
+  "id": "REQ-02",
+  "name": "Clients favoris persistants",
+  "status": "approved",
+  "revision": 1,
+  "createdAt": "2026-10-24",
+  "updatedAt": "2026-10-24",
+  "workItem": "WI-document-client-actions",
+  "keyword": "SHALL",
+  "statement": "L’interface SHALL permettre de marquer ou retirer un client favori depuis la barre latérale et présenter les favoris avant les autres clients.",
+  "priority": "must",
+  "acceptanceCriteria": [
+    {
+      "id": "AC-01",
+      "kind": "happy-path",
+      "given": "des clients enregistrés",
+      "when": "une étoile est activée puis la page ou le service redémarre",
+      "then": "le client reste favori en tête, tri alphabétique dans chaque groupe ; rechercher et ouvrir un client reste possible, retirer l’étoile restaure sa position normale"
+    },
+    {
+      "id": "AC-02",
+      "kind": "failure-path",
+      "given": "un mail et éventuellement son sélecteur ouverts",
+      "when": "une étoile est modifiée ou la sauvegarde échoue",
+      "then": "le client actif et le contexte ne changent pas ; un refus ne prétend pas avoir enregistré ; aucune archive ni favori de dossier n’est modifié"
+    }
+  ],
+  "verifiedBy": [
+    "VM-02"
+  ]
+}

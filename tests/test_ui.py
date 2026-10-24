@@ -111,3 +111,19 @@ def test_filing_search_finds_collapsed_destinations_and_preserves_ancestors():
     assert [r['path'] for r in result] == ['Procédure', 'Procédure/TJ Paris', 'Procédure/TJ Paris/Expertise']
     assert js('ui.folderEntries(["Pièces", "Pièces/Signées"], "pieces/signees", [])')[-1]['path'] == 'Pièces/Signées'
     assert js('ui.folderEntries(["Pièces"], "introuvable", [])') == []
+
+
+def test_starred_clients_first_then_french_alphabetical_order():
+    data = [{"id": "a", "name": "Albert"}, {"id": "z", "name": "Zoé", "starred": True}, {"id": "e", "name": "Émilie", "starred": True}, {"id": "b", "name": "Bruno", "starred": False}]
+    assert [c['id'] for c in js(f'ui.sortClients({json.dumps(data)})')] == ['e', 'z', 'a', 'b']
+
+
+def test_print_control_uses_only_its_document_jobs():
+    doc = {'id': 'attachment', 'printable': True}
+    other = [{'document_id': 'email', 'status': 'submitted'}]
+    result = js(f'ui.documentPrintView({json.dumps(doc)}, {json.dumps(other)})')
+    assert result['reprint'] is False and result['label'] == 'Imprimer'
+    jobs = other + [{'document_id': 'attachment', 'status': 'uncertain', 'error': 'À vérifier'}]
+    result = js(f'ui.documentPrintView({json.dumps(doc)}, {json.dumps(jobs)})')
+    assert result['reprint'] is True and result['tone'] == 'error'
+    assert js('ui.documentPrintView({id:"word", printable:false}, [])')['disabled'] is True
