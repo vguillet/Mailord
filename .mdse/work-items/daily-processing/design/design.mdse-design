@@ -4,7 +4,7 @@
   "id": "DESIGN",
   "name": "Traitement quotidien fiable",
   "status": "approved",
-  "revision": 1,
+  "revision": 2,
   "createdAt": "2026-10-24",
   "updatedAt": "2026-10-24",
   "workItem": "WI-daily-processing",
@@ -16,14 +16,15 @@
     "REQ-05"
   ],
   "decisions": [
-    "DEC-01"
+    "DEC-01",
+    "DEC-02"
   ],
   "components": [
     {
       "name": "InterfaceLocale",
       "state": "modified",
       "path": "autosecretaire/static/app.js",
-      "responsibility": "Espace compact centré sur les documents, corps repliable, compteurs de classement et impression, cases libellées, recherche dans noms/destinations, modèle repliable et recherchable, annulation par document."
+      "responsibility": "Espace compact avec corps du mail en premier, ouvert par défaut et repliable, puis PDF et pièces jointes, compteurs de classement et impression, cases libellées, recherche dans noms/destinations, modèle repliable et recherchable, annulation par document."
     },
     {
       "name": "Impression",

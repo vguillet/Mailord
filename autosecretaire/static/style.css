@@ -2183,7 +2183,7 @@ main {
 .document-print-status { margin-top:4px; color:#51614e; overflow-wrap:anywhere }
 .document-info .document-print-status.error { color:#a23c20; font-weight:600 }
 
-/* The daily workspace puts documents and explicit progress before the mail body. */
+/* Compact daily workspace with explicit document progress. */
 .topbar { height:48px }
 .page-content { padding:18px 28px 16px }
 .page-heading { margin-bottom:12px }
@@ -2241,3 +2241,6 @@ main {
 @media(max-width:1100px) and (min-width:951px) { .page-content { padding:16px } .workbench { grid-template-columns:minmax(240px,.8fr) minmax(340px,1.2fr) } .summary-card .label { font-size:11px } }
 @media(max-width:950px) { .workbench { grid-template-columns:minmax(0,1fr); height:auto } .message-list { max-height:300px } .detail-panel { height:auto } .summary-grid { grid-template-columns:repeat(2,minmax(0,1fr)) } }
 @media(max-width:650px) { .page-content { padding:18px 12px } .page-heading h1 { font-size:23px } .page-heading .button { margin-top:0 } .summary-card { min-height:65px } .document-actions { gap:0 } }
+
+.mail-body .document-preview { margin-bottom:16px }
+.mail-body .detail-meta { margin-bottom:0 }

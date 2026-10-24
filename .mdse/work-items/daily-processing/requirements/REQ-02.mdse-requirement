@@ -2,9 +2,9 @@
   "mdse": "2.3",
   "kind": "Requirement",
   "id": "REQ-02",
-  "name": "Espace quotidien centré sur les documents",
-  "status": "verified",
-  "revision": 2,
+  "name": "Lecture du mail avant ses documents",
+  "status": "approved",
+  "revision": 3,
   "createdAt": "2026-10-24",
   "updatedAt": "2026-10-24",
   "workItem": "WI-daily-processing",
@@ -17,7 +17,7 @@
       "kind": "happy-path",
       "given": "une fenêtre de bureau de 1280 par 720 et un mail exporté",
       "when": "un mail est ouvert",
-      "then": "les premiers documents sont visibles sans faire défiler la page ; le corps du mail est repliable, les cases sont libellées et classement/impression sont séparés"
+      "then": "le corps du mail apparaît en premier et est ouvert par défaut, suivi du PDF et des pièces jointes ; il reste repliable, les cases sont libellées et classement/impression sont séparés"
     },
     {
       "id": "AC-02",
