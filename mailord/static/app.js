@@ -407,12 +407,51 @@
   modal.addEventListener('close', () => { document.body.classList.remove('no-scroll'); if (model.previousFocus?.isConnected) model.previousFocus.focus(); });
   modal.addEventListener('cancel', event => { event.preventDefault(); closeModal(); });
   function newClient() {
+    model.clientLocation = {path: '', token: null, root: model.state?.settings?.archive_root || '', folders: [], busy: true, error: '', request: 0};
+    const locationPicker = `<fieldset class="client-location-picker"><legend>Emplacement du client sur le Mac</legend><div class="client-location-current"><span>Créer dans</span><strong id="client-location-current" aria-live="polite">Racine Mailord</strong><small id="client-location-root"></small></div><div class="client-location-nav"><button type="button" class="button quiet small" data-action="client-location-root">Racine Mailord</button><button type="button" class="button quiet small" data-action="client-location-up">Dossier parent</button><button type="button" class="button quiet small" data-action="client-location-refresh">Actualiser</button></div><label class="field"><span>Ouvrir un sous-dossier</span><select id="client-location-children" disabled><option>Chargement des dossiers…</option></select></label><p class="dialog-note">Le nouveau dossier client sera créé à l’emplacement indiqué. Les dossiers déjà associés à un client ne peuvent pas accueillir un autre client.</p><p id="client-location-error" class="form-error hidden" role="alert"></p></fieldset>`;
     const folderOptions = (model.state?.folders || []).map(f => `<option value="${escape(f)}">${escape(f)}</option>`).join('');
     const initialFolders = withParents(model.state?.template?.folders || []).map(f => `<label class="template-node" title="${escape(f)}"><span class="tree-indent" style="--indent:${(f.split('/').length - 1) * 19}px"></span><input type="checkbox" name="initial_folders" value="${escape(f)}" ${(model.state?.template?.initial_folders || []).includes(f) ? 'checked' : ''} aria-label="Créer ${escape(f)}"><span class="folder-icon" aria-hidden="true">▱</span><span>${escape(leaf(f))}</span></label>`).join('');
     const initialChooser = `<details style="margin:16px 0"><summary>Créer des dossiers dès maintenant <span id="initial-folder-summary"></span></summary><p class="dialog-note">Les cases reprennent les choix par défaut du modèle. Vous pouvez les modifier pour ce client, même tout décocher. Leurs dossiers parents seront créés automatiquement. Cocher un parent ne sélectionne pas ses sous-dossiers. Ces dossiers seront conservés même vides.</p><div class="field-row"><button class="button quiet" type="button" data-action="initial-folders-all">Tout cocher</button><button class="button quiet" type="button" data-action="initial-folders-none">Tout décocher</button></div><div class="template-tree" role="group" aria-label="Dossiers à créer dès maintenant">${initialFolders}</div></details>`;
     modal.dataset.kind = 'client';
-    openModal('Un nouveau client', 'Son dossier mail et son espace documentaire seront reliés en une seule étape.', `<form id="client-form"><label class="field"><span>Nom du client / de l’affaire</span><input name="name" id="client-name" required maxlength="160" placeholder="Ex. DUPONT-MARTIN (div)" autofocus autocomplete="off"><small>Une entrée par affaire : NOM CLIENT-NOM PARTIE ADVERSE. Ajoutez les initiales si nécessaire et une mention div, succ, LRM ou saisie. Sans Me, M. ou Mme.</small></label><div class="radio-options"><label class="radio-option"><input type="radio" name="mailbox_mode" value="new" checked>Créer un dossier mail</label><label class="radio-option"><input type="radio" name="mailbox_mode" value="existing">Relier un dossier existant</label></div><div id="existing-mailbox" class="hidden"><div class="field-row"><label class="field"><span>Dossier dans la messagerie</span><select name="mailbox" id="mailbox-select"><option value="">Choisir un dossier…</option>${folderOptions}</select></label><button class="button" type="button" data-action="refresh-folders">Actualiser</button></div></div>${initialChooser}<div class="path-preview" id="client-path-preview">Saisissez un nom pour prévisualiser les dossiers.</div><div class="dialog-note">Le modèle courant (version ${escape(model.state?.template?.version || 1)}) sera proposé pour le classement. Sur le Mac, seuls les dossiers cochés ci-dessus seront créés immédiatement ; les autres le seront à leur premier document. Un dossier déjà présent sera réutilisé. En cas d’interruption, la création pourra être reprise.</div></form>`, '<button class="button quiet" data-action="close-modal">Annuler</button><button class="button primary" type="submit" form="client-form">Créer le client</button>');
+    openModal('Un nouveau client', 'Son dossier mail et son espace documentaire seront reliés en une seule étape.', `<form id="client-form"><label class="field"><span>Nom du client / de l’affaire</span><input name="name" id="client-name" required maxlength="160" placeholder="Ex. DUPONT-MARTIN (div)" autofocus autocomplete="off"><small>Une entrée par affaire : NOM CLIENT-NOM PARTIE ADVERSE. Ajoutez les initiales si nécessaire et une mention div, succ, LRM ou saisie. Sans Me, M. ou Mme.</small></label>${locationPicker}<div class="radio-options"><label class="radio-option"><input type="radio" name="mailbox_mode" value="new" checked>Créer un dossier mail</label><label class="radio-option"><input type="radio" name="mailbox_mode" value="existing">Relier un dossier existant</label></div><div id="existing-mailbox" class="hidden"><div class="field-row"><label class="field"><span>Dossier dans la messagerie</span><select name="mailbox" id="mailbox-select"><option value="">Choisir un dossier…</option>${folderOptions}</select></label><button class="button" type="button" data-action="refresh-folders">Actualiser</button></div></div>${initialChooser}<div class="path-preview" id="client-path-preview">Saisissez un nom pour prévisualiser les dossiers.</div><div class="dialog-note">Le modèle courant (version ${escape(model.state?.template?.version || 1)}) sera proposé pour le classement. Sur le Mac, seuls les dossiers cochés ci-dessus seront créés immédiatement ; les autres le seront à leur premier document. Un dossier déjà présent sera réutilisé. En cas d’interruption, la création pourra être reprise.</div></form>`, '<button class="button quiet" data-action="close-modal">Annuler</button><button class="button primary" type="submit" form="client-form">Créer le client</button>');
     clientPreview();
+    loadClientLocations('');
+  }
+  function renderClientLocation() {
+    const location = model.clientLocation;
+    if (!location || !$('#client-location-current')) return;
+    $('#client-location-current').textContent = location.path || 'Racine Mailord';
+    $('#client-location-root').textContent = location.root;
+    const select = $('#client-location-children');
+    select.disabled = location.busy || !!location.error;
+    const available = location.folders.some(f => !f.disabled);
+    select.innerHTML = `<option value="">${location.busy ? 'Chargement des dossiers…' : location.error ? 'Emplacement à vérifier' : available ? 'Choisir un sous-dossier…' : 'Aucun sous-dossier disponible'}</option>` + location.folders.map(f => `<option value="${escape(f.path)}" ${f.disabled ? 'disabled' : ''}>${escape(f.name)}${f.disabled ? ' · ' + escape(f.reason) : ''}</option>`).join('');
+    const error = $('#client-location-error');
+    error.textContent = location.error; error.classList.toggle('hidden', !location.error);
+    $$('[data-action="client-location-root"], [data-action="client-location-up"]', modal).forEach(b => { b.disabled = location.busy || !location.path; });
+    $('[data-action="client-location-refresh"]', modal).disabled = location.busy;
+    $('button[form="client-form"]', modal).disabled = location.busy || !location.token || !!location.error;
+    clientPreview();
+  }
+  async function loadClientLocations(path) {
+    const form = $('#client-form'), location = model.clientLocation;
+    if (!form || !location) return;
+    const request = ++location.request;
+    location.path = path; location.busy = true; location.token = null; location.error = ''; location.folders = [];
+    renderClientLocation();
+    try {
+      const result = await api('/api/client-locations?parent_folder=' + encodeURIComponent(path));
+      if ($('#client-form') !== form || model.clientLocation !== location || request !== location.request) return;
+      location.path = result.parent_folder; location.root = result.archive_root;
+      location.token = result.parent_token; location.folders = result.folders;
+    } catch (error) {
+      if ($('#client-form') !== form || model.clientLocation !== location || request !== location.request) return;
+      location.error = error.message || 'Impossible de lire les dossiers. Réessayez.';
+    } finally {
+      if ($('#client-form') === form && model.clientLocation === location && request === location.request) {
+        location.busy = false; renderClientLocation();
+      }
+    }
   }
   function clientPreview() {
     const name = $('#client-name')?.value.trim();
@@ -420,11 +459,13 @@
     if (!preview) return;
     const settings = model.state?.settings || {};
     const folder = (settings.client_folder_pattern || '{name}').replace('{name}', name || 'Nom du client');
+    const location = model.clientLocation;
+    const localPath = [location?.root || settings.archive_root || '', location?.path, folder].filter(Boolean).join('/');
     const existing = $('input[name="mailbox_mode"]:checked', modal)?.value === 'existing';
     const mail = existing ? $('#mailbox-select')?.value || 'Dossier existant à choisir' : name || 'Nom du client';
     const selected = $$('input[name="initial_folders"]:checked', modal).length;
     $('#initial-folder-summary').textContent = `· ${selected} sélectionné${selected > 1 ? 's' : ''}`;
-    preview.innerHTML = `<b>Messagerie</b> · ${escape(mail)}<br><b>Sur votre Mac</b> · ${escape(settings.archive_root || '')}/${escape(folder)}<br><small>${selected ? `${selected} dossier(s) sélectionné(s) à créer maintenant, avec leurs parents` : 'Aucun dossier vide créé'} · les autres seront créés au premier document</small>`;
+    preview.innerHTML = `<b>Messagerie</b> · ${escape(mail)}<br><b>Sur votre Mac</b> · ${escape(localPath)}<br><small>${selected ? `${selected} dossier(s) sélectionné(s) à créer maintenant, avec leurs parents` : 'Aucun dossier vide créé'} · les autres seront créés au premier document</small>`;
   }
   function openFiling(button) {
     if (updatesLocked()) return;
@@ -778,6 +819,9 @@
       if (current) current.starred = updated.starred;
     },
     'new-client': newClient,
+    'client-location-root': () => loadClientLocations(''),
+    'client-location-up': () => loadClientLocations((model.clientLocation?.path || '').split('/').slice(0, -1).join('/')),
+    'client-location-refresh': () => loadClientLocations(model.clientLocation?.path || ''),
     'initial-folders-all': () => { $$('input[name="initial_folders"]', modal).forEach(input => { input.checked = true; }); clientPreview(); },
     'initial-folders-none': () => { $$('input[name="initial_folders"]', modal).forEach(input => { input.checked = false; }); clientPreview(); },
     template: openTemplate,
@@ -943,6 +987,7 @@
     }
     if (element.name === 'mailbox_mode') { $('#existing-mailbox').classList.toggle('hidden', element.value !== 'existing'); clientPreview(); }
     if (element.id === 'mailbox-select') clientPreview();
+    if (element.id === 'client-location-children' && element.value) loadClientLocations(element.value);
     if (element.name === 'initial_folders') clientPreview();
     if (element.dataset.templateDefault) {
       const selected = new Set(model.templateDefaults);
@@ -973,7 +1018,9 @@
         const existing = data.get('mailbox_mode') === 'existing';
         const mailbox = existing ? String(data.get('mailbox') || '') : '';
         if (existing && !mailbox) throw new Error('Sélectionnez le dossier mail existant, ou actualisez la liste.');
-        const client = await api('/api/clients', 'POST', {name, mailbox, initial_folders: data.getAll('initial_folders')});
+        const location = model.clientLocation;
+        if (!location?.token || location.busy || location.error) throw new Error('Vérifiez l’emplacement du client avant de le créer.');
+        const client = await api('/api/clients', 'POST', {name, mailbox, initial_folders: data.getAll('initial_folders'), parent_folder: location.path, parent_token: location.token});
         closeModal(); model.client = client.id; model.selected.clear(); model.filter = 'all'; await refresh();
         toast(client.status === 'ready' ? (client.initial_folders?.length ? 'Client créé. Les dossiers sélectionnés sont prêts.' : 'Client créé. Ses dossiers seront créés au premier document.') : 'Client enregistré. Sa préparation doit être reprise.');
       }, event.submitter);

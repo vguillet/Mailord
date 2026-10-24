@@ -1,0 +1,47 @@
+{
+  "mdse": "2.3",
+  "kind": "Requirement",
+  "id": "REQ-05",
+  "name": "Choisir le parent local du nouveau client",
+  "status": "approved",
+  "revision": 1,
+  "createdAt": "2026-10-24",
+  "updatedAt": "2026-10-24",
+  "workItem": "WI-lazy-folders",
+  "keyword": "SHALL",
+  "statement": "À la création d’un client, l’utilisatrice SHALL choisir la racine Mailord ou un dossier existant sous cette racine, parcourir ses sous-dossiers et prévisualiser le chemin final, sans déplacer les clients existants.",
+  "priority": "must",
+  "acceptanceCriteria": [
+    {
+      "id": "AC-01",
+      "kind": "happy-path",
+      "given": "une racine contenant des dossiers ordinaires et imbriqués",
+      "when": "le formulaire est ouvert puis une destination choisie",
+      "then": "la racine est choisie initialement, les dossiers existants sont navigables et le chemin final est affiché"
+    },
+    {
+      "id": "AC-02",
+      "kind": "happy-path",
+      "given": "un parent existant sélectionné et des dossiers initiaux cochés",
+      "when": "le client est créé puis le service redémarre",
+      "then": "son chemin et ses choix restent conservés ; les futurs exports et classements utilisent ce chemin"
+    },
+    {
+      "id": "AC-03",
+      "kind": "failure-path",
+      "given": "un parent absent, remplacé, non autorisé, lien ou dossier client existant",
+      "when": "la création est demandée",
+      "then": "la création est refusée avant enregistrement et sans effacement ni déplacement de fichiers"
+    },
+    {
+      "id": "AC-04",
+      "kind": "edge-case",
+      "given": "un client existant ou une reprise de création",
+      "when": "le même nom est soumis avec un autre parent ou que le parent disparaît",
+      "then": "aucun déplacement ni recréation du parent disparu ; erreur explicite et état existant conservé"
+    }
+  ],
+  "verifiedBy": [
+    "VM-05"
+  ]
+}

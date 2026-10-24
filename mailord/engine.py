@@ -5,6 +5,7 @@ import json
 import os
 import shutil
 import threading
+import unicodedata
 import uuid
 from datetime import datetime, timezone
 from pathlib import Path
@@ -115,7 +116,45 @@ class Engine:
             paths.update('/'.join(parts[:i]) for i in range(1,len(parts)))
         return sorted(paths,key=str.casefold)
 
-    def create_client(self,name,mailbox='',initial_folders=None):
+    def _client_overlap(self,path,contains=False,exclude=None):
+        def parts(p):return tuple(unicodedata.normalize('NFC',x).casefold() for x in Path(p).parts)
+        target=parts(path)
+        for c in self.store.all('client'):
+            if c['id']==exclude:continue
+            existing=parts(c['folder'])
+            if target[:len(existing)]==existing or (contains and existing[:len(target)]==target):return c
+        return None
+
+    def _client_parent(self,parent_folder='',parent_token=None):
+        if not isinstance(parent_folder,str):raise ValueError('Emplacement du client invalide.')
+        if self.root.is_symlink() or not self.root.is_dir():raise ValueError('La racine Mailord est indisponible. Vérifiez son emplacement.')
+        path=self.root if parent_folder=='' else within(self.root,self.root/relative(parent_folder))
+        if any(p.startswith('.') for p in Path(parent_folder).parts):raise ValueError('Choisissez un dossier visible dans la racine Mailord.')
+        if self.runtime.is_relative_to(self.root) and path.is_relative_to(self.runtime):raise ValueError('L’espace technique de Mailord ne peut pas accueillir de client.')
+        if self._client_overlap(path):raise ValueError('Ce dossier appartient déjà à un client. Choisissez un dossier de regroupement ou la racine.')
+        if not path.is_dir():raise ValueError('Le dossier choisi est introuvable ou inaccessible. Actualisez les emplacements.')
+        stat=path.stat();token=f'{stat.st_dev}:{stat.st_ino}'
+        if parent_token is not None and parent_token!=token:raise ValueError('Le dossier choisi a changé. Actualisez les emplacements et choisissez-le à nouveau.')
+        return path,token
+
+    def client_locations(self,parent_folder=''):
+        """Browse one existing level without creating folders or following links."""
+        with self.lock:
+            parent,token=self._client_parent(parent_folder)
+            folders=[]
+            try:
+                for p in sorted(parent.iterdir(),key=lambda x:x.name.casefold()):
+                    if p.name.startswith('.') or p.is_symlink() or not p.is_dir():continue
+                    try:relative(p.name);within(self.root,p)
+                    except ValueError:continue
+                    if self.runtime.is_relative_to(self.root) and p.is_relative_to(self.runtime):continue
+                    owner=self._client_overlap(p)
+                    folders.append({'name':p.name,'path':p.relative_to(self.root).as_posix(),
+                                    'disabled':bool(owner),'reason':'Dossier client déjà associé' if owner else ''})
+            except OSError as e:raise ValueError('Impossible de lire ce dossier. Vérifiez son accès puis actualisez.') from e
+            return {'archive_root':str(self.root),'parent_folder':parent_folder,'parent_token':token,'folders':folders}
+
+    def create_client(self,name,mailbox='',initial_folders=None,parent_folder=None,parent_token=None):
         with self.lock:
             selected=[] if initial_folders is None else initial_folders
             if not isinstance(selected,list):raise ValueError('Sélection de dossiers invalide.')
@@ -128,17 +167,22 @@ class Engine:
             if '/' in name:raise ValueError('Le nom du client ne peut pas contenir /.')
             for c in self.store.all('client'):
                 if c['name'].casefold()==name.casefold():
+                    if parent_folder is not None:
+                        parent,_=self._client_parent(parent_folder,parent_token)
+                        if parent!=Path(c['folder']).parent:raise ValueError('Ce client existe déjà à un autre emplacement. Sa création ne peut pas le déplacer.')
                     c['initial_folders']=list(dict.fromkeys(c.get('initial_folders',[])+selected))
                     self.store.put('client',c['id'],c)
                     return self.retry_client(c['id'])
             if initial_folders is None:selected=self.template()['initial_folders']
             folder_name=self.settings.get('client_folder_pattern','{name}').replace('{name}',name);relative(folder_name)
             if '/' in folder_name:raise ValueError('Le modèle de nom client ne doit pas créer de chemin imbriqué.')
-            folder=within(self.root,self.root/folder_name)
-            if any(Path(c['folder']).name.casefold()==folder_name.casefold() for c in self.store.all('client')):raise ValueError('Ce dossier est déjà associé à un client.')
+            parent,token=self._client_parent('' if parent_folder is None else parent_folder,parent_token)
+            folder=within(self.root,parent/folder_name)
+            if self._client_overlap(folder,contains=True):raise ValueError('Ce dossier est déjà associé à un client ou contient un client. Choisissez un autre nom.')
+            if folder.exists() and not folder.is_dir():raise ValueError('Le chemin du client est occupé par un fichier.')
             mailbox=mailbox.strip() or name
             if any(c['mailbox']==mailbox for c in self.store.all('client')):raise ValueError('Cette boîte est déjà associée à un autre client.')
-            c={'name':name,'mailbox':mailbox,'folder':str(folder),'status':'provisioning','error':'','template_version':self.template()['version'],'folders':self.template()['folders'],'initial_folders':selected,'favorites':[],'initialized':False}
+            c={'name':name,'mailbox':mailbox,'folder':str(folder),'parent_token':token,'status':'provisioning','error':'','template_version':self.template()['version'],'folders':self.template()['folders'],'initial_folders':selected,'favorites':[],'initialized':False}
             id=uid();self.store.put('client',id,c);return self.retry_client(id)
 
     def retry_client(self,id):
@@ -146,13 +190,17 @@ class Engine:
             c=self.client(id)
             try:
                 root=within(self.root,c['folder'])
+                parent_folder='' if root.parent==self.root else root.parent.relative_to(self.root).as_posix()
+                _,token=self._client_parent(parent_folder,c.get('parent_token'))
                 if root.exists() and not root.is_dir():raise ValueError('Le chemin du client est occupé par un fichier.')
                 self.connector.create_folder(c['mailbox'])
+                self._client_parent(parent_folder,token)
+                root=within(self.root,c['folder'])
                 for p in c.get('initial_folders',[]):
                     within(root,root/relative(p)).mkdir(parents=True,exist_ok=True)
                 c.update(status='ready',error='')
             except Exception as e:c.update(status='error',error=self.error_text(e))
-            self.store.put('client',id,c);return self.client(id)
+            self.store.put('client',id,c);return self.store.get('client',id)
 
     def apply_template(self,id):
         with self.lock:

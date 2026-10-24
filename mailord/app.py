@@ -126,13 +126,17 @@ def create_app(settings,background=True,*,restart=None,probation=False,health_to
     def update_install(body:dict=Body(...)):return updates.install_async(required(body,'commit',str))
     @app.get('/api/folders')
     def folders():return {'folders':engine.list_folders()}
+    @app.get('/api/client-locations')
+    def client_locations(parent_folder:str=''):return engine.client_locations(parent_folder)
     @app.get('/api/printers')
     def printers():
         engine.printers=printing.list_printers();return {'printers':engine.printers}
     @app.post('/api/clients')
     def create(body:dict=Body(...)):
         return engine.create_client(required(body,'name',str),required(body,'mailbox',str) if 'mailbox' in body else '',
-                                    required(body,'initial_folders',list) if 'initial_folders' in body else None)
+                                    required(body,'initial_folders',list) if 'initial_folders' in body else None,
+                                    required(body,'parent_folder',str) if 'parent_folder' in body else None,
+                                    required(body,'parent_token',str) if 'parent_token' in body else None)
     @app.post('/api/clients/{id}/retry')
     def retry(id:str):return engine.retry_client(id)
     @app.post('/api/clients/{id}/template')

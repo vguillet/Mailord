@@ -116,3 +116,12 @@ Le mode simulation reste actif par défaut et n’imprime aucun papier. La prise
 Cette mise à jour conserve les emplacements et les statuts des PDF et pièces jointes déjà suivis, ainsi que les présélections des modèles et les impressions existantes. Les anciens PDF rangés automatiquement dans Correspondances peuvent désormais être déplacés avec le même bouton que les autres documents. Les nouveaux exports attendent tous le choix de l’utilisateur. Le contrôle reprend les intentions de déplacement interrompues et répare les fichiers manquants à leur emplacement enregistré ; il ne redistribue pas les archives à cause de cette mise à jour.
 
 L’impression « Quand tous les documents sont classés » attend le PDF du mail et toutes ses pièces jointes, même celles décochées pour l’impression. Pour un nouveau mail sans pièce jointe, elle attend le classement de son PDF. L’option « Dès que les fichiers sont exportés » reste disponible si l’impression doit précéder le classement. L’historique reste exclu des impressions automatiques ; aucun ancien document n’est réimprimé à cause de cette mise à jour.
+
+
+### Choisir l’emplacement d’un nouveau client
+
+Dans **Nouveau client**, la rubrique **Emplacement du client sur le Mac** propose la racine configurée dans les réglages. Utilisez **Ouvrir un sous-dossier** pour parcourir les dossiers existants, **Dossier parent** pour remonter ou **Racine Mailord** pour revenir directement à la racine. **Actualiser** relit les dossiers créés dans le Finder. Le chemin final apparaît dans l’aperçu, par exemple `Racine/Affaires/2026/DUPONT-MARTIN`.
+
+Le choix du parent local est indépendant du dossier de messagerie et des cases du modèle. Les sous-dossiers cochés sont préparés dans ce nouvel emplacement ; les autres restent disponibles pour le classement à la demande. Les dossiers déjà associés à un client sont indiqués mais ne peuvent pas accueillir un deuxième client. Les dossiers cachés, liens symboliques et emplacements extérieurs ne sont pas proposés.
+
+Si l’emplacement disparaît ou est remplacé avant la validation, la création est refusée : actualisez puis choisissez à nouveau. Une reprise ne recrée pas un parent disparu et la soumission d’un client existant avec un autre parent ne le déplace pas. Aucun document ni dossier existant n’est supprimé par cette création.

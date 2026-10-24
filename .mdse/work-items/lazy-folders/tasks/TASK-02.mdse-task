@@ -1,0 +1,80 @@
+{
+  "mdse": "2.3",
+  "kind": "Task",
+  "id": "TASK-02",
+  "name": "Emplacement local à la création du client",
+  "status": "pending",
+  "revision": 1,
+  "createdAt": "2026-10-24",
+  "updatedAt": "2026-10-24",
+  "workItem": "WI-lazy-folders",
+  "order": 2,
+  "type": "software",
+  "objective": "Ajouter le choix du parent local avec navigation, vérification serveur et compatibilité des clients existants.",
+  "requirements": [
+    "REQ-05"
+  ],
+  "design": "DESIGN",
+  "dependsOn": [
+    "TASK-01"
+  ],
+  "capabilities": [
+    "write-code",
+    "run-tests"
+  ],
+  "designReferences": [
+    {
+      "section": "components",
+      "item": "GestionClients"
+    },
+    {
+      "section": "components",
+      "item": "InterfaceLocale"
+    }
+  ],
+  "files": [
+    {
+      "path": "mailord/engine.py",
+      "action": "update"
+    },
+    {
+      "path": "mailord/app.py",
+      "action": "update"
+    },
+    {
+      "path": "mailord/static/app.js",
+      "action": "update"
+    },
+    {
+      "path": "mailord/static/style.css",
+      "action": "update"
+    },
+    {
+      "path": "tests/test_client_locations.py",
+      "action": "create"
+    },
+    {
+      "path": "docs/API.md",
+      "action": "update"
+    },
+    {
+      "path": "docs/INSTALLATION.md",
+      "action": "update"
+    },
+    {
+      "path": "docs/VALIDATION.md",
+      "action": "update"
+    }
+  ],
+  "doneCriteria": [
+    {
+      "id": "DC-01",
+      "statement": "Tests ciblés puis suite complète et syntaxe JavaScript passent."
+    },
+    {
+      "id": "DC-02",
+      "statement": "Parcours navigateur sur données temporaires : racine, navigation, aperçu, création et retour ; guides mis à jour."
+    }
+  ],
+  "priority": "high"
+}

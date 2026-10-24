@@ -1,0 +1,25 @@
+{
+  "mdse": "2.3",
+  "kind": "Method",
+  "id": "VM-05",
+  "name": "Vérifier les emplacements clients",
+  "status": "approved",
+  "revision": 1,
+  "createdAt": "2026-10-24",
+  "updatedAt": "2026-10-24",
+  "workItem": "WI-lazy-folders",
+  "class": "verification",
+  "method": "test",
+  "automated": true,
+  "requirements": [
+    "REQ-05"
+  ],
+  "command": "python -m pytest tests/test_client_locations.py -q",
+  "passCriteria": [
+    {
+      "id": "PC-01",
+      "statement": "Racine et navigation imbriquée, création additive, exports, reprise, collisions, confinement, liens et sélection périmée sont contrôlés ; parcours du formulaire vérifié sur données temporaires."
+    }
+  ],
+  "evidenceKind": "test-output"
+}

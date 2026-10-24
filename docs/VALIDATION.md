@@ -170,3 +170,13 @@ Cette évolution remplace la création physique immédiate décrite dans la vér
 - Suite complète dans le dépôt final : **239 réussis, zéro échec, zéro ignoré, 19,79 s**. Seul avertissement préexistant Starlette/httpx. Les 18 tests mise à jour/API passent également.
 - Wheel contrôlé : paquet `mailord`, commande `mailord`, ressources SVG incluses, ancien module absent. IAB aux largeurs 1280, 599 et 390 : marque lisible, pas de débordement horizontal. Service supervisé 8765 depuis le dépôt final, avatar absent et statut « Votre application est à jour » face à l’ancêtre distant. Captures et comparaisons avant/après conservées dans les sorties locales de cette conversation.
 - Aucune impression physique ni validation d’un compte réel effectuée. Une baseline de livraison peut être établie après revue du propriétaire ; aucune acceptation humaine n’est revendiquée.
+
+
+## Emplacement local des nouveaux clients — 24 octobre 2026
+
+- 19 nouveaux cas ciblés dans `tests/test_client_locations.py` : navigation en lecture seule, racine par défaut, parents imbriqués, création additive, persistance et classement après redémarrage, entrées invalides, liens, isolement entre clients, parent remplacé/disparu, reprise et CSRF.
+- Suite finale : **258 tests réussis**, aucune erreur ; avertissement Starlette/httpx préexistant. Les tests d’intégration ont été exécutés avec autorisation des ports locaux temporaires.
+- Syntaxe de `mailord/static/app.js` vérifiée. Parcours navigateur sur données fictives séparées : racine → Affaires → 2026, retour parent/racine, aperçu et création de DUPONT-MARTIN. Présence de `Affaires/2026/DUPONT-MARTIN/02 CORRESPONDANCES` vérifiée sur disque, sans création de client à la racine.
+- Contrôle supplémentaire : une substitution du dossier client par un lien pendant la création mail est refusée avant de préparer les dossiers initiaux ; aucun contenu créé dans la cible extérieure.
+- Aucune intégration Orange, Apple Mail réelle ou imprimante physique exercée. Cette évolution ne prétend pas implémenter la politique globale de conservation proposée séparément.
+- MDSE : extension de WI-lazy-folders avec REQ-05/TASK-02/VM-05. Limitation documentée du validateur SM-07 : le rapport historique VER-01 est comparé aux exigences ajoutées ultérieurement. Il reste immuable ; le nouveau rapport décrit la vérification actuelle.

@@ -2293,3 +2293,20 @@ main {
 
 .chip.info { background:#edf2f8; color:#365473 }
 .document-options { justify-content:flex-end }
+
+/* The local destination is separate from the mailbox and template choices. */
+.client-location-picker {
+  border:1px solid #d9e2d1;
+  border-radius:10px;
+  padding:14px 16px;
+  margin:0 0 20px;
+  min-width:0;
+  background:#f6f8f2;
+}
+.client-location-picker legend { padding:0 6px; font-weight:600; color:var(--text); }
+.client-location-current { display:grid; gap:4px; overflow-wrap:anywhere; }
+.client-location-current > span, .client-location-current > small { color:#64715f; font-size:12px; }
+.client-location-current > strong { color:#2d5949; font-size:15px; }
+.client-location-nav { display:flex; flex-wrap:wrap; gap:6px; margin:10px 0; }
+.client-location-picker .field { margin-bottom:8px; }
+.client-location-picker .dialog-note { margin-bottom:0; }
