@@ -20,5 +20,5 @@ def seed(engine):
             if i==1:msg.add_attachment(_pdf_bytes({'subject':'Document de démonstration','body':'Exemple fictif sans valeur contractuelle.','sender':c['name'],'recipients':'Votre cabinet','date':stamp.isoformat()}),maintype='application',subtype='pdf',filename='Contrat signé.pdf')
             p=Path(engine.settings['runtime'])/'mailboxes'/c['mailbox']/f'{i+1}.eml';p.write_bytes(msg.as_bytes());os.utime(p,(stamp.timestamp(),stamp.timestamp()))
     engine.scan();engine.process()
-    ms=engine.state()['messages'];first=next(m for m in ms if m['client_id']==clients[0]['id'] and any(d['kind']=='attachment' for d in m['documents']));engine.classify([first['id']],'05 PIÈCES/Pièces client')
+    ms=engine.state()['messages'];first=next(m for m in ms if m['client_id']==clients[0]['id'] and any(d['kind']=='attachment' for d in m['documents']));plan=engine.prepare_classify([first['id']],'05 PIÈCES/Pièces client');engine.confirm_operation(plan['id'],True)
     engine.store.put('meta','demo-seeded',{'created':datetime.now(timezone.utc).isoformat()})

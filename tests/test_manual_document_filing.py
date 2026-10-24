@@ -1,3 +1,4 @@
+from filing_helpers import classify, undo, post_classify
 from pathlib import Path
 
 import pytest
@@ -25,19 +26,20 @@ def test_all_new_documents_wait_for_manual_filing(engine):
     assert m['classification'] == 'pending'
     assert engine.store.all('print') == []
     email, *pieces = m['documents']
-    engine.classify([m['id']], '03 MAILS (PDF)', document_ids=[email['id']])
+    classify(engine, [m['id']], '03 MAILS (PDF)', document_ids=[email['id']])
     current = engine.state()['messages'][0]
     assert current['classification'] == 'pending'
     assert all(engine.store.get('document', d['id'])['path'] == d['path'] for d in pieces)
-    engine.classify([m['id']], '05 PIÈCES/Pièces client', document_ids=[d['id'] for d in pieces])
+    classify(engine, [m['id']], '05 PIÈCES/Pièces client', document_ids=[d['id'] for d in pieces])
     current = engine.state()['messages'][0]
     assert current['classification'] == 'classified'
-    assert len(engine.store.all('print')) == 3
+    assert len(engine.store.all('print')) == 0
     pdf = engine.store.get('document', email['id'])
     Path(pdf['path']).unlink();engine.process()
     assert engine.store.get('document', email['id'])['path'] == pdf['path']
-    assert digest(pdf['path']) == email['sha256']
-    assert len(engine.store.all('print')) == 3
+    assert not Path(pdf['path']).exists()
+    assert engine.recovery_versions(email['id'])[0]['available']
+    assert len(engine.store.all('print')) == 0
 
 
 def test_mail_without_attachment_waits_for_its_own_destination(engine):
@@ -45,9 +47,9 @@ def test_mail_without_attachment_waits_for_its_own_destination(engine):
     m = receive(engine, c, count=0, new=True)
     assert m['classification'] == 'pending'
     assert engine.store.all('print') == []
-    engine.classify([m['id']], '08 NOTES INTERNES')
+    classify(engine, [m['id']], '08 NOTES INTERNES')
     assert engine.state()['messages'][0]['classification'] == 'classified'
-    assert len(engine.store.all('print')) == 1
+    assert len(engine.store.all('print')) == 0
     engine.process()
     assert engine.state()['messages'][0]['documents'][0]['destination'] == '08 NOTES INTERNES'
 
@@ -64,7 +66,7 @@ def test_old_fixed_pdf_stays_put_but_can_be_reclassified(engine):
     engine.store.put('message', m['id'], record)
     engine.process()
     assert engine.store.get('document', d['id'])['path'] == str(target)
-    engine.classify([m['id']], '03 MAILS (PDF)', document_ids=[d['id']])
+    classify(engine, [m['id']], '03 MAILS (PDF)', document_ids=[d['id']])
     engine.process()
     pdf = engine.store.get('document', d['id'])
     assert pdf['destination'] == '03 MAILS (PDF)'
@@ -72,18 +74,17 @@ def test_old_fixed_pdf_stays_put_but_can_be_reclassified(engine):
     assert engine.store.all('print') == []
 
 
-def test_interrupted_pdf_filing_resumes_without_filing_attachments(engine, monkeypatch):
-    c = engine.create_client('Client')
-    m = receive(engine, c)
-    email, *pieces = m['documents']
+def test_interrupted_pdf_filing_is_suspended_without_filing_attachments(engine, monkeypatch):
+    c=engine.create_client('Client');m=receive(engine,c);d=m['documents'][0]
+    before={x['id']:x['path'] for x in m['documents']}
     with monkeypatch.context() as patch:
-        patch.setattr(engine, '_recover_moves', lambda: None)
-        with pytest.raises(ValueError, match='incomplet'):
-            engine.classify([m['id']], 'Procédure/Actes', document_ids=[email['id']])
-    resumed = Engine(engine.settings, engine.store);resumed.process()
-    assert resumed.store.get('document', email['id'])['destination'] == 'Procédure/Actes'
-    assert all(resumed.store.get('document', d['id'])['path'] == d['path'] for d in pieces)
-    assert resumed.state()['messages'][0]['classification'] == 'pending'
+        patch.setattr('mailord.file_safety.publish',lambda *a,**k: (_ for _ in ()).throw(OSError('interruption')))
+        with pytest.raises(ValueError,match='suspendue'):classify(engine,[m['id']],'Procédure/Actes',[d['id']])
+    resumed=Engine(engine.settings,engine.store);resumed.process()
+    assert {x['id']:x['path'] for x in resumed.state()['messages'][0]['documents']}==before
+    assert resumed.store.get('document',d['id'])['file_error']
+    assert resumed.recovery_versions(d['id'])[0]['available']
+    assert not resumed.store.all('print')
 
 
 def test_template_no_longer_imposes_a_correspondence_folder(engine):
@@ -103,7 +104,7 @@ def test_api_accepts_email_document_selection(tmp_path):
         c = client.post('/api/clients', headers=headers, json={'name':'Client'}).json()
         m = receive(app.state.engine, c)
         email, *pieces = m['documents']
-        result = client.post('/api/classify', headers=headers, json={'message_ids':[m['id']], 'document_ids':[email['id']], 'destination':'03 MAILS (PDF)'})
+        result = post_classify(client,headers,{'message_ids':[m['id']], 'document_ids':[email['id']], 'destination':'03 MAILS (PDF)'})
         assert result.status_code == 200
         current = client.get('/api/state').json()['messages'][0]
         assert current['classification'] == 'pending'

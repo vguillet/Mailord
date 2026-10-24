@@ -1,3 +1,4 @@
+from filing_helpers import post_classify
 from fastapi.testclient import TestClient
 from mailord.app import create_app
 from mailord.config import defaults
@@ -41,7 +42,7 @@ def test_demo_seed_and_http_document_workflow(tmp_path):
         headers={'X-CSRF-Token':s['csrf_token']};m=s['messages'][0];d=m['documents'][0]
         result=c.get('/api/documents/'+d['id']+'/file');assert result.content.startswith(b'%PDF-')
         assert result.headers['content-type']=='application/pdf'
-        assert c.post('/api/classify',headers=headers,json={'message_ids':[m['id']],'destination':'03 MAILS (PDF)'}).status_code==200
+        assert post_classify(c,headers,{'message_ids':[m['id']],'destination':'03 MAILS (PDF)'}).status_code==200
         assert c.post('/api/print',headers=headers,json={'message_ids':[m['id']]}).status_code==200
         assert next(x for x in c.get('/api/state').json()['messages'] if x['id']==m['id'])['print_status']=='simulated'
         assert c.post('/api/messages/'+m['id']+'/reprint',headers=headers,json={'confirm':False}).status_code==400

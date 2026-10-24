@@ -1,0 +1,49 @@
+{
+  "mdse": "2.3",
+  "kind": "Design",
+  "id": "DESIGN",
+  "name": "Protocole conservateur avec journal durable",
+  "status": "approved",
+  "revision": 2,
+  "createdAt": "2026-10-24",
+  "updatedAt": "2026-10-24",
+  "workItem": "WI-document-safety",
+  "requirements": [
+    "REQ-01",
+    "REQ-02",
+    "REQ-03"
+  ],
+  "components": [
+    {
+      "name": "Conservation",
+      "state": "new",
+      "path": "mailord/file_safety.py",
+      "responsibility": "Descripteurs sans liens, copie indépendante avec métadonnées macOS et empreinte, publication exclusive, capture de la source par renommage exclusif vers récupération privée. Aucun unlink de document, aucun rmdir. Refus du déplacement inter-volume ou vers une récupération dans les archives."
+    },
+    {
+      "name": "Moteur",
+      "state": "modified",
+      "path": "mailord/engine.py",
+      "responsibility": "Préparation et confirmation expirante liées aux révisions ; journal persistant indépendant des notifications ; opérations interrompues suspendues, restauration additive explicite ; anomalie Finder signalée sans régénération. Aucune impression implicite après classement, annulation ou restauration."
+    },
+    {
+      "name": "Interface",
+      "state": "modified",
+      "path": "mailord/static/app.js",
+      "responsibility": "Conserver le sélecteur inline ; confirmation montrant départ, arrivée et nom ; récupération par document et erreurs lisibles."
+    }
+  ],
+  "internalInterfaces": [
+    {
+      "signature": "prepare_classify / prepare_undo / prepare_restore -> plan ; confirm_operation(plan_id, confirmed=True)",
+      "purpose": "Plan persistant dix minutes, validation avant effets, tentative unique idempotente, copie SHA-256 et métadonnées, destination exclusive, source originale retenue. Arrêt sur doute ; pas de reprise destructive automatique."
+    },
+    {
+      "signature": "recovery_versions(document_id)",
+      "purpose": "Versions vérifiables dans espace privé hors racine synchronisée ; conservées sans purge automatique. Restauration vers nom libre confirmé, jamais écrasement. Les données sur le même disque ne constituent pas une sauvegarde externe."
+    }
+  ],
+  "decisions": [
+    "DEC-01"
+  ]
+}

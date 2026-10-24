@@ -1,0 +1,33 @@
+{
+  "mdse": "2.3",
+  "kind": "Requirement",
+  "id": "REQ-01",
+  "name": "Conserver dossiers et fichiers",
+  "status": "approved",
+  "revision": 1,
+  "createdAt": "2026-10-24",
+  "updatedAt": "2026-10-24",
+  "workItem": "WI-document-safety",
+  "keyword": "SHALL NOT",
+  "statement": "Mailord SHALL NOT supprimer de dossier documentaire ni écraser un fichier existant.",
+  "priority": "must",
+  "acceptanceCriteria": [
+    {
+      "id": "AC-01",
+      "kind": "happy-path",
+      "given": "un classement réussi",
+      "when": "les documents changent de dossier",
+      "then": "tous les dossiers sources restent présents"
+    },
+    {
+      "id": "AC-02",
+      "kind": "failure-path",
+      "given": "un fichier occupe la destination après confirmation",
+      "when": "la publication est tentée",
+      "then": "le fichier existant et la source sont conservés"
+    }
+  ],
+  "verifiedBy": [
+    "VM-01"
+  ]
+}

@@ -1,0 +1,148 @@
+{
+  "mdse": "2.3",
+  "kind": "Task",
+  "id": "TASK-01",
+  "name": "Protéger et confirmer les opérations documentaires",
+  "status": "in-progress",
+  "revision": 2,
+  "createdAt": "2026-10-24",
+  "updatedAt": "2026-10-24",
+  "workItem": "WI-document-safety",
+  "order": 1,
+  "type": "software",
+  "objective": "Implémenter et éprouver les invariants de conservation, les confirmations et la récupération.",
+  "requirements": [
+    "REQ-01",
+    "REQ-02",
+    "REQ-03"
+  ],
+  "design": "DESIGN",
+  "dependsOn": [],
+  "capabilities": [
+    "write-code",
+    "run-tests"
+  ],
+  "designReferences": [
+    {
+      "section": "components",
+      "item": "Conservation"
+    },
+    {
+      "section": "components",
+      "item": "Moteur"
+    },
+    {
+      "section": "components",
+      "item": "Interface"
+    }
+  ],
+  "files": [
+    {
+      "path": "mailord/engine.py",
+      "action": "update",
+      "reason": "Adapter aux nouvelles règles de conservation et confirmation."
+    },
+    {
+      "path": "mailord/app.py",
+      "action": "update",
+      "reason": "Adapter aux nouvelles règles de conservation et confirmation."
+    },
+    {
+      "path": "mailord/store.py",
+      "action": "update",
+      "reason": "Adapter aux nouvelles règles de conservation et confirmation."
+    },
+    {
+      "path": "mailord/static/app.js",
+      "action": "update",
+      "reason": "Adapter aux nouvelles règles de conservation et confirmation."
+    },
+    {
+      "path": "mailord/static/style.css",
+      "action": "update",
+      "reason": "Adapter aux nouvelles règles de conservation et confirmation."
+    },
+    {
+      "path": "docs/API.md",
+      "action": "update",
+      "reason": "Adapter aux nouvelles règles de conservation et confirmation."
+    },
+    {
+      "path": "docs/INSTALLATION.md",
+      "action": "update",
+      "reason": "Adapter aux nouvelles règles de conservation et confirmation."
+    },
+    {
+      "path": "docs/VALIDATION.md",
+      "action": "update",
+      "reason": "Adapter aux nouvelles règles de conservation et confirmation."
+    },
+    {
+      "path": "tests/test_print_preferences.py",
+      "action": "update",
+      "reason": "Adapter aux nouvelles règles de conservation et confirmation."
+    },
+    {
+      "path": "tests/test_engine.py",
+      "action": "update",
+      "reason": "Adapter aux nouvelles règles de conservation et confirmation."
+    },
+    {
+      "path": "tests/test_daily_upgrade.py",
+      "action": "update",
+      "reason": "Adapter aux nouvelles règles de conservation et confirmation."
+    },
+    {
+      "path": "tests/test_lazy_folders.py",
+      "action": "update",
+      "reason": "Adapter aux nouvelles règles de conservation et confirmation."
+    },
+    {
+      "path": "tests/test_client_locations.py",
+      "action": "update",
+      "reason": "Adapter aux nouvelles règles de conservation et confirmation."
+    },
+    {
+      "path": "tests/test_api.py",
+      "action": "update",
+      "reason": "Adapter aux nouvelles règles de conservation et confirmation."
+    },
+    {
+      "path": "tests/test_manual_document_filing.py",
+      "action": "update",
+      "reason": "Adapter aux nouvelles règles de conservation et confirmation."
+    },
+    {
+      "path": "tests/test_correspondence_filing.py",
+      "action": "update",
+      "reason": "Adapter aux nouvelles règles de conservation et confirmation."
+    },
+    {
+      "path": "mailord/file_safety.py",
+      "action": "create"
+    },
+    {
+      "path": "tests/test_file_safety.py",
+      "action": "create"
+    },
+    {
+      "path": "tests/filing_helpers.py",
+      "action": "create"
+    },
+    {
+      "path": "docs/FILE_SAFETY.md",
+      "action": "create"
+    }
+  ],
+  "doneCriteria": [
+    {
+      "id": "DC-01",
+      "statement": "Tests de conservation, confirmations, métadonnées, collisions et injections de pannes passent avec la suite complète."
+    },
+    {
+      "id": "DC-02",
+      "statement": "Parcours navigateur de confirmation, annulation et récupération vérifié sur données temporaires ; limites documentées."
+    }
+  ],
+  "priority": "high"
+}

@@ -3,8 +3,8 @@
   "kind": "Requirement",
   "id": "REQ-03",
   "name": "Nettoyage des branches vidées par le classement",
-  "status": "verified",
-  "revision": 1,
+  "status": "superseded",
+  "revision": 2,
   "createdAt": "2026-10-24",
   "updatedAt": "2026-10-24",
   "workItem": "WI-lazy-folders",
@@ -29,5 +29,6 @@
   ],
   "verifiedBy": [
     "VM-03"
-  ]
+  ],
+  "rationale": "Remplacée par WI-document-safety/REQ-01 selon la demande utilisateur de conserver tous les dossiers, même vides."
 }

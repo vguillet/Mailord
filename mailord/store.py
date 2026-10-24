@@ -13,6 +13,7 @@ class Store:
         self.db = sqlite3.connect(path, check_same_thread=False, isolation_level=None)
         self.db.execute('PRAGMA journal_mode=WAL')
         self.db.execute('PRAGMA busy_timeout=5000')
+        self.db.execute('PRAGMA synchronous=FULL')
         self.db.execute('CREATE TABLE IF NOT EXISTS records(kind TEXT, id TEXT, payload TEXT NOT NULL, PRIMARY KEY(kind,id))')
 
     def all(self, kind):

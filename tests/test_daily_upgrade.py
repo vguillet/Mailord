@@ -1,3 +1,4 @@
+from filing_helpers import classify, undo, post_classify
 """Progress and reversible filing, using disposable local archives only."""
 from pathlib import Path
 
@@ -79,33 +80,27 @@ def test_ordinary_print_does_not_retry_a_superseded_initial_failure(space, monke
 
 
 def test_undo_filing_restores_pending_survives_restart_and_is_idempotent(space):
-    e, client, headers, m = space
-    d = m['documents'][0]
-    # A freshly exported document starts unfiled even if it already has a staging path.
-    d['classification'] = 'pending'
-    e.store.put('document', d['id'], d)
-    e.classify([m['id']], '07 FACTURES', [d['id']])
-    moved = e.store.get('document', d['id'])
-    token = moved['undo_filing']['token']
-    Engine(e.settings, e.store)
-    route = f"/api/documents/{d['id']}/undo-filing"
-    assert client.post(route, json={'token': token}).status_code == 403
-    response = client.post(route, headers=headers, json={'token': token})
-    assert response.status_code == 200
-    restored = e.store.get('document', d['id'])
-    assert restored['path'] == d['path'] and restored['classification'] == 'pending'
-    assert digest(restored['path']) == d['sha256']
-    assert not Path(moved['path']).exists()
-    assert client.post(route, headers=headers, json={'token': token}).status_code == 200
-    assert not e.store.all('print')
-    assert not restored.get('undo_filing')
+    e,client,headers,m=space;d=m['documents'][0]
+    d['classification']='pending';e.store.put('document',d['id'],d)
+    classify(e,[m['id']],'07 FACTURES',[d['id']]);moved=e.store.get('document',d['id'])
+    Engine(e.settings,e.store)
+    route=f"/api/documents/{d['id']}/undo-filing/prepare"
+    assert client.post(route,json={'token':moved['undo_filing']['token']}).status_code==403
+    plan=client.post(route,headers=headers,json={'token':moved['undo_filing']['token']}).json()
+    route='/api/file-operations/'+plan['id']+'/confirm'
+    assert client.post(route,headers=headers,json={'confirm':True}).status_code==200
+    restored=e.store.get('document',d['id'])
+    assert restored['path']==d['path'] and restored['classification']=='pending'
+    assert digest(restored['path'])==d['sha256'] and not Path(moved['path']).exists()
+    assert client.post(route,headers=headers,json={'confirm':True}).status_code==200
+    assert not e.store.all('print') and not restored.get('undo_filing')
 
 
 @pytest.mark.parametrize('problem', ['occupied', 'modified', 'stale', 'symlink'])
 def test_undo_refuses_conflicts_without_touching_files(space, problem):
     e, client, headers, m = space
     d = m['documents'][0]
-    e.classify([m['id']], '07 FACTURES', [d['id']])
+    classify(e, [m['id']], '07 FACTURES', [d['id']])
     moved = e.store.get('document', d['id'])
     token = moved['undo_filing']['token']
     old = Path(d['path']); old.parent.mkdir(parents=True, exist_ok=True)
@@ -114,26 +109,23 @@ def test_undo_refuses_conflicts_without_touching_files(space, problem):
     if problem == 'stale': token = 'outdated'
     if problem == 'symlink': old.symlink_to(moved['path'])
     before = Path(moved['path']).read_bytes()
-    response = client.post(f"/api/documents/{d['id']}/undo-filing", headers=headers, json={'token': token})
+    response = client.post(f"/api/documents/{d['id']}/undo-filing/prepare", headers=headers, json={'token': token})
     assert response.status_code == 400
     assert Path(moved['path']).read_bytes() == before
     if problem == 'occupied': assert old.read_bytes() == b'keep this'
     assert not e.store.all('print')
 
 
-def test_interrupted_undo_recovers_pending_state_without_printing(space, monkeypatch):
-    e, _, _, m = space
-    d = m['documents'][0];d['classification'] = 'pending';e.store.put('document', d['id'], d)
-    e.classify([m['id']], '07 FACTURES', [d['id']])
-    token = e.store.get('document', d['id'])['undo_filing']['token']
-    with monkeypatch.context() as p:
-        p.setattr(e, '_publish', lambda *a, **k: (_ for _ in ()).throw(OSError('interruption')))
-        with pytest.raises(ValueError): e.undo_filing(d['id'], token)
-    assert e.store.get('document', d['id']).get('move_to')
-    Engine(e.settings, e.store)
-    restored = e.store.get('document', d['id'])
-    assert restored['path'] == d['path'] and restored['classification'] == 'pending'
-    assert not restored.get('move_to') and not e.store.all('print')
+def test_interrupted_undo_preserves_pending_copies_without_printing(space, monkeypatch):
+    e,_,_,m=space;d=m['documents'][0]
+    classify(e,[m['id']],'07 FACTURES',[d['id']]);moved=e.store.get('document',d['id'])
+    with monkeypatch.context() as patch:
+        patch.setattr('mailord.file_safety.publish',lambda *a,**k: (_ for _ in ()).throw(OSError('interruption')))
+        with pytest.raises(ValueError):undo(e,d['id'],moved['undo_filing']['token'])
+    Engine(e.settings,e.store)
+    assert e.store.get('document',d['id'])['path']==moved['path']
+    assert Path(moved['path']).exists() and e.recovery_versions(d['id'])[0]['available']
+    assert not e.store.all('print')
 
 
 def test_ordinary_retry_uses_latest_failed_intent_not_an_older_generation(space, monkeypatch):
@@ -154,12 +146,12 @@ def test_undo_to_classified_location_does_not_activate_automatic_print(space):
     stored['historical'] = False
     e.store.put('message', m['id'], stored)
     e.settings['print_policy'] = 'manual'
-    e.classify([m['id']], '05 PIÈCES/Pièces client')
+    classify(e, [m['id']], '05 PIÈCES/Pièces client')
     d = e.store.get('document', m['documents'][0]['id'])
-    e.classify([m['id']], '07 FACTURES', [d['id']])
+    classify(e, [m['id']], '07 FACTURES', [d['id']])
     token = e.store.get('document', d['id'])['undo_filing']['token']
     e.settings['print_policy'] = 'after_classify'
-    restored = e.undo_filing(d['id'], token)
+    restored = undo(e, d['id'], token)
     e.process()
     assert restored['path'] == d['path'] and restored['classification'] == 'classified'
     assert not e.store.all('print')

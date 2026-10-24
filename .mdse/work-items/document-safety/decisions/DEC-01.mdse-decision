@@ -1,0 +1,41 @@
+{
+  "mdse": "2.3",
+  "kind": "Decision",
+  "id": "DEC-01",
+  "name": "Conservation sans purge, confirmation et restauration additive",
+  "status": "accepted",
+  "revision": 1,
+  "createdAt": "2026-10-24",
+  "updatedAt": "2026-10-24",
+  "workItem": "WI-document-safety",
+  "requirements": [
+    "REQ-01",
+    "REQ-02",
+    "REQ-03"
+  ],
+  "context": "L’utilisateur demande explicitement de remplacer le nettoyage des dossiers et toute réparation automatique destructive. Cette décision remplace le volet nettoyage de WI-lazy-folders/DEC-01 ; le lien est exprimé ici conformément à la limite L-09 inter-work-item du protocole.",
+  "chosen": "Ne supprimer aucun dossier documentaire. Copier et vérifier avant toute capture de source par renommage exclusif, garder copie indépendante et original, exiger une confirmation de plan périssable côté serveur ; restauration additive et arrêt sur doute.",
+  "rationale": "Supprimer la fenêtre de perte de données entre vérification et unlink, préserver aussi les modifications concurrentes, rendre les changements compréhensibles et récupérables.",
+  "rejected": [
+    {
+      "alternative": "Copier, vérifier puis unlink de la source",
+      "reason": "La source ou destination peut changer entre vérification et unlink."
+    },
+    {
+      "alternative": "Nettoyer automatiquement les répertoires ou anciennes versions",
+      "reason": "Contraire à la demande explicite de conservation de tous les dossiers et copies."
+    },
+    {
+      "alternative": "Reprendre automatiquement un déplacement interrompu",
+      "reason": "Après interruption, les fichiers peuvent avoir changé ; suspendre et demander une revue."
+    }
+  ],
+  "consequences": [
+    "Les versions occupent de l’espace sans purge automatique.",
+    "Déplacements protégés limités aux volumes locaux APFS/HFS+ et au même volume que la récupération.",
+    "Les opérations de classement ne déclenchent plus d’impression ; politique after_export explicite conservée.",
+    "Les fichiers modifiés/manquants exigent un examen et une récupération explicite.",
+    "Migration de l’espace avec le nouveau journal refusée tant que les identités de fichiers/dossiers ne sont pas réassociées par un outil adapté."
+  ],
+  "decidedBy": "agent"
+}

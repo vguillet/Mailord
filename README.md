@@ -61,3 +61,7 @@ Le dossier `.mdse/` contient les exigences, décisions, tâches, preuves d’ex�
 ## Mises à jour
 
 Le panneau **Mises à jour** permet de configurer le dépôt Git et la branche une fois, puis d’installer les versions publiées en un clic. Préparation séparée, redémarrage automatique et retour à la version précédente si le démarrage échoue. Voir [le guide](docs/UPDATES.md).
+
+### Conservation des documents
+
+Chaque déplacement ou annulation exige une confirmation avec les chemins exacts. Aucun dossier documentaire n’est supprimé ; les fichiers existants ne sont jamais écrasés. Les copies vérifiées sont accessibles par **Récupération** sous chaque document. Un fichier modifié ou déplacé dans Finder est signalé sans remplacement automatique. Voir [les protections et leurs limites](docs/FILE_SAFETY.md).

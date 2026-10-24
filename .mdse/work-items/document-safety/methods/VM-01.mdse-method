@@ -1,0 +1,27 @@
+{
+  "mdse": "2.3",
+  "kind": "Method",
+  "id": "VM-01",
+  "name": "Invariants et fautes documentaires",
+  "status": "approved",
+  "revision": 1,
+  "createdAt": "2026-10-24",
+  "updatedAt": "2026-10-24",
+  "workItem": "WI-document-safety",
+  "class": "verification",
+  "method": "test",
+  "automated": true,
+  "requirements": [
+    "REQ-01",
+    "REQ-02",
+    "REQ-03"
+  ],
+  "command": "python -m pytest tests/test_file_safety.py -q",
+  "passCriteria": [
+    {
+      "id": "PC-01",
+      "statement": "Sources, destinations et versions conservées dans les scénarios testés, confirmation serveur obligatoire et reprise non destructive."
+    }
+  ],
+  "evidenceKind": "test-output"
+}

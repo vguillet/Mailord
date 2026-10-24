@@ -1,3 +1,4 @@
+from filing_helpers import classify, undo, post_classify
 from pathlib import Path
 
 import pytest
@@ -49,7 +50,7 @@ def test_nested_client_and_initial_folders_survive_restart_and_filing(engine):
     add_mail(e2, c)
     e2.scan(); e2.process()
     m = e2.state()['messages'][0]
-    e2.classify([m['id']], 'Pièces/Signées')
+    classify(e2, [m['id']], 'Pièces/Signées')
     assert all(Path(d['path']).is_relative_to(Path(c['folder']) / 'Pièces/Signées') for d in e2.state()['messages'][0]['documents'])
     assert not (engine.root / 'Émilie').exists()
 

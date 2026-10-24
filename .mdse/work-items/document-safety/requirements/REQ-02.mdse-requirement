@@ -1,0 +1,40 @@
+{
+  "mdse": "2.3",
+  "kind": "Requirement",
+  "id": "REQ-02",
+  "name": "Confirmer un déplacement vérifié",
+  "status": "approved",
+  "revision": 1,
+  "createdAt": "2026-10-24",
+  "updatedAt": "2026-10-24",
+  "workItem": "WI-document-safety",
+  "keyword": "SHALL",
+  "statement": "Chaque déplacement SHALL exiger une confirmation liée aux documents, versions et chemins affichés, puis conserver une copie indépendante vérifiée avant retrait de la source.",
+  "priority": "must",
+  "acceptanceCriteria": [
+    {
+      "id": "AC-01",
+      "kind": "happy-path",
+      "given": "une confirmation valide",
+      "when": "le classement ou son annulation est exécuté",
+      "then": "la destination est vérifiée et la source déplacée sans suppression vers la récupération privée"
+    },
+    {
+      "id": "AC-02",
+      "kind": "failure-path",
+      "given": "une modification concurrente ou un échec de copie",
+      "when": "un déplacement est tenté",
+      "then": "aucune version existante n’est détruite et le conflit est signalé"
+    },
+    {
+      "id": "AC-03",
+      "kind": "edge-case",
+      "given": "une confirmation réutilisée ou périmée",
+      "when": "elle est soumise",
+      "then": "aucune seconde opération ni impression implicite"
+    }
+  ],
+  "verifiedBy": [
+    "VM-01"
+  ]
+}

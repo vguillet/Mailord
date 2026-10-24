@@ -5,13 +5,14 @@ import json
 import os
 import shutil
 import threading
+import time
 import unicodedata
 import uuid
 from datetime import datetime, timezone
 from pathlib import Path
 from .config import DEFAULT_FOLDERS, DEFAULT_EMAIL_FOLDER
 from .connectors import make_connector
-from . import documents, printing
+from . import documents, printing, file_safety
 
 
 def now(): return datetime.now(timezone.utc).isoformat()
@@ -45,7 +46,10 @@ class Engine:
         self.settings={**settings,**(store.get('settings','main') or {})};self.settings.pop('id',None)
         self.runtime=Path(settings['runtime']).resolve();self.runtime.mkdir(parents=True,exist_ok=True);self.runtime.chmod(0o700)
         for name in ['spool','staging','quarantine','print']:(self.runtime/name).mkdir(exist_ok=True)
-        self.root=Path(self.settings['archive_root']).expanduser().resolve();self.root.mkdir(parents=True,exist_ok=True)
+        self.root=Path(self.settings['archive_root']).expanduser().resolve()
+        if not self.store.all('client') and not self.store.get('meta','archive_identity'):self.root.mkdir(parents=True,exist_ok=True)
+        if not self.store.get('meta','archive_identity') and self.root.is_dir():
+            self.store.put('meta','archive_identity',{'identity':file_safety.identity(self.root)})
         self.connector=connector or make_connector(self.settings,self.runtime)
         self.folders=[];self.printers=[];self.last_scan='';self.sync_error=''
         if not self.store.all('template'):self.save_template(DEFAULT_FOLDERS)
@@ -190,6 +194,7 @@ class Engine:
             c=self.client(id)
             try:
                 root=within(self.root,c['folder'])
+                self._check_client_root(c)
                 parent_folder='' if root.parent==self.root else root.parent.relative_to(self.root).as_posix()
                 _,token=self._client_parent(parent_folder,c.get('parent_token'))
                 if root.exists() and not root.is_dir():raise ValueError('Le chemin du client est occupé par un fichier.')
@@ -198,6 +203,7 @@ class Engine:
                 root=within(self.root,c['folder'])
                 for p in c.get('initial_folders',[]):
                     within(root,root/relative(p)).mkdir(parents=True,exist_ok=True)
+                if root.is_dir():c['folder_identity']=file_safety.identity(root)
                 c.update(status='ready',error='')
             except Exception as e:c.update(status='error',error=self.error_text(e))
             self.store.put('client',id,c);return self.store.get('client',id)
@@ -242,7 +248,11 @@ class Engine:
                             existing.setdefault('sources',[]).append(source_key);self.store.put('message',identity,existing)
                             if existing['client_id']!=c['id']:self.event('Message déjà suivi chez un autre client : '+parsed['subject'],'warning')
                             continue
-                        spool=self.runtime/'spool'/(identity+'.eml');tmp=spool.with_suffix('.tmp');tmp.write_bytes(raw);tmp.replace(spool)
+                        spool=self.runtime/'spool'/(identity+'.eml')
+                        if os.path.lexists(spool):
+                            if spool.is_symlink() or not spool.is_file() or digest(spool)!=identity:raise ValueError('Copie originale du mail différente ou incomplète : aucun remplacement automatique.')
+                        else:
+                            with spool.open('xb') as stream:stream.write(raw);stream.flush();os.fsync(stream.fileno())
                         m={'client_id':c['id'],'subject':parsed['subject'],'sender':parsed['sender'],'recipients':parsed['recipients'],'body':parsed['body'],'date':str(parsed['date']),'received_at':source.received_at or now(),'status':'queued','classification':'pending','destination':'00 - À classer','print_status':'historical' if not c.get('initialized') else 'pending','historical':not c.get('initialized'),'error':'','sources':[source_key],'spool':str(spool),'discovered_at':now()}
                         m.update(filing_version=3,classification_auto_print=True)
                         self.store.put('message',identity,m);self._queue(identity)
@@ -274,38 +284,9 @@ class Engine:
                 target=within(root,root/(Path(name).stem+' - '+id[:10]+f' ({index})'+Path(name).suffix));index+=1
         return target
 
-    def _prune_empty(self,root,directory):
-        # rmdir never removes content (including hidden files), and no tree walk
-        # is performed: only ancestors of the directory involved are considered.
-        try:
-            root=Path(root)
-            if root!=self.root:root=within(self.root,root)
-            path=within(self.root,directory)
-            if not path.is_relative_to(root):return
-            protected=set()
-            for c in self.store.all('client'):
-                for selected in c.get('initial_folders',[]):
-                    keep=within(self.root,Path(c['folder'])/relative(selected))
-                    while keep!=self.root:
-                        protected.add(str(keep).casefold());keep=keep.parent
-            while path!=root:
-                if str(path).casefold() in protected:return
-                path.rmdir()
-                path=path.parent
-        except (OSError,ValueError):pass
-
     def _publish(self,source,target):
-        target=within(self.root,target)
-        # Write complete data before linking into a synced directory; linking never overwrites.
-        temporary=target.parent/('.auto-'+uid()+'.tmp')
-        try:
-            target.parent.mkdir(parents=True,exist_ok=True)
-            with open(temporary,'xb') as f:
-                f.write(Path(source).read_bytes());f.flush();os.fsync(f.fileno())
-            os.link(temporary,target)
-        finally:
-            temporary.unlink(missing_ok=True)
-            self._prune_empty(self.root,target.parent)
+        self._assert_root()
+        file_safety.publish(source,within(self.root,target),self.root)
 
     def _prepare_filing(self,m):
         if m.get('filing_version')==3:return
@@ -337,19 +318,26 @@ class Engine:
             for m in self.store.all('message'):
                 try:
                     self._prepare_filing(m)
+                    self._assert_root()
+                    self._check_client_root(self.client(m['client_id']))
                     ds=self._docs(m['id'])
+                    for d in ds:
+                        if d.get('file_error') or d.get('move_to') or not self._healthy(d):
+                            d['file_error']=d.get('file_error') or 'Fichier absent ou modifié. Aucun remplacement automatique ; consultez Récupération.'
+                            self.store.put('document',d['id'],d)
+                            raise ValueError(d['file_error'])
+                        if not any(v['document_id']==d['id'] and v['status']=='verified' and v['sha256']==d['sha256'] for v in self.store.all('file_version')):
+                            self._save_version(d,d['path'],'Première protection')
                     if m['status']!='ready' or not ds or not all(self._healthy(d) for d in ds):
                         self.store.put('job',m['id'],{'message_id':m['id'],'status':'running','error':''})
                         c=self.client(m['client_id']);root=Path(c['folder'])
                         stage=self.runtime/'staging'/uid();stage.mkdir()
                         exports=documents.export_message(Path(m['spool']).read_bytes(),stage,received_at=m['received_at'],date_source=self.settings['date_source'],prefix_format=self.settings['prefix_format'],identity=m['id'])
+                        m['expected_documents']=len(exports);self.store.put('message',m['id'],m)
                         for index,x in enumerate(exports):
                             did=m['id']+f'-{index}';d=self.store.get('document',did)
                             if d and self._healthy(d):continue
-                            if d:
-                                target=within(self.root,d['path'])
-                                if target.exists():
-                                    quarantine=self.runtime/'quarantine'/(uid()+'-'+target.name);shutil.copy2(target,quarantine);target.unlink()
+                            if d:raise ValueError('Fichier suivi absent ou modifié : récupération explicite requise.')
                             else:
                                 destination='00 - À classer'
                                 dest=within(root,root/relative(destination))
@@ -358,8 +346,11 @@ class Engine:
                                    'classification':'pending',
                                    'selected':x['kind']=='email' or (self.settings.get('print_attachments',True) and x['printable'] and not x.get('inline',False))}
                                 self.store.put('document',did,d)
+                                d['id']=did
+                            self._save_version(d,x['path'],'Export initial')
                             self._publish(x['path'],target);d.update(path=str(target),name=target.name,sha256=digest(target));self.store.put('document',did,d)
-                        shutil.rmtree(stage);m.update(status='ready',error='');self.store.put('message',m['id'],m)
+                        c['folder_identity']=file_safety.identity(root);self.store.put('client',c['id'],c)
+                        m.update(status='ready',error='');self.store.put('message',m['id'],m)
                         self.store.put('job',m['id'],{'message_id':m['id'],'status':'done','error':''})
                     self._refresh_classification(m['id'])
                 except Exception as e:
@@ -368,91 +359,225 @@ class Engine:
 
             for current in self.store.all('message'):
                 policy=self.settings['print_policy']
-                eligible=policy=='after_export' or (policy=='after_classify' and current['classification']=='classified' and current.get('classification_auto_print',True))
+                eligible=policy=='after_export' and current.get('classification_auto_print',True)
                 if eligible and current['status']=='ready' and not current['historical']:
                     try:self.print_messages([current['id']],retry_failed=False)
                     except Exception as e:self.event(self.error_text(e),'error')
 
-    def _recover_moves(self):
-        for d in self.store.all('document'):
-            if not d.get('move_to'):continue
-            try:
-                src=within(self.root,d['path']);dst=within(self.root,d['move_to'])
-                if not dst.exists():self._publish(src,dst)
-                if digest(dst)!=d['sha256']:raise ValueError('Destination modifiée pendant le classement ; reprise suspendue.')
-                if src.exists() and src!=dst:
-                    if digest(src)!=d['sha256']:raise ValueError('Source modifiée pendant le classement ; original conservé.')
-                    src.unlink()
-                if src.parent!=dst.parent:self._prune_empty(self.root,src.parent)
-                d.update(path=str(dst),name=dst.name);d.pop('move_to')
-                if 'move_destination' in d:
-                    d['destination']=d.pop('move_destination');d['classification']=d.pop('move_classification','classified')
-                self.store.put('document',d['id'],d)
-            except (OSError,ValueError) as e:self.event(self.error_text(e),'error')
-        for m in self.store.all('message'):
-            # Compatibility with intents recorded by the previous shared filing workflow.
-            if m.get('move_destination') and not any(d.get('move_to') for d in self._docs(m['id'])):
-                m['destination']=m.pop('move_destination');m['classification']='classified';self.store.put('message',m['id'],m)
-            self._refresh_classification(m['id'])
+    def _check_client_root(self,c):
+        if c.get('folder_identity') and file_safety.identity(c['folder'])!=c['folder_identity']:
+            raise ValueError('Le dossier client a été remplacé. Aucun fichier ne sera créé ici.')
+        if not Path(c['folder']).exists() and (c.get('folder_identity') or any(m['client_id']==c['id'] and self._docs(m['id']) for m in self.store.all('message'))):
+            raise ValueError('Le dossier client manque. Aucun dossier ne sera recréé automatiquement.')
 
-    def classify(self,ids,destination,document_ids=None):
+    def _assert_root(self):
+        expected=self.store.get('meta','archive_identity')
+        if not expected or file_safety.identity(self.root)!=expected['identity']:
+            raise ValueError('La racine des archives manque ou a été remplacée. Aucun dossier ne sera recréé automatiquement.')
+
+    def _recovery_root(self):
+        self._assert_root()
+        recovery=self.runtime/'recovery'
+        if recovery.is_relative_to(self.root):
+            raise ValueError('L’espace de récupération doit être situé hors du dossier des archives synchronisées.')
+        with file_safety.directory(recovery,True,self.runtime):pass
+        return recovery
+
+    def _revision(self,d):
+        return {k:d.get(k) for k in ('path','sha256','destination','classification','undo_filing','file_revision','move_to')}
+
+    def _save_version(self,d,source,reason):
+        recovery=self._recovery_root();version_id=uid();path=recovery/version_id/'snapshot'
+        original=file_safety.fingerprint(source)
+        version={'document_id':d['id'],'path':str(path),'source_path':str(source),'name':d['name'],
+                 'created_at':now(),'reason':reason,'sha256':original['sha256'],'status':'copying'}
+        self.store.put('file_version',version_id,version)
+        copied=file_safety.copy_verified(source,path,recovery,original)
+        version.update(status='verified',fingerprint=copied)
+        self.store.put('file_version',version_id,version)
+        return self.store.get('file_version',version_id)
+
+    def recovery_versions(self,id):
+        if not self.store.get('document',id):raise KeyError('Document introuvable.')
+        result=[]
+        for v in self.store.all('file_version'):
+            if v['document_id']!=id:continue
+            v['available']=False
+            try:
+                p=within(self.runtime/'recovery',v['path'])
+                if v['status']=='verified':v['available']=file_safety.fingerprint(p)==v['fingerprint']
+            except (OSError,ValueError):pass
+            result.append(v)
+        return result[::-1]
+
+    def _record_retained(self,op):
+        for item in op['items']:
+            if not item.get('retained'):continue
+            vid=op['id']+'-'+item['document_id']+'-original'
+            if self.store.get('file_version',vid):continue
+            try:
+                p=within(self.runtime/'recovery',item['retained']);fp=file_safety.fingerprint(p)
+                self.store.put('file_version',vid,{'document_id':item['document_id'],'path':str(p),'source_path':item['source'],'name':item['name'],'created_at':now(),'reason':'Original conservé après déplacement','sha256':fp['sha256'],'fingerprint':fp,'status':'verified'})
+            except (OSError,ValueError):pass
+
+    def _recover_moves(self):
+        # An interrupted transfer is evidence to inspect, never permission to unlink.
+        for op in self.store.all('file_operation'):
+            self._record_retained(op)
+            if op['status']=='running':
+                op.update(status='interrupted',error='Opération interrompue. Les copies sont conservées ; consultez Récupération.')
+                self.store.put('file_operation',op['id'],op)
+                for item in op['items']:
+                    d=self.store.get('document',item['document_id'])
+                    d['file_error']=op['error'];self.store.put('document',d['id'],d)
+        for d in self.store.all('document'):
+            if d.get('move_to'):
+                if not any(v['document_id']==d['id'] and v['status']=='verified' for v in self.store.all('file_version')):
+                    try:self._save_version(d,within(self.root,d['path']),'Avant revue de l’ancien déplacement')
+                    except (OSError,ValueError):pass
+                d['file_error']='Ancien déplacement incomplet : aucune reprise automatique. Consultez Récupération et vérifiez les deux emplacements.'
+                self.store.put('document',d['id'],d)
+
+    def _make_plan(self,action,items):
+        self._assert_root();recovery=self.runtime/'recovery'
+        if recovery.is_relative_to(self.root):raise ValueError('La récupération doit être hors du dossier des archives.')
+        file_safety.require_local(self.runtime)
+        runtime_identity=file_safety.identity(self.runtime)
+        for item in items:
+            source=Path(item['source']);target=Path(item['target'])
+            file_safety.require_local(source.parent)
+            item['source_fingerprint']=file_safety.fingerprint(source)
+            item['anchors']=file_safety.anchors(self.root,target.parent)
+            item['runtime_identity']=runtime_identity
+            if action!='restore' and item['source_fingerprint']['device']!=runtime_identity[0]:
+                raise ValueError('Déplacement entre volumes refusé : conservez les archives et la récupération sur le même volume.')
+            if target!=source:
+                ancestor=target.parent
+                while not ancestor.exists():ancestor=ancestor.parent
+                file_safety.require_local(ancestor)
+                if file_safety.identity(ancestor)[0]!=runtime_identity[0]:raise ValueError('Destination sur un autre volume : déplacement protégé indisponible.')
+            item['revision']=self._revision(self.store.get('document',item['document_id']))
+        op={'action':action,'items':items,'status':'awaiting_confirmation','created_at':now(),'expires_at':time.time()+600,'error':''}
+        id=uid();self.store.put('file_operation',id,op);return self.store.get('file_operation',id)
+
+    def prepare_classify(self,ids,destination,document_ids=None):
         with self.lock:
             destination=relative(destination);ms=self._messages(ids)
             if len({m['client_id'] for m in ms})!=1:raise ValueError('Sélectionnez des messages du même client.')
-            if any(m['status']!='ready' for m in ms):raise ValueError('Attendez que tous les documents soient exportés.')
-            c=self.client(ms[0]['client_id']);root=Path(c['folder']);dest=within(root,root/destination)
-            all_docs=[d for m in ms for d in self._docs(m['id'])]
-            if any(d.get('move_to') for d in all_docs):raise ValueError('Classement incomplet. Relancez le contrôle avant un nouveau classement.')
-            available={d['id']:d for d in all_docs}
-            if document_ids is None:ds=list(available.values())
-            else:
-                if not isinstance(document_ids,list) or any(not isinstance(i,str) for i in document_ids):raise ValueError('Sélection de documents invalide.')
-                if any(i not in available for i in document_ids):raise ValueError('Sélectionnez uniquement les documents des mails choisis.')
-                ds=[available[i] for i in dict.fromkeys(document_ids)]
+            if any(m['status']!='ready' for m in ms):raise ValueError('Vérifiez les documents avant le classement.')
+            root=Path(self.client(ms[0]['client_id'])['folder']);dest=within(root,root/destination)
+            available={d['id']:d for m in ms for d in self._docs(m['id'])}
+            if document_ids is not None and (not isinstance(document_ids,list) or any(not isinstance(i,str) or i not in available for i in document_ids)):
+                raise ValueError('Sélectionnez uniquement les documents des mails choisis.')
+            ds=[available[i] for i in dict.fromkeys(document_ids if document_ids is not None else available)]
             if not ds:raise ValueError('Aucun document à classer.')
-            if any(not self._healthy(d) for d in ds):raise ValueError('Un fichier manque ou a changé. Lancez le contrôle avant classement.')
+            if any(d.get('move_to') or d.get('file_error') or not self._healthy(d) for d in ds):raise ValueError('Un fichier manque, a changé ou nécessite une récupération. Vérifiez-le avant classement.')
             for m in ms:self._prepare_filing(m)
-            ds=[self.store.get('document',d['id']) for d in ds]
-            reserved=set()
-            with self.store.transaction():
-                for d in ds:
-                    src=within(root,d['path'])
-                    target=src if src.parent==dest else self._target(dest,src.name,d['id'],d['sha256'],reserved)
-                    reserved.add(str(target).casefold())
-                    if target!=src or d.get('classification')!='classified':
-                        d['undo_filing']={'token':uid(),'path':str(src),'destination':d['destination'],
-                                          'classification':d['classification'],'target_path':str(target)}
-                        d.pop('undo_applied',None)
-                    d.update(move_to=str(target),move_destination=destination);self.store.put('document',d['id'],d)
-                for m in ms:
-                    m['classification_auto_print']=True;self.store.put('message',m['id'],m)
-            self._recover_moves()
-            if any(self.store.get('document',d['id']).get('move_to') for d in ds):raise ValueError('Classement incomplet. Consultez le journal et relancez le contrôle.')
-            printable_ids=[m['id'] for m in ms if not m['historical'] and self.store.get('message',m['id'])['classification']=='classified']
-            if self.settings['print_policy']=='after_classify' and printable_ids:
-                self.print_messages(printable_ids,retry_failed=False)
+            items=[];reserved=set()
+            for d in ds:
+                d=self.store.get('document',d['id']);src=within(root,d['path'])
+                target=src if src.parent==dest else self._target(dest,src.name,d['id'],d['sha256'],reserved)
+                reserved.add(str(target).casefold())
+                items.append(dict(document_id=d['id'],name=d['name'],source=str(src),target=str(target),destination=destination,classification='classified'))
+            return self._make_plan('classify',items)
 
-    def undo_filing(self,id,token):
+    def prepare_undo(self,id,token):
         with self.lock:
             d=self.store.get('document',id)
             if not d:raise KeyError('Document introuvable.')
-            if d.get('move_to'):raise ValueError('Déplacement incomplet. Relancez le contrôle avant de réessayer.')
-            if token and d.get('undo_applied')==token:return d
             undo=d.get('undo_filing')
             if not undo or not token or undo['token']!=token:raise ValueError('Ce classement ne peut plus être annulé. Actualisez la page.')
-            if d['path']!=undo['target_path'] or not self._healthy(d):raise ValueError('Le fichier manque ou a changé. Lancez le contrôle avant annulation.')
-            m=self._messages([d['message_id']])[0]
-            root=Path(self.client(m['client_id'])['folder'])
-            src=within(root,d['path']);target=within(root,undo['path'])
-            if target!=src and target.exists():raise ValueError('Un fichier occupe déjà l’ancien emplacement. Aucun fichier n’a été remplacé.')
-            with self.store.transaction():
-                d.update(move_to=str(target),move_destination=undo['destination'],move_classification=undo['classification'],undo_applied=token)
-                d.pop('undo_filing');self.store.put('document',id,d)
-                m['classification_auto_print']=False;self.store.put('message',m['id'],m)
-            self._recover_moves()
-            result=self.store.get('document',id)
-            if result.get('move_to'):raise ValueError('Annulation à reprendre. Relancez le contrôle des fichiers.')
-            return result
+            if d.get('move_to') or d.get('file_error') or d['path']!=undo['target_path'] or not self._healthy(d):raise ValueError('Le fichier manque ou a changé. Consultez Récupération.')
+            root=Path(self.client(self.store.get('message',d['message_id'])['client_id'])['folder'])
+            target=within(root,undo['path']);src=within(root,d['path'])
+            if target!=src and os.path.lexists(target):raise ValueError('L’ancien emplacement est occupé. Aucun remplacement autorisé.')
+            return self._make_plan('undo',[dict(document_id=id,name=d['name'],source=str(src),target=str(target),destination=undo['destination'],classification=undo['classification'],undo_token=token)])
+
+    def prepare_restore(self,id,version_id):
+        with self.lock:
+            d=self.store.get('document',id)
+            if not d:raise KeyError('Document introuvable.')
+            version=next((v for v in self.recovery_versions(id) if v['id']==version_id and v['available']),None)
+            if not version:raise ValueError('Cette copie est absente ou modifiée. Elle ne peut pas être restaurée.')
+            root=Path(self.client(self.store.get('message',d['message_id'])['client_id'])['folder'])
+            # Do not recreate a folder which Finder removed. Use the existing client root.
+            with file_safety.directory(root):pass
+            name=Path(d['name']);name=name.stem+' - récupéré '+uid()[:8]+name.suffix
+            target=self._target(root,name,id,version['sha256'])
+            return self._make_plan('restore',[dict(document_id=id,name=d['name'],source=version['path'],target=str(target),destination='.',classification='pending',version_id=version_id)])
+
+    def classify(self,ids,destination,document_ids=None):
+        raise ValueError('Une confirmation du déplacement est obligatoire. Préparez puis confirmez l’opération.')
+
+    def undo_filing(self,id,token):
+        raise ValueError('Une confirmation de l’annulation est obligatoire. Préparez puis confirmez l’opération.')
+
+    def confirm_operation(self,id,confirmed=False):
+        with self.lock:
+            if confirmed is not True:raise ValueError('Une confirmation explicite est obligatoire.')
+            op=self.store.get('file_operation',id)
+            if not op:raise ValueError('Confirmation inconnue.')
+            if op['status']=='completed':return op
+            if op['status']!='awaiting_confirmation':raise ValueError('Cette tentative est terminée ou interrompue. Vérifiez les fichiers puis préparez une nouvelle opération.')
+            if time.time()>op['expires_at']:raise ValueError('Confirmation expirée. Choisissez à nouveau la destination.')
+            self._assert_root()
+            # Validate the entire batch before any document effect.
+            for item in op['items']:
+                d=self.store.get('document',item['document_id'])
+                if self._revision(d)!=item['revision']:raise ValueError('Le document a changé depuis la préparation. Actualisez la page.')
+                file_safety.check_anchors(item['anchors'])
+                if file_safety.identity(self.runtime)!=item['runtime_identity']:raise ValueError('L’espace de récupération a changé.')
+                if file_safety.fingerprint(item['source'])!=item['source_fingerprint']:raise ValueError('La source a changé depuis la préparation.')
+                target=Path(item['target'])
+                if str(target)!=item['source'] and target.parent.exists():
+                    with file_safety.directory(target.parent) as parent:file_safety.require_free(parent,target.name)
+            op['id']=id
+            op.update(status='running',confirmed_at=now());self.store.put('file_operation',id,op)
+            try:
+                for item in op['items']:
+                    d=self.store.get('document',item['document_id']);src=Path(item['source']);dst=Path(item['target'])
+                    if op['action']!='restore':
+                        version=self._save_version(d,src,'Avant '+('annulation' if op['action']=='undo' else 'classement'))
+                        item['version_id']=version['id'];item['snapshot']=version['path']
+                    else:version=self.store.get('file_version',item['version_id'])
+                    item['phase']='snapshot_verified';self.store.put('file_operation',id,op)
+                    file_safety.check_anchors(item['anchors'])
+                    if src!=dst:
+                        item['temporary']=str(dst.parent/('.mailord-'+uid()+'.tmp'))
+                        item['retained']=str(Path(version['path']).parent/('original-'+uid())) if op['action']!='restore' else ''
+                        item['phase']='publishing';self.store.put('file_operation',id,op)
+                        final=file_safety.publish(version['path'],dst,self.root,version['fingerprint'],item['temporary'])
+                        item['published_fingerprint']=final;item['phase']='destination_verified';self.store.put('file_operation',id,op)
+                        if op['action']!='restore':
+                            file_safety.check_anchors(item['anchors'])
+                            if file_safety.fingerprint(dst)!=final:raise ValueError('La destination a changé. Original conservé.')
+                            item['phase']='retiring';self.store.put('file_operation',id,op)
+                            file_safety.retire(src,item['retained'],item['source_fingerprint'])
+                            item['phase']='source_retained';self.store.put('file_operation',id,op)
+                        if file_safety.fingerprint(dst)!=final:raise ValueError('Destination modifiée. Consultez les copies de récupération.')
+                    else:final=file_safety.fingerprint(dst)
+                    if op['action']=='classify':
+                        d['undo_filing']={'token':uid(),'path':d['path'],'destination':d.get('destination','00 - À classer'),'classification':d.get('classification','pending'),'target_path':str(dst)}
+                    else:d.pop('undo_filing',None)
+                    d.update(path=str(dst),name=dst.name,sha256=final['sha256'],destination=item['destination'],classification=item['classification'],file_revision=uid())
+                    d.pop('file_error',None);d.pop('move_to',None);d.pop('move_destination',None);d.pop('move_classification',None)
+                    item['phase']='committed'
+                    with self.store.transaction():
+                        self.store.put('document',d['id'],d)
+                        m=self.store.get('message',d['message_id']);m['classification_auto_print']=False
+                        if len(self._docs(m['id']))>=m.get('expected_documents',0) and all(self._healthy(x) and not x.get('file_error') for x in self._docs(m['id'])):m.update(status='ready',error='')
+                        self.store.put('message',m['id'],m);self.store.put('file_operation',id,op)
+                    self._refresh_classification(m['id'])
+                self._record_retained(op)
+                op.update(status='completed',completed_at=now());self.store.put('file_operation',id,op)
+            except Exception as e:
+                self._record_retained(op)
+                op.update(status='conflict',error=self.error_text(e));self.store.put('file_operation',id,op)
+                for item in op['items']:
+                    if item.get('phase')=='committed':continue
+                    d=self.store.get('document',item['document_id']);d['file_error']='Opération suspendue : '+op['error']+' Consultez Récupération.';self.store.put('document',d['id'],d)
+                raise ValueError('Opération suspendue. Aucun écrasement ni suppression. '+op['error']) from e
+            return self.store.get('file_operation',id)
 
     def _messages(self,ids):
         if not isinstance(ids,list) or not ids:raise ValueError('Sélectionnez au moins un message.')
@@ -550,7 +675,9 @@ class Engine:
             if any(d['path']==str(p) and d['message_id']!=id for d in self.store.all('document')):raise ValueError('Ce fichier est déjà associé à un autre message.')
             d=next((x for x in self._docs(id) if x['kind']=='email'),None) or {'id':id+'-0','message_id':id,'kind':'email','inline':False,'selected':True,'printable':True,'original_name':m['subject']+'.pdf'}
             if d.get('move_to'):raise ValueError('Déplacement du PDF incomplet. Relancez le contrôle avant association.')
-            d.update(path=str(p),name=p.name,sha256=digest(p),destination=str(p.parent.relative_to(Path(c['folder']))),classification='classified');self.store.put('document',d['id'],d)
+            self._save_version({**d,'name':p.name},p,'PDF associé explicitement')
+            d.pop('file_error',None)
+            d.update(path=str(p),name=p.name,file_revision=uid(),sha256=digest(p),destination=str(p.parent.relative_to(Path(c['folder']))),classification='classified');self.store.put('document',d['id'],d)
             m.update(historical=True,print_status='historical');self.store.put('message',id,m)
             self._refresh_classification(id)
 
@@ -577,7 +704,7 @@ class Engine:
             if not root.is_absolute():raise ValueError('Choisissez un chemin absolu pour les archives.')
             root.mkdir(parents=True,exist_ok=True);s['archive_root']=str(root.resolve())
             connector=make_connector(s,self.runtime)
-            self.store.put('settings','main',s);self.settings=s;self.root=root.resolve();self.connector=connector;return s
+            self.store.put('settings','main',s);self.settings=s;self.root=root.resolve();self.store.put('meta','archive_identity',{'identity':file_safety.identity(self.root)});self.connector=connector;return s
 
     def state(self):
         with self.lock:
@@ -588,7 +715,9 @@ class Engine:
                 c['folders']=self.client_folders(c,c['existing_folders'])
             messages=self.store.all('message')
             for m in messages:
-                m['documents']=self._docs(m['id']);m['print_progress']=self.print_progress(m)
+                m['documents']=self._docs(m['id'])
+                for d in m['documents']:d['recovery_count']=sum(v['document_id']==d['id'] and v['status']=='verified' for v in self.store.all('file_version'))
+                m['print_progress']=self.print_progress(m)
                 m['print_status']=self.print_status(m,m['print_progress'])
                 m['print_jobs']=[p for p in self.store.all('print') if p['message_id']==m['id']]
                 m.pop('spool',None);m.pop('sources',None)

@@ -1,3 +1,4 @@
+from filing_helpers import classify, undo, post_classify
 from email.message import EmailMessage
 from pathlib import Path
 import pytest
@@ -28,27 +29,30 @@ def test_provision_template_version_and_safe_additive(engine):
     with pytest.raises(ValueError):engine.save_template(['../escape'])
 
 
-def test_scan_export_repair_and_restart_idempotent(engine):
+def test_scan_missing_file_is_reported_and_restart_is_idempotent(engine):
     c=engine.create_client('Camille');add_mail(engine,c);engine.scan();engine.process()
-    m=engine.state()['messages'][0];assert m['status']=='ready';assert m['historical']
+    m=engine.state()['messages'][0];assert m['status']=='ready' and m['historical']
     pdf=next(d for d in m['documents'] if d['kind']=='email');Path(pdf['path']).unlink()
-    engine.process();assert Path(pdf['path']).is_file()
+    engine.process();assert not Path(pdf['path']).exists()
+    assert engine.store.get('message',m['id'])['status']=='error'
     engine.scan();assert len(engine.state()['messages'])==1
     e2=Engine(engine.settings,engine.store);e2.process();assert len(e2.state()['messages'][0]['documents'])==2
+    assert e2.recovery_versions(pdf['id'])[0]['available']
 
 
 def test_classify_bulk_confined_and_no_overwrite(engine):
     c=engine.create_client('Camille');add_mail(engine,c);engine.scan();engine.process();m=engine.state()['messages'][0]
-    with pytest.raises(ValueError):engine.classify([m['id']],'../escape')
-    engine.classify([m['id']],'03 MAILS (PDF)');m=engine.state()['messages'][0];assert m['classification']=='classified'
+    with pytest.raises(ValueError):classify(engine, [m['id']],'../escape')
+    classify(engine, [m['id']],'03 MAILS (PDF)');m=engine.state()['messages'][0];assert m['classification']=='classified'
     assert all('03 MAILS (PDF)' in d['path'] for d in m['documents'])
-    engine.classify([m['id']],'07 FACTURES');assert len(engine.store.all('print'))==0
+    classify(engine, [m['id']],'07 FACTURES');assert len(engine.store.all('print'))==0
 
 
 def test_new_mail_prints_once_and_repair_never_reprints(engine):
     c=engine.create_client('Camille');engine.scan();add_mail(engine,c);engine.scan();engine.process();m=engine.state()['messages'][0]
-    engine.classify([m['id']],'03 MAILS (PDF)');assert engine.state()['messages'][0]['print_status']=='simulated'
-    count=len(engine.store.all('print'));engine.process();engine.classify([m['id']],'07 FACTURES');engine.print_messages([m['id']]);assert len(engine.store.all('print'))==count
+    classify(engine, [m['id']],'03 MAILS (PDF)');assert not engine.store.all('print')
+    engine.print_messages([m['id']]);assert engine.state()['messages'][0]['print_status']=='simulated'
+    count=len(engine.store.all('print'));engine.process();classify(engine, [m['id']],'07 FACTURES');engine.print_messages([m['id']]);assert len(engine.store.all('print'))==count
     Path(engine.state()['messages'][0]['documents'][0]['path']).write_bytes(b'broken');engine.process();assert len(engine.store.all('print'))==count
 
 
@@ -91,7 +95,7 @@ def test_preparing_print_resumes_without_new_generation(engine):
 def test_same_name_existing_destination_is_preserved(engine):
     c=engine.create_client('Camille');add_mail(engine,c);engine.scan();engine.process();m=engine.state()['messages'][0]
     target=Path(c['folder'])/'03 MAILS (PDF)'/next(d for d in m['documents'] if d['kind']=='attachment')['name'];target.parent.mkdir();target.write_bytes(b'precious')
-    engine.classify([m['id']],'03 MAILS (PDF)');assert target.read_bytes()==b'precious'
+    classify(engine, [m['id']],'03 MAILS (PDF)');assert target.read_bytes()==b'precious'
     assert next(d for d in engine.state()['messages'][0]['documents'] if d['kind']=='attachment')['path']!=str(target)
 
 
@@ -99,7 +103,7 @@ def test_resume_partial_move_intent(engine):
     c=engine.create_client('Camille');add_mail(engine,c);engine.scan();engine.process();m=engine.state()['messages'][0];d=next(d for d in m['documents'] if d['kind']=='attachment')
     dst=Path(c['folder'])/'03 MAILS (PDF)'/d['name'];dst.parent.mkdir();dst.write_bytes(Path(d['path']).read_bytes())
     record=engine.store.get('document',d['id']);record['move_to']=str(dst);engine.store.put('document',d['id'],record)
-    engine.process();assert not Path(d['path']).exists();assert engine.store.get('document',d['id'])['path']==str(dst)
+    engine.process();assert Path(d['path']).exists() and dst.exists();assert engine.store.get('document',d['id'])['file_error']
 
 
 def test_retry_failed_print_only(engine,monkeypatch):

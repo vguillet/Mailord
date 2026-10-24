@@ -2310,3 +2310,11 @@ main {
 .client-location-nav { display:flex; flex-wrap:wrap; gap:6px; margin:10px 0; }
 .client-location-picker .field { margin-bottom:8px; }
 .client-location-picker .dialog-note { margin-bottom:0; }
+
+.file-plan, .recovery-version { padding: 1rem; border: 1px solid var(--line, #dce3d5); border-radius: 12px; margin-bottom: 1rem; }
+.file-plan dl { display: grid; grid-template-columns: auto minmax(0,1fr); gap: .5rem 1rem; }
+.file-plan dd { margin: 0; overflow-wrap: anywhere; }
+.file-plan dt { font-weight: 600; }
+.recovery-version small { display: block; overflow-wrap: anywhere; }
+.recovery-version .button { margin-top: .75rem; }
+.recovery-history { margin-top: 1rem; }

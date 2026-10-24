@@ -91,7 +91,7 @@ Les journaux sont dans l’espace privé. Les autorisations Mail du lancement au
 
 ## Sauvegarde et contrôle sur place
 
-Arrêtez le service avant de sauvegarder l’ensemble de l’espace privé (registre SQLite, messages originaux, quarantaine) et les archives. La copie cloud des seuls PDF ne suffit pas à restaurer le suivi des impressions. Pour restaurer, replacez registre et fichiers aux mêmes chemins ; sinon utilisez un nouvel espace et le rapprochement historique.
+Arrêtez le service avant de sauvegarder l’ensemble de l’espace privé (registre SQLite, messages originaux, récupération et anciennes quarantaines) et les archives. La copie cloud des seuls PDF ne suffit pas à restaurer le suivi des impressions. Pour restaurer, replacez registre et fichiers aux mêmes chemins ; sinon utilisez un nouvel espace et le rapprochement historique.
 
 Avant utilisation quotidienne, essayez sur le Mac cible : un mail texte, un mail HTML, un PDF joint, une image jointe, un format non imprimable, le classement séparé du PDF et d’une pièce jointe, un réveil après veille, puis une impression de quelques pages. Comparez les PDF aux mails originaux. Le service et ses adaptateurs sont testés automatiquement ; ce contrôle confirme les permissions, les formats du compte et le comportement réel de l’imprimante.
 
@@ -113,9 +113,9 @@ Le mode simulation reste actif par défaut et n’imprime aucun papier. La prise
 
 ### Passage au classement manuel de tous les documents
 
-Cette mise à jour conserve les emplacements et les statuts des PDF et pièces jointes déjà suivis, ainsi que les présélections des modèles et les impressions existantes. Les anciens PDF rangés automatiquement dans Correspondances peuvent désormais être déplacés avec le même bouton que les autres documents. Les nouveaux exports attendent tous le choix de l’utilisateur. Le contrôle reprend les intentions de déplacement interrompues et répare les fichiers manquants à leur emplacement enregistré ; il ne redistribue pas les archives à cause de cette mise à jour.
+Cette mise à jour conserve les emplacements et les statuts des PDF et pièces jointes déjà suivis, ainsi que les présélections des modèles et les impressions existantes. Les anciens PDF rangés automatiquement dans Correspondances peuvent désormais être déplacés avec le même bouton que les autres documents. Les nouveaux exports attendent tous le choix de l’utilisateur. Le contrôle signale les fichiers absents ou modifiés sans les régénérer. Les opérations interrompues sont suspendues et les copies conservées, accessibles depuis Récupération.
 
-L’impression « Quand tous les documents sont classés » attend le PDF du mail et toutes ses pièces jointes, même celles décochées pour l’impression. Pour un nouveau mail sans pièce jointe, elle attend le classement de son PDF. L’option « Dès que les fichiers sont exportés » reste disponible si l’impression doit précéder le classement. L’historique reste exclu des impressions automatiques ; aucun ancien document n’est réimprimé à cause de cette mise à jour.
+Le classement ne déclenche plus d’impression. Utilisez les icônes d’impression ou l’option « Dès que les fichiers sont exportés » pour les nouveaux messages. L’ancienne politique après classement est traitée comme manuelle. L’historique reste exclu des impressions automatiques.
 
 
 ### Choisir l’emplacement d’un nouveau client
@@ -125,3 +125,7 @@ Dans **Nouveau client**, la rubrique **Emplacement du client sur le Mac** propos
 Le choix du parent local est indépendant du dossier de messagerie et des cases du modèle. Les sous-dossiers cochés sont préparés dans ce nouvel emplacement ; les autres restent disponibles pour le classement à la demande. Les dossiers déjà associés à un client sont indiqués mais ne peuvent pas accueillir un deuxième client. Les dossiers cachés, liens symboliques et emplacements extérieurs ne sont pas proposés.
 
 Si l’emplacement disparaît ou est remplacé avant la validation, la création est refusée : actualisez puis choisissez à nouveau. Une reprise ne recrée pas un parent disparu et la soumission d’un client existant avec un autre parent ne le déplace pas. Aucun document ni dossier existant n’est supprimé par cette création.
+
+## Classement protégé et récupération
+
+Après choix du dossier sous un document, vérifier le départ et l’arrivée dans la confirmation. Le service conserve une copie indépendante et l’original dans son espace privé ; aucun dossier vidé n’est supprimé. **Récupération** permet de restaurer une version vers un nouveau fichier, sans écrasement. Un fichier absent ou modifié dans Finder est signalé au lieu d’être remplacé. Archives et récupération doivent être sur le même volume local APFS ou HFS+. Voir [les règles et limites](FILE_SAFETY.md), notamment la sauvegarde indépendante et l’espace disque occupé par les versions.

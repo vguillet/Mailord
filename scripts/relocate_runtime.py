@@ -7,6 +7,9 @@ from pathlib import Path
 import shutil
 import sqlite3
 import tempfile
+import sys
+sys.path.insert(0,str(Path(__file__).resolve().parents[1]))
+from mailord import file_safety
 
 
 PATH_FIELDS = {'runtime', 'archive_root', 'folder', 'path', 'spool', 'move_to', 'target_path'}
@@ -30,6 +33,12 @@ def relocate(source: Path, destination: Path):
                 return str(destination) + value[len(str(source)):]
         return value
 
+    database=source/'registry.sqlite3'
+    if database.exists():
+        with sqlite3.connect(database.as_uri()+'?mode=ro',uri=True) as check:
+            if check.execute("SELECT 1 FROM records WHERE kind IN ('file_operation','file_version') OR (kind='meta' AND id='archive_identity') LIMIT 1").fetchone():
+                raise ValueError('Cet espace contient le journal de conservation. Sa migration exige de vérifier et réassocier les identités des dossiers ; aucune copie ni modification effectuée.')
+
     with ExitStack() as locks:
         for name in ('supervisor.lock', 'server.lock'):
             lock = locks.enter_context((source / name).open('a'))
@@ -41,7 +50,8 @@ def relocate(source: Path, destination: Path):
         try:
             def ignore(directory, names):
                 return [n for n in names if n in {'registry.sqlite3', 'registry.sqlite3-wal', 'registry.sqlite3-shm'}] if Path(directory) == source else []
-            shutil.copytree(source, stage, dirs_exist_ok=True, ignore=ignore)
+            shutil.copytree(source, stage, dirs_exist_ok=True, ignore=ignore,
+                            copy_function=lambda src,dst:file_safety.copy_verified(Path(src),Path(dst),stage))
             database = source / 'registry.sqlite3'
             if database.exists():
                 original = sqlite3.connect(database.as_uri() + '?mode=ro', uri=True)
@@ -60,9 +70,10 @@ def relocate(source: Path, destination: Path):
                 (stage / 'registry.sqlite3').chmod(0o600)
             stage.chmod(0o700)
             if destination.exists(): raise ValueError('La destination existe déjà.')
-            stage.rename(destination)
-        finally:
-            if stage.exists(): shutil.rmtree(stage)
+            with file_safety.directory(stage.parent) as parent:
+                file_safety.exclusive_rename(parent,stage.name,parent,destination.name)
+        except Exception as exc:
+            raise RuntimeError(f'Migration suspendue. Source et copie partielle conservées : {stage}. {exc}') from exc
     return destination
 
 

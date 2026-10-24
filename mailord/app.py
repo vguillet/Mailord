@@ -157,6 +157,28 @@ def create_app(settings,background=True,*,restart=None,probation=False,health_to
         return {'ok':True}
     @app.post('/api/process')
     def process():engine.process();return {'ok':True}
+    @app.post('/api/classify/prepare')
+    def prepare_classify(body:dict=Body(...)):
+        return engine.prepare_classify(required(body,'message_ids',list),required(body,'destination',str),
+                                       required(body,'document_ids',list) if 'document_ids' in body else None)
+    @app.post('/api/file-operations/{id}/confirm')
+    def confirm_operation(id:str,body:dict=Body(...)):
+        return engine.confirm_operation(id,body.get('confirm'))
+    @app.post('/api/documents/{id}/undo-filing/prepare')
+    def prepare_undo(id:str,body:dict=Body(...)):
+        return engine.prepare_undo(id,required(body,'token',str))
+    @app.get('/api/documents/{id}/recovery')
+    def recovery(id:str):
+        return {'versions':engine.recovery_versions(id),'operations':[o for o in engine.store.all('file_operation') if o['status']!='awaiting_confirmation' and any(i['document_id']==id for i in o['items'])]}
+    @app.post('/api/documents/{id}/restore/prepare')
+    def prepare_restore(id:str,body:dict=Body(...)):
+        return engine.prepare_restore(id,required(body,'version_id',str))
+    @app.post('/api/documents/{id}/recovery/reveal')
+    def reveal_recovery(id:str):
+        versions=engine.recovery_versions(id)
+        if not versions:raise ValueError('Aucune copie conservée pour ce document.')
+        subprocess.run(['/usr/bin/open',str(engine._recovery_root())],check=True,timeout=10)
+        return {'ok':True}
     @app.post('/api/classify')
     def classify(body:dict=Body(...)):
         engine.classify(required(body,'message_ids',list),required(body,'destination',str),

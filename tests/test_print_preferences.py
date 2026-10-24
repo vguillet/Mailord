@@ -1,3 +1,4 @@
+from filing_helpers import classify, undo, post_classify
 from email.message import EmailMessage
 from pathlib import Path
 from types import SimpleNamespace
@@ -91,7 +92,9 @@ def test_both_mail_and_supported_attachment_receive_options_without_duplicate(en
     def submit(path,printer,dry_run=False,**options):calls.append(options);return 'simulated-1'
     monkeypatch.setattr(printing,'submit',submit)
     engine.update_settings({'print_sides':'two-sided-long-edge','print_color_mode':'monochrome'})
-    engine.classify([m['id']],'03 MAILS (PDF)')
+    classify(engine, [m['id']],'03 MAILS (PDF)')
+    assert calls==[]
+    engine.print_messages([m['id']])
     assert calls==[{'sides':'two-sided-long-edge','color_mode':'monochrome'}]*2
     records=engine.store.all('print');assert len(records)==2
     assert all(p['options']==calls[0] for p in records)

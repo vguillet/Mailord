@@ -1,0 +1,33 @@
+{
+  "mdse": "2.3",
+  "kind": "Requirement",
+  "id": "REQ-03",
+  "name": "Récupérer sans remplacement",
+  "status": "approved",
+  "revision": 1,
+  "createdAt": "2026-10-24",
+  "updatedAt": "2026-10-24",
+  "workItem": "WI-document-safety",
+  "keyword": "SHALL",
+  "statement": "L’utilisatrice SHALL pouvoir consulter les copies de récupération et restaurer explicitement une version vers un nouveau fichier sans remplacer le fichier courant.",
+  "priority": "must",
+  "acceptanceCriteria": [
+    {
+      "id": "AC-01",
+      "kind": "happy-path",
+      "given": "une version conservée",
+      "when": "sa restauration est confirmée",
+      "then": "une copie vérifiée est créée et la version précédente reste conservée"
+    },
+    {
+      "id": "AC-02",
+      "kind": "failure-path",
+      "given": "une interruption ou un fichier absent/modifié dans Finder",
+      "when": "le service redémarre ou contrôle les archives",
+      "then": "les copies restent conservées et aucune réparation destructive ni reprise de déplacement implicite n’a lieu"
+    }
+  ],
+  "verifiedBy": [
+    "VM-01"
+  ]
+}

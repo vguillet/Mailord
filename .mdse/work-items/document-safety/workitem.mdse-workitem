@@ -1,0 +1,38 @@
+{
+  "mdse": "2.3",
+  "kind": "WorkItem",
+  "id": "WI-document-safety",
+  "name": "Conservation et déplacements confirmés",
+  "status": "implementing",
+  "revision": 2,
+  "createdAt": "2026-10-24",
+  "updatedAt": "2026-10-24",
+  "slug": "document-safety",
+  "purpose": "Appliquer la politique de conservation demandée après la matrice de risques : aucun effacement documentaire, confirmation ciblée, copies indépendantes récupérables. Remplace explicitement le nettoyage et la réparation automatiques précédents selon les instructions utilisateur.",
+  "userStories": [
+    {
+      "id": "US-01",
+      "role": "utilisatrice",
+      "capability": "classer et récupérer sans perdre mes fichiers ni mes dossiers",
+      "benefit": "rester maîtresse des changements même après une panne ou un déplacement Finder"
+    }
+  ],
+  "testingApproach": "selective-TDD",
+  "requirements": [
+    "REQ-01",
+    "REQ-02",
+    "REQ-03"
+  ],
+  "design": "DESIGN",
+  "tasks": [
+    "TASK-01"
+  ],
+  "methods": [
+    "VM-01"
+  ],
+  "executions": [],
+  "verifications": [],
+  "decisions": [
+    "DEC-01"
+  ]
+}

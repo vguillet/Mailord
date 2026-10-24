@@ -4,7 +4,7 @@
   "id": "DEC-01",
   "name": "Catalogue virtuel et écriture à la demande",
   "status": "accepted",
-  "revision": 1,
+  "revision": 2,
   "createdAt": "2026-10-24",
   "updatedAt": "2026-10-24",
   "workItem": "WI-lazy-folders",
@@ -26,6 +26,7 @@
   "consequences": [
     "Le dossier mail client est toujours créé pour permettre la surveillance ; la racine locale du client apparaît au premier export.",
     "Les anciens dossiers vides ne sont pas supprimés en masse. Un fichier caché compte comme contenu.",
-    "GET /api/state enrichit chaque client avec existing_folders ; folders reste une liste compatible, maintenant virtuelle. Le modèle courant est proposé également aux anciens clients."
+    "GET /api/state enrichit chaque client avec existing_folders ; folders reste une liste compatible, maintenant virtuelle. Le modèle courant est proposé également aux anciens clients.",
+    "Depuis WI-document-safety/DEC-01, le volet retrait des dossiers est remplacé par la conservation totale, conformément à la demande utilisateur. Statut historique maintenu suivant la limite L-09 inter-work-item."
   ]
 }
