@@ -2244,3 +2244,10 @@ main {
 
 .mail-body .document-preview { margin-bottom:0 }
 .mail-body .detail-meta { margin-bottom:16px }
+
+.document-tracking { display:flex; align-items:center; flex-wrap:wrap; gap:6px; margin:5px 0 2px }
+.document-tracking .filing-status { margin:0 }
+.print-tracking { text-transform:none; letter-spacing:normal; line-height:1.3 }
+.print-tracking.preparing,.print-tracking.submitting,.print-tracking.simulated { background:#edf2f8; color:#365473 }
+.print-tracking.error,.print-tracking.uncertain { background:#fbe8e1; color:#923b25; border:1px solid #dcaa98 }
+.print-tracking.unavailable { background:#eef0eb; color:#52604c }
