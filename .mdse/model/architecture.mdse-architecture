@@ -4,14 +4,14 @@
   "id": "ARCH",
   "name": "Architecture initiale Auto-secretaire",
   "status": "current",
-  "revision": 12,
+  "revision": 13,
   "createdAt": "2026-10-23",
   "updatedAt": "2026-10-24",
   "style": "Service natif macOS modulaire, FastAPI sur boucle locale, interface HTML/CSS/JavaScript et registre SQLite.",
   "components": [
     {
       "name": "InterfaceLocale",
-      "responsibility": "Navigation par client, messages, états et aperçu ; création de clients, édition du modèle et du nommage. Classement individuel via un sélecteur attaché au document : recherche, branches dépliables, favoris/récents, choix explicite. Arborescence complète même virtuelle et chevrons 20 px dans boutons 32 px. Un seul sélecteur, conservé par identifiant au rafraîchissement ; erreurs inline et requête capturant document/message/client. Impression sélectionnée séparément ; aucune commande de classement groupé dans l’interface. Icône et état d’impression par document avec confirmation ciblée ; commande globale du détail retirée. Étoiles clients accessibles, favorites en tête avec tri français, recherche et focus conservés. Champs De/À/Reçu/Client puis corps ouvert et repliable, avant PDF et pièces jointes, cases auto/groupé libellées, progression et recherche documentaire accent-insensible ; modèle recherchable/repliable sans perte des choix masqués. Bouton Annuler le classement ciblé par document et jeton.",
+      "responsibility": "Navigation par client, messages, états et aperçu ; création de clients, édition du modèle et du nommage. Classement individuel via un sélecteur attaché au document : recherche, branches dépliables, favoris/récents, choix explicite. Arborescence complète même virtuelle et chevrons 20 px dans boutons 32 px. Un seul sélecteur, conservé par identifiant au rafraîchissement ; erreurs inline et requête capturant document/message/client. Impression sélectionnée séparément ; aucune commande de classement groupé dans l’interface. Icône et état d’impression par document avec confirmation ciblée ; commande globale du détail retirée. Étoiles clients accessibles, favorites en tête avec tri français, recherche et focus conservés. Champs De/À/Reçu/Client puis corps ouvert et repliable, avant PDF et pièces jointes, sélections persistées conservées sans contrôle auto/groupé dans les cartes, progression et recherche documentaire accent-insensible ; modèle recherchable/repliable sans perte des choix masqués. Bouton Annuler le classement ciblé par document et jeton. Mail avec pied PDF et pièces jointes distinctes ; documentControls partagé conserve les identifiants d’action. Icônes Lucide distribuées dans static/icons. messagePrintBadges représente séparément les compteurs métier existants, sans modifier le registre.",
       "state": "existing",
       "dependsOn": [
         "GestionClients",

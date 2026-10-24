@@ -4,7 +4,7 @@
   "id": "OVERVIEW",
   "name": "Vue d'ensemble Auto-secretaire",
   "status": "current",
-  "revision": 12,
+  "revision": 13,
   "createdAt": "2026-10-23",
   "updatedAt": "2026-10-24",
   "summary": "Auto-secrétaire automatise localement sur Mac les dossiers de communications clients : PDF, pièces jointes, nommage chronologique, classement et impression avec interface web française.",
@@ -21,12 +21,12 @@
     },
     {
       "name": "Classement ergonomique",
-      "description": "Navigation clients, états et aperçu. Sélecteur individuel sous chaque PDF ou pièce jointe, sans dialogue : recherche dans toute l’arborescence, favoris, récents et clavier. Chevrons lisibles de 20 px, zones cliquables de 32 px ; destinations absentes sélectionnables. Contexte conservé au rafraîchissement, erreurs sous le document et requêtes liées à leur document initial. Badges À CLASSER contrastés. Clients favoris étoilés et persistés, regroupés en tête de navigation sans changer le mail actif. Espace compact : champs De/À/Reçu/Client puis corps ouvert et repliable, avant PDF et pièces jointes, progression séparée, recherche sur noms de pièces et destinations. Annuler le dernier classement par document, même après redémarrage, sans écrasement ni impression.",
+      "description": "Navigation clients, états et aperçu. Sélecteur individuel sous chaque PDF ou pièce jointe, sans dialogue : recherche dans toute l’arborescence, favoris, récents et clavier. Chevrons lisibles de 20 px, zones cliquables de 32 px ; destinations absentes sélectionnables. Contexte conservé au rafraîchissement, erreurs sous le document et requêtes liées à leur document initial. Badges À CLASSER contrastés. Clients favoris étoilés et persistés, regroupés en tête de navigation sans changer le mail actif. Espace compact : champs De/À/Reçu/Client puis corps ouvert et repliable, avant PDF et pièces jointes, progression séparée, recherche sur noms de pièces et destinations. Annuler le dernier classement par document, même après redémarrage, sans écrasement ni impression. Mail et PDF réunis avec pied sauge ; seules les pièces jointes restent en cartes. Titre pleine largeur, badges et icônes Lucide alignés, destination dessous. Contrôle auto/groupé et labels fixes retirés ; préférences persistées conservées.",
       "state": "implemented"
     },
     {
       "name": "Impression et reprise",
-      "description": "Simulation, recto/recto verso, couleur/noir et blanc, sélection mail et pièces jointes, intentions avec options persistées et reprise sans doublons. Impression ciblée par icône sur chaque PDF/pièce, indépendamment des cases, état par document et confirmation pour un nouvel exemplaire. Agrégation du dernier essai avec état partiel et comptes réel/simulation distincts ; ancienne erreur conservée dans l’historique seulement et reprise limitée à la dernière intention.",
+      "description": "Simulation, recto/recto verso, couleur/noir et blanc, sélection mail et pièces jointes, intentions avec options persistées et reprise sans doublons. Impression ciblée par icône sur chaque PDF/pièce, indépendamment des cases, état par document et confirmation pour un nouvel exemplaire. Agrégation du dernier essai avec état partiel et comptes réel/simulation distincts ; ancienne erreur conservée dans l’historique seulement et reprise limitée à la dernière intention. Liste et détail : badges À imprimer, Transmis à l’imprimante et Simulation, jamais un envoi de mail implicite.",
       "state": "implemented"
     },
     {
@@ -74,7 +74,7 @@
       "description": "Plan livré, périmètre quotidien et pistes différées après revue."
     }
   ],
-  "currentState": "Traitement quotidien amélioré : 224 tests réussis, parcours IAB sur données fictives, upgrade actif sur le service local 8765 avec 13 archives inchangées. Intégrations matérielles et acceptation d’usage encore à valider.",
+  "currentState": "Traitement quotidien vérifié : dernière suite complète 224 tests ; dernière évolution visuelle 43 tests ciblés, neuf nouveaux scénarios de badges, QA navigateur et contrôle de 13 archives inchangées. Service local 8765 actualisé. Intégrations matérielles et acceptation d’usage encore à valider.",
   "knownGaps": [
     "Les intégrations Orange, Apple Mail et imprimante cible sont testées sur transports simulés ; validation terrain non réalisée.",
     "Rendu HTML en texte structuré et formats Office conservés sans conversion imprimable.",

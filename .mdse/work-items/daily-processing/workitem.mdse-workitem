@@ -3,8 +3,8 @@
   "kind": "WorkItem",
   "id": "WI-daily-processing",
   "name": "Traitement quotidien après revue",
-  "status": "implementing",
-  "revision": 7,
+  "status": "reconciled",
+  "revision": 8,
   "createdAt": "2026-10-24",
   "updatedAt": "2026-10-24",
   "slug": "daily-processing",
@@ -47,15 +47,18 @@
   ],
   "executions": [
     "TASK-01-E01",
-    "TASK-02-E01"
+    "TASK-02-E01",
+    "TASK-03-E01"
   ],
   "verifications": [
     "VER-01",
-    "VER-02"
+    "VER-02",
+    "VER-03"
   ],
   "deliverables": [
     "DLV-01",
-    "DLV-02"
+    "DLV-02",
+    "DLV-03"
   ],
   "design": "DESIGN"
 }

@@ -42,3 +42,5 @@ No blocking visual questions. Physical printer and Apple Mail integration remain
 - [x] Check responsive controls, interactions, tests and console.
 
 final result: passed
+
+**Main app handoff:** http://127.0.0.1:8765/ refreshed and verified after fast-forward. Main screenshot: `/Users/vguillet/.codex/.chatgpt-projects/g-p-697effec50fc8191bf4d72dc8d4e8afc/outputs/auto-secretaire-upgrade-2026-10-24/16-main-app-final.png`. No document or stored preference changes during deployment.
