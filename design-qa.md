@@ -52,3 +52,7 @@ final result: passed
 - Vérification dans le navigateur de démonstration : chaque bouton ouvre le bon dialogue ; navigation au clavier vers Mises à jour et infobulle affichée ; dialogues refermés sans enregistrement.
 - Rangée de 49 px à 1280 × 720 et 720 × 634, de 45 px à 390 × 844 ; aucun débordement horizontal, cinq éléments alignés.
 - Contrôles : 31 tests existants dans tests/test_ui.py réussis ; aucune impression, aucun classement, aucun réglage changé pendant ce contrôle.
+
+### Retrait du raccourci de création en double
+
+Le « + » à côté de « Mes clients » est retiré ; le bouton « Nouveau client » sous la liste reste l’unique action de création de la barre latérale, désormais également visible sur mobile. Vérifié dans le navigateur à 390 px : un seul bouton, aucun débordement horizontal et ouverture correcte du formulaire, refermé sans créer de client.

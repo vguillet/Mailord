@@ -1834,7 +1834,8 @@ main {
     font-size:9px
   }
   .sidebar .add-client {
-    display:none
+    grid-column:1/-1;
+    margin:0
   }
   .sidebar-bottom {
     grid-column:1/-1;
