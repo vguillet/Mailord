@@ -4,14 +4,14 @@
   "id": "ARCH",
   "name": "Architecture initiale Auto-secretaire",
   "status": "current",
-  "revision": 9,
+  "revision": 10,
   "createdAt": "2026-10-23",
   "updatedAt": "2026-10-24",
   "style": "Service natif macOS modulaire, FastAPI sur boucle locale, interface HTML/CSS/JavaScript et registre SQLite.",
   "components": [
     {
       "name": "InterfaceLocale",
-      "responsibility": "Navigation par client, messages, états et aperçu ; création de clients, édition du modèle et du nommage. Classement individuel via un sélecteur attaché au document : recherche, branches dépliables, favoris/récents, choix explicite. Arborescence complète même virtuelle et chevrons 20 px dans boutons 32 px. Un seul sélecteur, conservé par identifiant au rafraîchissement ; erreurs inline et requête capturant document/message/client. Impression sélectionnée séparément ; aucune commande de classement groupé dans l’interface.",
+      "responsibility": "Navigation par client, messages, états et aperçu ; création de clients, édition du modèle et du nommage. Classement individuel via un sélecteur attaché au document : recherche, branches dépliables, favoris/récents, choix explicite. Arborescence complète même virtuelle et chevrons 20 px dans boutons 32 px. Un seul sélecteur, conservé par identifiant au rafraîchissement ; erreurs inline et requête capturant document/message/client. Impression sélectionnée séparément ; aucune commande de classement groupé dans l’interface. Icône et état d’impression par document avec confirmation ciblée ; commande globale du détail retirée. Étoiles clients accessibles, favorites en tête avec tri français, recherche et focus conservés.",
       "state": "existing",
       "dependsOn": [
         "GestionClients",
@@ -21,7 +21,7 @@
     },
     {
       "name": "GestionClients",
-      "responsibility": "Associer dossiers mail et locaux, gérer les modèles versionnés et la création reprenable. Proposer le modèle courant et les destinations mémorisées sans créer les branches. Persister et reprendre les dossiers initiaux choisis et leurs présélections ; préserver les choix par client. Ancien email_folder accepté comme métadonnée sans routage ni dossier imposé.",
+      "responsibility": "Associer dossiers mail et locaux, gérer les modèles versionnés et la création reprenable. Proposer le modèle courant et les destinations mémorisées sans créer les branches. Persister et reprendre les dossiers initiaux choisis et leurs présélections ; préserver les choix par client. Ancien email_folder accepté comme métadonnée sans routage ni dossier imposé. Client.starred booléen persisté via PUT /api/clients/{id}/star ; défaut false en lecture pour les anciens registres, distinct de favorites (dossiers).",
       "state": "existing",
       "dependsOn": [
         "Messagerie",
@@ -52,7 +52,7 @@
     },
     {
       "name": "Impression",
-      "responsibility": "Préparer et soumettre les documents compatibles, mémoriser les identifiants et retours disponibles et signaler une issue incertaine sans nouvelle soumission implicite. Transmettre les préférences recto verso et couleur par document avec traduction des options de pilote reconnues.",
+      "responsibility": "Préparer et soumettre les documents compatibles, mémoriser les identifiants et retours disponibles et signaler une issue incertaine sans nouvelle soumission implicite. Transmettre les préférences recto verso et couleur par document avec traduction des options de pilote reconnues. print_document réutilise print_messages avec document_ids explicite, ignore les cases sans les modifier et retourne le travail ciblé ; génération initiale idempotente, réimpression confirmée par route dédiée.",
       "state": "existing"
     },
     {
@@ -202,7 +202,7 @@
     },
     {
       "concern": "Vérification et limites",
-      "approach": "199 tests passent et parcours Chrome fictif : sélecteur individuel, recherche, clavier, erreur, actualisation et navigation pendant une requête, empreinte et impressions conservées ; validation matérielle distincte."
+      "approach": "211 tests et parcours Chrome fictif : classement intégré, impression individuelle avec options/reprise/confirmation et étoiles persistantes ; intégration matérielle à vérifier séparément."
     },
     {
       "concern": "Mises à jour et compatibilité",
@@ -225,6 +225,7 @@
     "WI-lazy-folders",
     "WI-correspondence-filing",
     "WI-manual-document-filing",
-    "WI-inline-document-filing"
+    "WI-inline-document-filing",
+    "WI-document-client-actions"
   ]
 }

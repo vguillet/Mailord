@@ -3,8 +3,8 @@
   "kind": "WorkItem",
   "id": "WI-document-client-actions",
   "name": "Impression par document et clients favoris",
-  "status": "taskified",
-  "revision": 1,
+  "status": "reconciled",
+  "revision": 4,
   "createdAt": "2026-10-24",
   "updatedAt": "2026-10-24",
   "slug": "document-client-actions",
@@ -41,8 +41,14 @@
   "tasks": [
     "TASK-01"
   ],
-  "executions": [],
-  "verifications": [],
-  "deliverables": [],
+  "executions": [
+    "TASK-01-E01"
+  ],
+  "verifications": [
+    "VER-01"
+  ],
+  "deliverables": [
+    "DLV-01"
+  ],
   "design": "DESIGN"
 }

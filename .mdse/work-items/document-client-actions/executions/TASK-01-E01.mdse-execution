@@ -1,0 +1,103 @@
+{
+  "mdse": "2.3",
+  "kind": "Execution",
+  "id": "TASK-01-E01",
+  "name": "Impression ciblée et étoiles persistantes",
+  "status": "succeeded",
+  "revision": 1,
+  "createdAt": "2026-10-24",
+  "updatedAt": "2026-10-24",
+  "workItem": "WI-document-client-actions",
+  "task": "TASK-01",
+  "attempt": 1,
+  "participants": [
+    {
+      "actor": "agent-codex",
+      "roles": [
+        "performer"
+      ]
+    },
+    {
+      "actor": "person-project-owner",
+      "roles": [
+        "initiator"
+      ]
+    }
+  ],
+  "startedAt": "2026-10-24",
+  "completedAt": "2026-10-24",
+  "summary": "Routes print/reprint par document réutilisant les intentions, icône et statut par fichier ; retrait de la commande globale du détail. Étoiles clients persistées, tri et groupe Favoris, maintien du contexte et focus après action.",
+  "commits": [
+    {
+      "hash": "520535558d08e25e768f911414f1e781aba36adc",
+      "message": "feat(document-client-actions): print individual documents and star clients (REQ-01, REQ-02)",
+      "type": "feat"
+    }
+  ],
+  "filesChanged": [
+    {
+      "path": "autosecretaire/app.py",
+      "action": "update"
+    },
+    {
+      "path": "autosecretaire/engine.py",
+      "action": "update"
+    },
+    {
+      "path": "autosecretaire/static/app.js",
+      "action": "update"
+    },
+    {
+      "path": "autosecretaire/static/style.css",
+      "action": "update"
+    },
+    {
+      "path": "tests/test_document_client_actions.py",
+      "action": "create"
+    },
+    {
+      "path": "tests/test_ui.py",
+      "action": "update"
+    },
+    {
+      "path": "README.md",
+      "action": "update"
+    },
+    {
+      "path": "docs/API.md",
+      "action": "update"
+    },
+    {
+      "path": "docs/INSTALLATION.md",
+      "action": "update"
+    },
+    {
+      "path": "docs/VALIDATION.md",
+      "action": "update"
+    }
+  ],
+  "testing": {
+    "approach": "selective-TDD",
+    "passed": 211,
+    "failed": 0,
+    "skipped": 0
+  },
+  "doneCriteria": [
+    {
+      "id": "DC-01",
+      "met": true
+    },
+    {
+      "id": "DC-02",
+      "met": true
+    }
+  ],
+  "implementationDeviations": [],
+  "evidence": [
+    {
+      "kind": "test-output",
+      "reference": "docs/VALIDATION.md",
+      "description": "11 cas rouges, protection CSRF déjà présente ; 31 cas ciblés verts et 211 au total. Chrome : portée de la pièce décochée, double clic, confirmation, étoiles/rechargement/retrait/recherche/erreur et contexte conservé."
+    }
+  ]
+}

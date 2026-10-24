@@ -4,7 +4,7 @@
   "id": "PRODUCT",
   "name": "Définition du produit Auto-secretaire",
   "status": "current",
-  "revision": 6,
+  "revision": 7,
   "createdAt": "2026-10-23",
   "updatedAt": "2026-10-24",
   "problem": "La professionnelle classe les communications de ses clients dans des dossiers de messagerie, puis télécharge, renomme, range et imprime manuellement les mails et leurs pièces jointes. Elle doit vérifier ce qui a déjà été enregistré et reproduire une structure de dossiers pour chaque nouveau client.",
@@ -75,7 +75,7 @@
     },
     {
       "id": "NEED-09",
-      "statement": "Naviguer par client, consulter mails, PDF, pièces jointes, statuts et emplacements exacts, et repérer immédiatement les documents non classés grâce à un affichage contrasté et explicite.",
+      "statement": "Naviguer par client, consulter mails, PDF, pièces jointes, statuts et emplacements exacts, et repérer immédiatement les documents non classés grâce à un affichage contrasté et explicite. Étoiler les clients pour les retrouver en tête de la barre latérale.",
       "persona": "Professionnelle qui gère les communications de ses clients dans Apple Mail sur Mac",
       "priority": "must"
     },
@@ -87,7 +87,7 @@
     },
     {
       "id": "NEED-11",
-      "statement": "Imprimer automatiquement le contenu du mail et les pièces jointes sélectionnées, suivre séparément les travaux d'impression et éviter les réimpressions dues à une réparation ou un reclassement.",
+      "statement": "Imprimer automatiquement le contenu du mail et les pièces jointes sélectionnées, suivre séparément les travaux d'impression et éviter les réimpressions dues à une réparation ou un reclassement. Imprimer aussi un seul document depuis ses actions, à côté de l’aperçu et du Finder, sans dépendre des cases du mail.",
       "persona": "Professionnelle qui gère les communications de ses clients dans Apple Mail sur Mac",
       "priority": "must"
     },

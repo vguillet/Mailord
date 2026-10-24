@@ -4,7 +4,7 @@
   "id": "ROADMAP",
   "name": "Feuille de route Auto-secretaire",
   "status": "current",
-  "revision": 10,
+  "revision": 11,
   "createdAt": "2026-10-23",
   "updatedAt": "2026-10-24",
   "milestones": [
@@ -157,6 +157,18 @@
       ],
       "deliveredDate": "2026-10-24",
       "notes": "199 tests et parcours Chrome : catalogue virtuel, recherche, erreurs, clavier, rafraîchissement et navigation pendant une requête ; chevrons agrandis à 20 px."
+    },
+    {
+      "id": "MS-14",
+      "name": "Actions directes et clients favoris",
+      "goal": "Imprimer chaque document depuis sa carte et épingler ses clients favoris.",
+      "state": "delivered",
+      "order": 14,
+      "workItems": [
+        "WI-document-client-actions"
+      ],
+      "deliveredDate": "2026-10-24",
+      "notes": "211 tests et parcours Chrome : portée impression, double clic, confirmation, options, étoiles persistantes, recherche, retrait et contexte conservé."
     }
   ],
   "backlog": [
