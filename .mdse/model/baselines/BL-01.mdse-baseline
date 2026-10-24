@@ -1,0 +1,77 @@
+{
+  "mdse": "2.3",
+  "kind": "Baseline",
+  "id": "BL-01",
+  "name": "Mailord — référence approuvée avec conservation documentaire",
+  "status": "approved",
+  "revision": 2,
+  "createdAt": "2026-10-24",
+  "updatedAt": "2026-10-24",
+  "description": "Version effectivement livrée et vérifiée, avec modèle courant et preuves de WI-document-safety. Le commit capture le code complet du projet, notamment les emplacements clients et protections documentaires. Approbation explicite de l’utilisateur initiateur : « Parfait, valide cette version comme référence du projet et push sur GitHub. » Portée et limites inchangées : docs/FILE_SAFETY.md et docs/VALIDATION.md ; aucune certification supplémentaire des scénarios ou intégrations réelles. Les rapports historiques antérieurs sont conservés sans réécriture.",
+  "type": "as-built",
+  "commit": "c7d147d5f94028355d65427fd295c5695e250111",
+  "instances": [
+    {
+      "ref": "ARCH",
+      "revision": 17
+    },
+    {
+      "ref": "OVERVIEW",
+      "revision": 18
+    },
+    {
+      "ref": "PRODUCT",
+      "revision": 10
+    },
+    {
+      "ref": "ROADMAP",
+      "revision": 16
+    },
+    {
+      "ref": "WI-document-safety/DEC-01",
+      "revision": 1
+    },
+    {
+      "ref": "WI-document-safety/DESIGN",
+      "revision": 2
+    },
+    {
+      "ref": "WI-document-safety/TASK-01-E01",
+      "revision": 1
+    },
+    {
+      "ref": "WI-document-safety/VM-01",
+      "revision": 1
+    },
+    {
+      "ref": "WI-document-safety/REQ-01",
+      "revision": 2
+    },
+    {
+      "ref": "WI-document-safety/REQ-02",
+      "revision": 2
+    },
+    {
+      "ref": "WI-document-safety/REQ-03",
+      "revision": 2
+    },
+    {
+      "ref": "WI-document-safety/TASK-01",
+      "revision": 3
+    },
+    {
+      "ref": "WI-document-safety/VER-01",
+      "revision": 1
+    },
+    {
+      "ref": "WI-document-safety",
+      "revision": 3
+    }
+  ],
+  "approvals": [
+    {
+      "actor": "person-project-owner",
+      "date": "2026-10-24"
+    }
+  ]
+}
