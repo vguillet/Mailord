@@ -1,0 +1,69 @@
+{
+  "mdse": "2.3",
+  "revision": 1,
+  "createdAt": "2026-10-24",
+  "updatedAt": "2026-10-24",
+  "workItem": "WI-mailord-rename",
+  "kind": "Verification",
+  "id": "VER-01",
+  "name": "Mailord vérifié dans le dépôt final",
+  "status": "pass",
+  "requirements": [
+    "REQ-01"
+  ],
+  "executions": [
+    "TASK-01-E01"
+  ],
+  "tasks": [],
+  "testRun": {
+    "runner": "pytest",
+    "command": ".venv/bin/python -m pytest -q",
+    "passed": 239,
+    "failed": 0,
+    "skipped": 0,
+    "durationSeconds": 19.79
+  },
+  "results": [
+    {
+      "requirement": "REQ-01",
+      "result": "pass",
+      "methods": [
+        "VM-01"
+      ],
+      "acceptanceCriteria": [
+        {
+          "id": "AC-01",
+          "covered": true,
+          "test": "Parcours IAB : titre, marque, icône et favicon Mailord ; largeurs 1280, 599 et 390 ; avatar supprimé."
+        },
+        {
+          "id": "AC-02",
+          "covered": true,
+          "test": "Suite complète, wheel mailord seul, démarrage supervisé 8765 depuis le dépôt final ; origin GitHub conservé ; test_remote_ancestor_is_not_an_update et test_remote_commit_absent_from_checkout_is_available."
+        },
+        {
+          "id": "AC-03",
+          "covered": true,
+          "test": "tests/test_runtime_relocation.py ; comparaison des 3 clients, 7 messages, 13 fichiers SHA-256, classements et travaux avant/après migration."
+        }
+      ]
+    }
+  ],
+  "deviationReview": [
+    {
+      "execution": "TASK-01-E01",
+      "summary": "Ancêtre distant et test dépendant du dépôt corrigés, 18 tests de mise à jour/API et suite complète réussis.",
+      "state": "resolved"
+    }
+  ],
+  "evidence": [
+    {
+      "kind": "verification-log",
+      "reference": "docs/VALIDATION.md",
+      "description": "Vérifications automatisées et visuelles, conservation des archives et démarrage."
+    }
+  ],
+  "warnings": [
+    "Avertissement Starlette/httpx préexistant. Les intégrations Orange, Apple Mail et imprimante physique restent à valider sur le Mac cible."
+  ]
+}

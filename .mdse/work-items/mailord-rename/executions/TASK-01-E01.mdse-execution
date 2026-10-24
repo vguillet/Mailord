@@ -1,0 +1,82 @@
+{
+  "mdse": "2.3",
+  "revision": 1,
+  "createdAt": "2026-10-24",
+  "updatedAt": "2026-10-24",
+  "workItem": "WI-mailord-rename",
+  "kind": "Execution",
+  "id": "TASK-01-E01",
+  "name": "Renommage et transfert Mailord",
+  "status": "succeeded",
+  "task": "TASK-01",
+  "attempt": 1,
+  "participants": [
+    {
+      "actor": "agent-codex",
+      "roles": [
+        "performer"
+      ]
+    },
+    {
+      "actor": "person-project-owner",
+      "roles": [
+        "initiator"
+      ]
+    }
+  ],
+  "startedAt": "2026-10-24",
+  "completedAt": "2026-10-24",
+  "summary": "Identité Mailord, enveloppe couronnée, paquet et commandes renommés. Code et historique importés dans le dépôt GitHub cloné, origin conservé. Espace local copié sous Mailord et service relancé ; avatar retiré à la demande du propriétaire.",
+  "commits": [
+    {
+      "hash": "e4cb231db83bc0f60ef46b5c9c4f7ada5dfcf041",
+      "message": "Renommage Mailord, paquet et reprise de données (REQ-01)",
+      "type": "feat"
+    },
+    {
+      "hash": "73c66d83ee8d2534b7088b9c803180211502cec3",
+      "message": "fix(mailord-rename): ignore ancestor updates and remove local avatar (REQ-01)",
+      "type": "fix"
+    }
+  ],
+  "testing": {
+    "approach": "selective-TDD",
+    "passed": 239,
+    "failed": 0,
+    "skipped": 0
+  },
+  "doneCriteria": [
+    {
+      "id": "DC-01",
+      "met": true
+    },
+    {
+      "id": "DC-02",
+      "met": true
+    }
+  ],
+  "implementationDeviations": [
+    {
+      "rule": 1,
+      "type": "bug",
+      "found": "La branche distante initiale, ancêtre du code local importé, était annoncée comme nouvelle version ; un test API supposait un dépôt sans origin.",
+      "action": "Comparer l’ascendance Git, refuser une installation déjà incluse et isoler la découverte origin dans le test de configuration. Régression rouge puis verte ; commit distant inconnu toujours détecté.",
+      "resolved": true,
+      "approvedByUser": false,
+      "specGap": false
+    }
+  ],
+  "difficulties": [
+    {
+      "issue": "Le dépôt cloné et le projet préexistant avaient des historiques indépendants.",
+      "resolution": "Fusion avec conservation des deux historiques et remplacement du README initial par le guide complet."
+    }
+  ],
+  "evidence": [
+    {
+      "kind": "test-output",
+      "reference": "docs/VALIDATION.md",
+      "description": "239 tests dans le dépôt final, parcours navigateur, paquet et conservation des 13 empreintes documentaires."
+    }
+  ]
+}

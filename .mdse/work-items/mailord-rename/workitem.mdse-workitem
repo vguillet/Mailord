@@ -3,8 +3,8 @@
   "kind": "WorkItem",
   "id": "WI-mailord-rename",
   "name": "Identité et dépôt Mailord",
-  "status": "implementing",
-  "revision": 1,
+  "status": "reconciled",
+  "revision": 2,
   "createdAt": "2026-10-24",
   "updatedAt": "2026-10-24",
   "slug": "mailord-rename",
@@ -21,8 +21,12 @@
   "tasks": [
     "TASK-01"
   ],
-  "executions": [],
-  "verifications": [],
+  "executions": [
+    "TASK-01-E01"
+  ],
+  "verifications": [
+    "VER-01"
+  ],
   "deliverables": [],
   "design": "DESIGN",
   "userStories": [
