@@ -1,0 +1,160 @@
+{
+  "mdse": "2.3",
+  "kind": "Verification",
+  "id": "VER-02",
+  "name": "Vérification des emplacements clients et régression",
+  "status": "partial",
+  "revision": 1,
+  "createdAt": "2026-10-24",
+  "updatedAt": "2026-10-24",
+  "workItem": "WI-lazy-folders",
+  "requirements": [
+    "REQ-01",
+    "REQ-02",
+    "REQ-03",
+    "REQ-04",
+    "REQ-05"
+  ],
+  "executions": [
+    "TASK-02-E01"
+  ],
+  "testRun": {
+    "runner": "pytest",
+    "command": "python -m pytest -q",
+    "passed": 258,
+    "failed": 0,
+    "skipped": 0,
+    "durationSeconds": 16.33
+  },
+  "results": [
+    {
+      "requirement": "REQ-01",
+      "result": "pass",
+      "methods": [
+        "VM-01"
+      ],
+      "acceptanceCriteria": [
+        {
+          "id": "AC-01",
+          "covered": true,
+          "test": "test_new_client_and_retry_reserve_all_paths_without_creating_directories ; test_state_api_exposes_virtual_and_existing_paths_without_writes"
+        },
+        {
+          "id": "AC-02",
+          "covered": true,
+          "test": "test_latest_template_and_favorites_available_to_existing_client_after_restart"
+        }
+      ]
+    },
+    {
+      "requirement": "REQ-02",
+      "result": "pass",
+      "methods": [
+        "VM-02"
+      ],
+      "acceptanceCriteria": [
+        {
+          "id": "AC-01",
+          "covered": true,
+          "test": "test_export_and_classify_create_only_needed_chain_and_remove_empty_source ; parcours Chrome Expertise"
+        },
+        {
+          "id": "AC-02",
+          "covered": true,
+          "test": "test_failed_export_or_missing_source_does_not_create_destination ; test_symlink_destination_cannot_create_outside_client ; test_failed_publication_cleans_empty_target_but_can_resume"
+        }
+      ]
+    },
+    {
+      "requirement": "REQ-03",
+      "result": "pass",
+      "methods": [
+        "VM-03"
+      ],
+      "acceptanceCriteria": [
+        {
+          "id": "AC-01",
+          "covered": true,
+          "test": "test_export_and_classify_create_only_needed_chain_and_remove_empty_source"
+        },
+        {
+          "id": "AC-02",
+          "covered": true,
+          "test": "test_cleanup_keeps_other_documents_hidden_files_and_unrelated_empty_folders ; test_interrupted_classification_recovers_missing_branch_and_cleans_source"
+        }
+      ]
+    },
+    {
+      "requirement": "REQ-04",
+      "result": "partial",
+      "methods": [
+        "VM-04"
+      ],
+      "acceptanceCriteria": [
+        {
+          "id": "AC-01",
+          "covered": false,
+          "note": "La création partielle est testée ; le défaut actuel est celui du modèle, conformément à WI-correspondence-filing, et non un défaut toujours vide."
+        },
+        {
+          "id": "AC-02",
+          "covered": true,
+          "test": "test_initial_selection_resumes_after_partial_creation ; test_invalid_initial_selection_has_no_side_effects ; test_initial_selection_api_validates_payload_and_exposes_created_paths ; test_resubmitting_client_adds_choices_without_erasing_existing_ones"
+        },
+        {
+          "id": "AC-03",
+          "covered": true,
+          "test": "test_initial_selection_survives_retry_template_change_and_emptying"
+        }
+      ]
+    },
+    {
+      "requirement": "REQ-05",
+      "result": "pass",
+      "methods": [
+        "VM-05"
+      ],
+      "acceptanceCriteria": [
+        {
+          "id": "AC-01",
+          "covered": true,
+          "test": "test_browse_existing_parents_is_read_only_and_one_level ; parcours IAB 8894 et formulaire 8765"
+        },
+        {
+          "id": "AC-02",
+          "covered": true,
+          "test": "test_nested_client_and_initial_folders_survive_restart_and_filing ; création IAB et vérification sur disque"
+        },
+        {
+          "id": "AC-03",
+          "covered": true,
+          "test": "test_invalid_parent_rejected_before_any_effect ; test_symlink_and_client_subtrees_cannot_be_parents ; test_stale_parent_identity_and_missing_parent_fail_closed"
+        },
+        {
+          "id": "AC-04",
+          "covered": true,
+          "test": "test_same_name_at_another_parent_is_not_a_move ; test_retry_does_not_recreate_a_missing_parent"
+        }
+      ]
+    }
+  ],
+  "warnings": [
+    "VER-01 reste immuable ; le validateur SM-07 compare incorrectement ses résultats historiques à REQ-05 ajoutée ensuite.",
+    "REQ-04 AC-01 conserve une mention historique de défaut vide ; les présélections sont désormais gouvernées par WI-correspondence-filing. Ce critère ancien n’est pas déclaré conforme littéralement.",
+    "Cette tâche ne met pas en œuvre la politique globale de conservation des documents proposée séparément."
+  ],
+  "evidence": [
+    {
+      "kind": "test-output",
+      "reference": "docs/VALIDATION.md",
+      "description": "19 cas ciblés ; 258 tests complets, syntaxe JS et parcours IAB séparé. Après relance sur 8765 : 3 clients, 7 mails et 13 documents, chemins et empreintes inchangés."
+    }
+  ],
+  "deviationReview": [
+    {
+      "execution": "TASK-02-E01",
+      "summary": "Contrôle supplémentaire du chemin après le connecteur ; test de substitution par lien réussi.",
+      "state": "resolved"
+    }
+  ]
+}

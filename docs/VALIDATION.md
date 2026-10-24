@@ -180,3 +180,5 @@ Cette évolution remplace la création physique immédiate décrite dans la vér
 - Contrôle supplémentaire : une substitution du dossier client par un lien pendant la création mail est refusée avant de préparer les dossiers initiaux ; aucun contenu créé dans la cible extérieure.
 - Aucune intégration Orange, Apple Mail réelle ou imprimante physique exercée. Cette évolution ne prétend pas implémenter la politique globale de conservation proposée séparément.
 - MDSE : extension de WI-lazy-folders avec REQ-05/TASK-02/VM-05. Limitation documentée du validateur SM-07 : le rapport historique VER-01 est comparé aux exigences ajoutées ultérieurement. Il reste immuable ; le nouveau rapport décrit la vérification actuelle.
+
+Après intégration, service local 8765 relancé et formulaire vérifié ; 3 clients, 7 messages et 13 documents conservés à chemins et empreintes identiques. Le nouveau REQ-05 est vérifié. VER-02 reste globalement partiel car REQ-04 AC-01 décrit encore un ancien défaut vide, remplacé par les présélections du modèle dans WI-correspondence-filing.

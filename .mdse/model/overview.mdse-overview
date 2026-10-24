@@ -4,14 +4,14 @@
   "id": "OVERVIEW",
   "name": "Vue d'ensemble Mailord",
   "status": "current",
-  "revision": 16,
+  "revision": 17,
   "createdAt": "2026-10-23",
   "updatedAt": "2026-10-24",
   "summary": "Mailord automatise localement sur Mac les dossiers de communications clients : PDF, pièces jointes, nommage chronologique, classement et impression avec interface web française.",
   "capabilities": [
     {
       "name": "Clients et modèles",
-      "description": "Création reprenable, rattachement mail/local, modèle hiérarchique versionné et application additive. Modèle initial de cabinet issu du PDF fourni : huit rubriques, 37 dossiers avec zone d’attente, repères et branche de juridiction personnalisable. Catalogue complet virtuel, création à la demande, choix initial facultatif de dossiers vides persisté et protégé. Présélections configurables, Correspondances coché initialement et décochable par client. Modèle recherchable et repliable ; les présélections masquées restent conservées.",
+      "description": "Création reprenable, rattachement mail/local, modèle hiérarchique versionné et application additive. Modèle initial de cabinet issu du PDF fourni : huit rubriques, 37 dossiers avec zone d’attente, repères et branche de juridiction personnalisable. Catalogue complet virtuel, création à la demande, choix initial facultatif de dossiers vides persisté et protégé. Présélections configurables, Correspondances coché initialement et décochable par client. Modèle recherchable et repliable ; les présélections masquées restent conservées. Emplacement du nouveau client : racine configurée ou parent existant imbriqué, navigation et aperçu, contrôles des liens/chevauchements et reprise sans recréer un parent disparu.",
       "state": "implemented"
     },
     {
@@ -83,7 +83,7 @@
       "description": "Reprise contrôlée d’un espace local vers un nouvel emplacement, hors service."
     }
   ],
-  "currentState": "Mailord transféré dans le dépôt définitif avec historique et origin conservés ; 239 tests réussis. Service 8765 relancé avec 3 clients, 7 messages et 13 documents inchangés. Identité et paquet Mailord, reprise contrôlée et interface sans avatar. Intégrations matérielles et acceptation d’usage encore à valider.",
+  "currentState": "Mailord transféré dans le dépôt définitif avec historique et origin conservés ; 239 tests réussis. Service 8765 relancé avec 3 clients, 7 messages et 13 documents inchangés. Identité et paquet Mailord, reprise contrôlée et interface sans avatar. Intégrations matérielles et acceptation d’usage encore à valider. Choix du parent client livré : 258 tests réussis, parcours navigateur et conservation des 13 documents de démonstration contrôlés.",
   "knownGaps": [
     "Les intégrations Orange, Apple Mail et imprimante cible sont testées sur transports simulés ; validation terrain non réalisée.",
     "Rendu HTML en texte structuré et formats Office conservés sans conversion imprimable.",

@@ -1,0 +1,103 @@
+{
+  "mdse": "2.3",
+  "kind": "Execution",
+  "id": "TASK-02-E01",
+  "name": "Choix du parent local livré et contrôlé",
+  "status": "succeeded",
+  "revision": 1,
+  "createdAt": "2026-10-24",
+  "updatedAt": "2026-10-24",
+  "workItem": "WI-lazy-folders",
+  "task": "TASK-02",
+  "attempt": 1,
+  "participants": [
+    {
+      "actor": "agent-codex",
+      "roles": [
+        "performer"
+      ]
+    },
+    {
+      "actor": "person-project-owner",
+      "roles": [
+        "initiator"
+      ]
+    }
+  ],
+  "startedAt": "2026-10-24",
+  "completedAt": "2026-10-24",
+  "summary": "Navigation locale en lecture seule, aperçu et création sous un parent existant ; validation des chemins, isolement entre clients et parent_token pour détection de remplacement. Aucune migration des clients existants.",
+  "commits": [
+    {
+      "hash": "584ed3be51bf71c5a18fe965beeae091a64274fd",
+      "message": "feat(lazy-folders): choose client parent directory (REQ-05)",
+      "type": "feat"
+    }
+  ],
+  "filesChanged": [
+    {
+      "path": "mailord/engine.py",
+      "action": "update"
+    },
+    {
+      "path": "mailord/app.py",
+      "action": "update"
+    },
+    {
+      "path": "mailord/static/app.js",
+      "action": "update"
+    },
+    {
+      "path": "mailord/static/style.css",
+      "action": "update"
+    },
+    {
+      "path": "tests/test_client_locations.py",
+      "action": "create"
+    },
+    {
+      "path": "docs/API.md",
+      "action": "update"
+    },
+    {
+      "path": "docs/INSTALLATION.md",
+      "action": "update"
+    },
+    {
+      "path": "docs/VALIDATION.md",
+      "action": "update"
+    }
+  ],
+  "testing": {
+    "approach": "selective-TDD",
+    "passed": 258,
+    "failed": 0,
+    "skipped": 0
+  },
+  "doneCriteria": [
+    {
+      "id": "DC-01",
+      "met": true
+    },
+    {
+      "id": "DC-02",
+      "met": true
+    }
+  ],
+  "implementationDeviations": [
+    {
+      "rule": 2,
+      "type": "missing-critical",
+      "found": "Une substitution du dossier client par un lien pendant la création mail pouvait être suivie lors des mkdir initiaux.",
+      "action": "Revérifier le dossier client après le connecteur et conserver le statut d’erreur sans écrire dans la cible extérieure ; test dédié.",
+      "resolved": true
+    }
+  ],
+  "evidence": [
+    {
+      "kind": "test-output",
+      "reference": "docs/VALIDATION.md",
+      "description": "19 cas ciblés ; 258 tests complets, syntaxe JS et parcours IAB séparé. Après relance sur 8765 : 3 clients, 7 mails et 13 documents, chemins et empreintes inchangés."
+    }
+  ]
+}

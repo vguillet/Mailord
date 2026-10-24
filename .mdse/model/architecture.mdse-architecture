@@ -4,7 +4,7 @@
   "id": "ARCH",
   "name": "Architecture initiale Mailord",
   "status": "current",
-  "revision": 15,
+  "revision": 16,
   "createdAt": "2026-10-23",
   "updatedAt": "2026-10-24",
   "style": "Service natif macOS modulaire, FastAPI sur boucle locale, interface HTML/CSS/JavaScript et registre SQLite.",
@@ -21,7 +21,7 @@
     },
     {
       "name": "GestionClients",
-      "responsibility": "Associer dossiers mail et locaux, gérer les modèles versionnés et la création reprenable. Proposer le modèle courant et les destinations mémorisées sans créer les branches. Persister et reprendre les dossiers initiaux choisis et leurs présélections ; préserver les choix par client. Ancien email_folder accepté comme métadonnée sans routage ni dossier imposé. Client.starred booléen persisté via PUT /api/clients/{id}/star ; défaut false en lecture pour les anciens registres, distinct de favorites (dossiers).",
+      "responsibility": "Associer dossiers mail et locaux, gérer les modèles versionnés et la création reprenable. Proposer le modèle courant et les destinations mémorisées sans créer les branches. Persister et reprendre les dossiers initiaux choisis et leurs présélections ; préserver les choix par client. Ancien email_folder accepté comme métadonnée sans routage ni dossier imposé. Client.starred booléen persisté via PUT /api/clients/{id}/star ; défaut false en lecture pour les anciens registres, distinct de favorites (dossiers). client_locations parcourt un seul niveau local sous archive_root sans écriture. create_client accepte parent_folder et parent_token facultatifs ; folder reste le chemin complet persistant, jeton de parent pour reprise et anciennes données compatibles. Refus des liens, parents absents et chevauchements entre clients.",
       "state": "existing",
       "dependsOn": [
         "Messagerie",
@@ -79,7 +79,7 @@
     {
       "name": "Créer un client",
       "steps": [
-        "Saisir le nom, prévisualiser les chemins et ajuster les présélections du modèle (Correspondances initialement).",
+        "Saisir le nom, choisir la racine ou parcourir ses dossiers existants comme parent local, prévisualiser le chemin final et ajuster les présélections du modèle.",
         "Valider les choix dans le modèle courant et les persister avec l’association client.",
         "Créer ou rattacher le dossier mail via Messagerie.",
         "Créer seulement les dossiers cochés et leurs parents ; les autres destinations restent virtuelles.",

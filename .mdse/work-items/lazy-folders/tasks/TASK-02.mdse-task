@@ -3,7 +3,7 @@
   "kind": "Task",
   "id": "TASK-02",
   "name": "Emplacement local à la création du client",
-  "status": "pending",
+  "status": "done",
   "revision": 1,
   "createdAt": "2026-10-24",
   "updatedAt": "2026-10-24",
