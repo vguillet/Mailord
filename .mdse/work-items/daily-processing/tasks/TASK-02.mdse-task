@@ -7,7 +7,7 @@
   "kind": "Task",
   "id": "TASK-02",
   "name": "Rétablir le mail avant les documents",
-  "status": "in-progress",
+  "status": "done",
   "order": 2,
   "type": "software",
   "objective": "Rétablir l’ordre de lecture demandé et conserver les outils de classement.",

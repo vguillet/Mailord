@@ -4,7 +4,7 @@
   "id": "ROADMAP",
   "name": "Feuille de route Auto-secretaire",
   "status": "current",
-  "revision": 12,
+  "revision": 13,
   "createdAt": "2026-10-23",
   "updatedAt": "2026-10-24",
   "milestones": [
@@ -180,7 +180,7 @@
         "WI-daily-processing"
       ],
       "deliveredDate": "2026-10-24",
-      "notes": "224 tests ; parcours IAB et comparaison des données principales après upgrade. Aucune intégration matérielle revendiquée."
+      "notes": "224 tests ; parcours IAB et comparaison des données principales après upgrade. Aucune intégration matérielle revendiquée. Retour utilisateur : champs et corps du mail rétablis avant documents ; 34 tests ciblés et navigateur revérifiés."
     }
   ],
   "backlog": [

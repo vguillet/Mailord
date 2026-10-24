@@ -4,7 +4,7 @@
   "id": "OVERVIEW",
   "name": "Vue d'ensemble Auto-secretaire",
   "status": "current",
-  "revision": 11,
+  "revision": 12,
   "createdAt": "2026-10-23",
   "updatedAt": "2026-10-24",
   "summary": "Auto-secrétaire automatise localement sur Mac les dossiers de communications clients : PDF, pièces jointes, nommage chronologique, classement et impression avec interface web française.",
@@ -21,7 +21,7 @@
     },
     {
       "name": "Classement ergonomique",
-      "description": "Navigation clients, états et aperçu. Sélecteur individuel sous chaque PDF ou pièce jointe, sans dialogue : recherche dans toute l’arborescence, favoris, récents et clavier. Chevrons lisibles de 20 px, zones cliquables de 32 px ; destinations absentes sélectionnables. Contexte conservé au rafraîchissement, erreurs sous le document et requêtes liées à leur document initial. Badges À CLASSER contrastés. Clients favoris étoilés et persistés, regroupés en tête de navigation sans changer le mail actif. Espace compact : documents avant corps repliable, progression séparée, recherche sur noms de pièces et destinations. Annuler le dernier classement par document, même après redémarrage, sans écrasement ni impression.",
+      "description": "Navigation clients, états et aperçu. Sélecteur individuel sous chaque PDF ou pièce jointe, sans dialogue : recherche dans toute l’arborescence, favoris, récents et clavier. Chevrons lisibles de 20 px, zones cliquables de 32 px ; destinations absentes sélectionnables. Contexte conservé au rafraîchissement, erreurs sous le document et requêtes liées à leur document initial. Badges À CLASSER contrastés. Clients favoris étoilés et persistés, regroupés en tête de navigation sans changer le mail actif. Espace compact : champs De/À/Reçu/Client puis corps ouvert et repliable, avant PDF et pièces jointes, progression séparée, recherche sur noms de pièces et destinations. Annuler le dernier classement par document, même après redémarrage, sans écrasement ni impression.",
       "state": "implemented"
     },
     {

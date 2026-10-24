@@ -3,7 +3,7 @@
   "kind": "Requirement",
   "id": "REQ-02",
   "name": "Lecture du mail avant ses documents",
-  "status": "approved",
+  "status": "verified",
   "revision": 4,
   "createdAt": "2026-10-24",
   "updatedAt": "2026-10-24",

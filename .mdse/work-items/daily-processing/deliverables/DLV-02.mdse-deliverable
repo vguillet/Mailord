@@ -1,0 +1,23 @@
+{
+  "mdse": "2.3",
+  "revision": 1,
+  "createdAt": "2026-10-24",
+  "updatedAt": "2026-10-24",
+  "workItem": "WI-daily-processing",
+  "kind": "Deliverable",
+  "id": "DLV-02",
+  "name": "Lecture du mail avant ses documents",
+  "status": "conditional",
+  "type": "source-code",
+  "producedBy": "TASK-02-E01",
+  "task": "TASK-02",
+  "version": "963bb3b3e4cc9089ae7f0b5a98ff7c0ab21f3b39",
+  "location": "autosecretaire/static/app.js",
+  "requirements": [
+    "REQ-02"
+  ],
+  "verifications": [
+    "VER-02"
+  ],
+  "acceptanceNote": "Ordre demandé démontré dans le navigateur ; acceptation d’usage distincte."
+}

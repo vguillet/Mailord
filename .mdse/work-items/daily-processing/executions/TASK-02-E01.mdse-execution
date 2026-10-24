@@ -1,0 +1,84 @@
+{
+  "mdse": "2.3",
+  "revision": 1,
+  "createdAt": "2026-10-24",
+  "updatedAt": "2026-10-24",
+  "workItem": "WI-daily-processing",
+  "kind": "Execution",
+  "id": "TASK-02-E01",
+  "name": "Ordre de lecture rétabli",
+  "status": "succeeded",
+  "task": "TASK-02",
+  "attempt": 1,
+  "participants": [
+    {
+      "actor": "agent-codex",
+      "roles": [
+        "performer"
+      ]
+    },
+    {
+      "actor": "person-project-owner",
+      "roles": [
+        "initiator"
+      ]
+    }
+  ],
+  "startedAt": "2026-10-24",
+  "completedAt": "2026-10-24",
+  "summary": "Préférence utilisateur appliquée : De/À/Reçu/Client puis corps du mail développé, PDF et pièces jointes. Repli facultatif mémorisé dans la session ; compteurs et actions conservés.",
+  "commits": [
+    {
+      "hash": "4227bee95bc13c9ceb7576dfd516c3cd3feb787e",
+      "message": "fix(daily-processing): restore email body before documents (REQ-02)",
+      "type": "fix"
+    },
+    {
+      "hash": "963bb3b3e4cc9089ae7f0b5a98ff7c0ab21f3b39",
+      "message": "fix(daily-processing): place mail headers above its body (REQ-02)",
+      "type": "fix"
+    }
+  ],
+  "filesChanged": [
+    {
+      "path": "autosecretaire/static/app.js",
+      "action": "update"
+    },
+    {
+      "path": "autosecretaire/static/style.css",
+      "action": "update"
+    },
+    {
+      "path": "README.md",
+      "action": "update"
+    },
+    {
+      "path": "docs/DAILY_UPGRADE.md",
+      "action": "update"
+    },
+    {
+      "path": "docs/VALIDATION.md",
+      "action": "update"
+    }
+  ],
+  "testing": {
+    "approach": "selective-TDD",
+    "passed": 34,
+    "failed": 0,
+    "skipped": 0
+  },
+  "doneCriteria": [
+    {
+      "id": "DC-01",
+      "met": true
+    }
+  ],
+  "implementationDeviations": [],
+  "evidence": [
+    {
+      "kind": "test-output",
+      "reference": "docs/VALIDATION.md",
+      "description": "Syntaxe JS, 22 tests UI puis 34 ciblés ; IAB : ordre champs/corps/documents, repli, recherche et ouverture d’un autre mail vérifiés."
+    }
+  ]
+}
