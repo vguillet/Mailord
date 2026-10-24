@@ -4,7 +4,7 @@
   "id": "REQ-01",
   "name": "Progression d’impression fiable",
   "status": "verified",
-  "revision": 2,
+  "revision": 3,
   "createdAt": "2026-10-24",
   "updatedAt": "2026-10-24",
   "workItem": "WI-daily-processing",
@@ -17,7 +17,7 @@
       "kind": "happy-path",
       "given": "deux documents sélectionnés dont un seul soumis",
       "when": "le suivi est affiché",
-      "then": "le mail indique une progression partielle 1/2 et non une impression complète"
+      "then": "la liste et le détail indiquent une progression partielle avec À imprimer 1/2 et Transmis à l’imprimante 1/2, sans présenter le mail comme envoyé ni une impression complète"
     },
     {
       "id": "AC-02",

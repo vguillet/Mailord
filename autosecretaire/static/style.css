@@ -2251,3 +2251,37 @@ main {
 .print-tracking.preparing,.print-tracking.submitting,.print-tracking.simulated { background:#edf2f8; color:#365473 }
 .print-tracking.error,.print-tracking.uncertain { background:#fbe8e1; color:#923b25; border:1px solid #dcaa98 }
 .print-tracking.unavailable { background:#eef0eb; color:#52604c }
+
+/* The PDF belongs to the email; only attachments use document cards. */
+.email-surface { background:#fff; border:1px solid var(--line); border-radius:9px; min-width:0 }
+.email-reading { padding:18px 18px 0 }
+.email-reading .detail-subject { font-weight:650; margin-bottom:16px }
+.email-reading .detail-meta { margin-bottom:16px; grid-template-columns:44px minmax(0,1fr); gap:6px 12px }
+.email-reading .detail-meta dt { color:#6b786a }
+.email-reading .detail-meta dd { color:var(--ink) }
+.email-reading .mail-body { padding:12px 0 18px }
+.email-reading .document-preview { border:0; border-radius:0; padding:0; color:var(--ink); line-height:1.85 }
+.email-footer { padding:14px 18px; border-top:1px solid #e3e9dd; border-radius:0 0 9px 9px; background:#f0f4eb }
+.document-status-row,.email-status-row { display:flex; align-items:center; justify-content:space-between; gap:8px }
+.document-status-row .document-tracking,.email-status-row .document-tracking { flex:1; min-width:0; margin:0 }
+.email-footer .document-destination { width:100%; margin-top:10px; background:#fcfdf9 }
+.email-footer.pending .document-destination { border-color:#d89a3a; background:#fff1cf; color:#7b2d00 }
+.email-footer .document-destination:hover { background:#e8eedf }
+.email-footer .document-print-status.error { display:block; color:#923b25; font-weight:600; margin-top:8px }
+.document-actions .icon-button { width:36px; height:36px; color:#42604a }
+.document-action-icon { display:block; flex-shrink:0; width:22px; height:22px; background:currentColor; mask-position:center; mask-repeat:no-repeat; mask-size:contain }
+.document-action-icon.icon-eye { mask-image:url("icons/eye.svg") }
+.document-action-icon.icon-folder { mask-image:url("icons/folder.svg") }
+.document-action-icon.icon-printer { mask-image:url("icons/printer.svg") }
+.attachments-section { margin-top:22px; padding-top:18px; border-top:1px solid #dce3d6 }
+.attachments-section .mini-heading { color:#60705b; font-size:10px; letter-spacing:.08em }
+.attachments-section .mini-heading small { color:#60705b; font-size:11px }
+@media(max-width:650px) {
+  .email-reading { padding:14px 14px 0 }
+  .email-footer { padding:12px 14px }
+}
+
+.document-status-row { margin-top:4px }
+
+.chip.info { background:#edf2f8; color:#365473 }
+.document-options { justify-content:flex-end }

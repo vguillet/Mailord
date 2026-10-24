@@ -19,7 +19,7 @@ auto-secretaire = "autosecretaire.__main__:main"
 include = ["autosecretaire*"]
 
 [tool.setuptools.package-data]
-autosecretaire = ["static/*"]
+autosecretaire = ["static/*", "static/icons/*"]
 
 [tool.pytest.ini_options]
 testpaths = ["tests"]

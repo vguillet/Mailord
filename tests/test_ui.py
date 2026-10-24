@@ -136,3 +136,25 @@ def test_message_search_includes_document_names_and_destinations_without_accents
         assert js(f'ui.messageMatches({data}, {json.dumps(query)}, "Camille")') is True
     assert js(f'ui.messageMatches({data}, "introuvable", "Camille")') is False
     assert js('ui.messageMatches({}, "", "")') is True
+
+
+@pytest.mark.parametrize(('progress', 'status', 'labels'), [
+    ({'total': 2, 'pending': 2}, 'pending', ['À imprimer · 2/2']),
+    ({'total': 2, 'pending': 1, 'submitted': 1}, 'partial', ['À imprimer · 1/2', 'Transmis à l’imprimante · 1/2']),
+    ({'total': 2, 'simulated': 2}, 'simulated', ['Simulation · 2/2']),
+    ({'total': 2, 'submitted': 1, 'simulated': 1}, 'mixed', ['Transmis à l’imprimante · 1/2', 'Simulation · 1/2']),
+    ({'total': 1, 'submitting': 1}, 'submitting', ['Impression en cours · 1/1']),
+    ({'total': 0}, 'not_selected', ['Aucun document à imprimer']),
+    ({'total': 0}, 'uncertain', ['Aucun document à imprimer', 'Impression à vérifier']),
+    ({'total': 1, 'error': 1}, 'error', ['Impression à vérifier']),
+])
+def test_print_badges_distinguish_pending_submitted_simulated_and_uncertain(progress, status, labels):
+    message = {'status': 'ready', 'print_progress': progress, 'print_status': status}
+    badges = js(f'ui.messagePrintBadges({json.dumps(message)})')
+    assert [badge['label'] for badge in badges] == labels
+    if status in ('error', 'uncertain'):
+        assert badges[-1]['tone'] == 'error'
+
+
+def test_print_badges_wait_for_export():
+    assert js('ui.messagePrintBadges({status:"queued"})') == []

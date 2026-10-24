@@ -31,13 +31,26 @@
     }).map(path => ({path, depth: path.split('/').length - 1, hasChildren: all.some(other => other.startsWith(path + '/')), expanded: !!q || open.has(path)}));
   }
   const sortClients = items => [...items].sort((a, b) => Number(b.starred === true) - Number(a.starred === true) || a.name.localeCompare(b.name, 'fr'));
+  function messagePrintBadges(message) {
+    if (message.status !== 'ready') return [];
+    const p = message.print_progress || {};
+    const badges = [];
+    const add = (label, count, tone) => { if (count) badges.push({label: `${label} · ${count}/${p.total}`, tone}); };
+    if (!p.total) badges.push({label: 'Aucun document à imprimer', tone: 'neutral'});
+    add('À imprimer', p.pending, 'pending');
+    add('Transmis à l’imprimante', p.submitted, '');
+    add('Simulation', p.simulated, 'info');
+    add('Impression en cours', (p.preparing || 0) + (p.submitting || 0), 'info');
+    if (p.error || p.uncertain || ['error', 'uncertain'].includes(message.print_status)) badges.push({label: 'Impression à vérifier', tone: 'error'});
+    return badges;
+  }
   function documentPrintView(doc, jobs = []) {
     const own = jobs.filter(job => job.document_id === doc.id);
     const latest = own[own.length - 1];
     const reprint = own.some(job => ['submitted', 'simulated', 'uncertain', 'submitting'].includes(job.status));
     const sending = own.some(job => job.status === 'submitting');
     const status = latest?.status || 'pending';
-    const description = {pending: 'Pas encore imprimé', preparing: 'Préparation en cours', submitting: 'Envoi en cours…', submitted: 'Envoyé à l’imprimante', simulated: 'Impression simulée', uncertain: 'Impression à vérifier', error: 'Échec de l’impression'};
+    const description = {pending: 'Pas encore imprimé', preparing: 'Préparation en cours', submitting: 'Envoi en cours…', submitted: 'Transmis à l’imprimante', simulated: 'Impression simulée', uncertain: 'Impression à vérifier', error: 'Échec de l’impression'};
     return {reprint, disabled: !doc.printable || sending, label: !doc.printable ? 'Format non imprimable' : sending ? 'Envoi en cours…' : reprint ? 'Réimprimer…' : status === 'error' ? 'Réessayer' : 'Imprimer', status, description: doc.printable ? description[status] || 'État à vérifier' : 'Format non imprimable ici', tone: ['uncertain', 'error'].includes(status) ? 'error' : '', error: latest?.error || ''};
   }
   function checkedFolder(path) {
@@ -105,7 +118,7 @@
   }
 
   // Export deterministic transformations for focused tests without a browser.
-  if (typeof module !== 'undefined' && module.exports) module.exports = {escape, sortClients, documentPrintView, messageMatches, folderEntries, checkedFolder, withParents, changeBranch, updateView, updateRecovery, sessionRequest};
+  if (typeof module !== 'undefined' && module.exports) module.exports = {escape, sortClients, documentPrintView, messagePrintBadges, messageMatches, folderEntries, checkedFolder, withParents, changeBranch, updateView, updateRecovery, sessionRequest};
   if (typeof document === 'undefined') return;
 
   const $ = (selector, root = document) => root.querySelector(selector);
@@ -220,7 +233,7 @@
   function selectedMessages() { const ids = model.selected.size ? model.selected : new Set([model.active]); return messages().filter(m => ids.has(m.id)); }
   function empty(title, description, extra = '') { return `<div class="empty-state"><span class="empty-icon" aria-hidden="true">▤</span><h3>${escape(title)}</h3><p>${escape(description)}</p>${extra}</div>`; }
   function chip(text, tone = '') { return `<span class="chip ${tone}">${escape(text)}</span>`; }
-  function printLabel(status) { return ({pending: 'À imprimer', submitted: 'Envoyé à l’imprimante', simulated: 'Impression simulée', uncertain: 'Impression à vérifier', error: 'Erreur d’impression', historical: 'Historique · impression manuelle', partial: 'Impression partielle', mixed: 'Envois et simulations', not_selected: 'Aucun document choisi', preparing: 'Préparation en cours', submitting: 'Envoi en cours…'})[status] || 'À imprimer'; }
+  function printLabel(status) { return ({pending: 'À imprimer', submitted: 'Transmis à l’imprimante', simulated: 'Impression simulée', uncertain: 'Impression à vérifier', error: 'Erreur d’impression', historical: 'Historique · impression manuelle', partial: 'Impression partielle', mixed: 'Envois et simulations', not_selected: 'Aucun document choisi', preparing: 'Préparation en cours', submitting: 'Envoi en cours…'})[status] || 'À imprimer'; }
   function printTone(status) { return ['uncertain', 'error'].includes(status) ? 'error' : ['submitted', 'simulated'].includes(status) ? '' : 'neutral'; }
   function render() {
     const state = model.state;
@@ -299,21 +312,41 @@
       const client = messageClient(m);
       const sender = String(m.sender || 'Expéditeur inconnu').replace(/\s*<.*>$/, '');
       const docs = m.documents || [];
-      return `<article class="message-row${model.active === m.id ? ' active' : ''}${model.selected.has(m.id) ? ' selected' : ''}" data-message="${escape(m.id)}" tabindex="0" aria-label="${escape(m.subject || 'Sans objet')}, ${escape(client?.name || '')}, ${escape(dateLabel(m.date))}" aria-current="${model.active === m.id ? 'true' : 'false'}"><input class="message-checkbox" type="checkbox" data-select="${escape(m.id)}" aria-label="Sélectionner ${escape(m.subject || 'ce mail')}" ${model.selected.has(m.id) ? 'checked' : ''}><span class="mail-avatar" aria-hidden="true">${escape(initials(client?.name || sender))}</span><div class="message-content"><div class="message-row-top"><span class="message-sender">${escape(model.client ? sender : client?.name || sender)}</span><time class="message-time" datetime="${escape(m.date)}">${escape(dateLabel(m.date))}</time></div><p class="message-subject">${escape(m.subject || 'Sans objet')}</p><p class="message-snippet">${escape(m.body?.replace(/\s+/g, ' ').slice(0, 120) || sender)}</p><div class="message-meta">${m.status === 'error' ? chip('Export à reprendre', 'error') : m.status === 'queued' ? chip('Export en attente', 'neutral') : chip('PDF disponible')}${chip(m.classification === 'classified' ? 'Classé' : `À classer · ${docs.filter(d => d.classification !== 'classified' || d.move_to).length}/${docs.length}`, m.classification === 'classified' ? '' : 'pending')}${needsAttention(m) && m.status !== 'error' ? chip('Impression à vérifier', 'error') : ''}${docs.length > 1 ? `<span class="attachment-count">↳ ${docs.length - 1} pièce${docs.length > 2 ? 's' : ''}</span>` : ''}</div></div></article>`;
+      return `<article class="message-row${model.active === m.id ? ' active' : ''}${model.selected.has(m.id) ? ' selected' : ''}" data-message="${escape(m.id)}" tabindex="0" aria-label="${escape(m.subject || 'Sans objet')}, ${escape(client?.name || '')}, ${escape(dateLabel(m.date))}" aria-current="${model.active === m.id ? 'true' : 'false'}"><input class="message-checkbox" type="checkbox" data-select="${escape(m.id)}" aria-label="Sélectionner ${escape(m.subject || 'ce mail')}" ${model.selected.has(m.id) ? 'checked' : ''}><span class="mail-avatar" aria-hidden="true">${escape(initials(client?.name || sender))}</span><div class="message-content"><div class="message-row-top"><span class="message-sender">${escape(model.client ? sender : client?.name || sender)}</span><time class="message-time" datetime="${escape(m.date)}">${escape(dateLabel(m.date))}</time></div><p class="message-subject">${escape(m.subject || 'Sans objet')}</p><p class="message-snippet">${escape(m.body?.replace(/\s+/g, ' ').slice(0, 120) || sender)}</p><div class="message-meta">${m.status === 'error' ? chip('Export à reprendre', 'error') : m.status === 'queued' ? chip('Export en attente', 'neutral') : ''}${chip(m.classification === 'classified' ? 'Classé' : `À classer · ${docs.filter(d => d.classification !== 'classified' || d.move_to).length}/${docs.length}`, m.classification === 'classified' ? '' : 'pending')}${messagePrintBadges(m).map(badge => chip(badge.label, badge.tone)).join('')}${docs.length > 1 ? `<span class="attachment-count">↳ ${docs.length - 1} pièce${docs.length > 2 ? 's' : ''}</span>` : ''}</div></div></article>`;
     }).join('');
   }
   function filingBadge(d) {
     const pending = d.classification !== 'classified' || !!d.move_to;
     return `<span class="filing-status${pending ? ' pending' : ''}">${pending ? 'À classer' : '✓ Classé'}</span>`;
   }
-  function documentCard(d, message) {
+  function documentControls(d, message, isEmail = false) {
     const pending = d.classification !== 'classified' || !!d.move_to;
     const open = model.filing?.documentId === d.id;
     const print = documentPrintView(d, message.print_jobs);
     const printBusy = model.busy.has('print-document:' + d.id);
-    const printerIcon = '<svg viewBox="0 0 24 24" width="20" height="20" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M6 9V3h12v6M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2"/><path d="M6 14h12v7H6zM18 12h.01"/></svg>';
-    return `<div class="document${pending ? ' pending' : ''}" data-document-id="${escape(d.id)}"><div class="document-row"><span class="document-icon" aria-hidden="true">${escape(d.name.split('.').pop().slice(0, 4).toUpperCase())}</span><div class="document-info"><p class="document-name">${escape(d.name)}</p><div class="document-tracking">${filingBadge(d)}<span class="filing-status print-tracking ${d.printable ? escape(print.status) : 'unavailable'}">${escape(print.description)}</span></div>${d.inline ? '<small>Image intégrée au message</small>' : ''}${print.error ? `<small class="document-print-status error">${escape(print.error)}</small>` : ''}</div><div class="document-actions"><button class="icon-button" data-action="preview" data-id="${escape(d.id)}" title="Consulter le document" aria-label="Consulter ${escape(d.original_name || d.name)}">↗</button><button class="icon-button" data-action="reveal" data-id="${escape(d.id)}" title="Afficher dans le Finder" aria-label="Afficher dans le Finder">▱</button><button class="icon-button document-print" data-action="print-document" data-id="${escape(d.id)}" title="${escape(print.label)}" aria-label="${escape(print.label)} : ${escape(d.original_name || d.name)}" ${print.disabled || printBusy || message.status !== 'ready' || updatesLocked() ? 'disabled' : ''} ${printBusy ? 'aria-busy="true"' : ''}>${printerIcon}</button></div></div><button class="document-destination" data-action="classify-document" data-id="${escape(d.id)}" aria-expanded="${open}" aria-controls="filing-${escape(d.id)}" ${message.status !== 'ready' ? 'disabled' : ''}><span>${pending ? 'Choisir un dossier…' : `Dossier : ${escape(d.destination || parentPath(d.path))}`}</span><span aria-hidden="true">${open ? '⌃' : '⌄'}</span></button><div id="filing-${escape(d.id)}" class="filing-slot"></div><div class="document-options"><label class="print-inclusion"><input type="checkbox" data-document-select="${escape(d.id)}" aria-label="Inclure ${escape(d.original_name || d.name)} à l’impression automatique ou groupée" ${d.selected ? 'checked' : ''} ${!d.printable ? 'disabled' : ''}><span>Impression auto / groupée</span></label>${d.undo_filing && !d.move_to ? `<button class="button quiet small undo-filing" data-action="undo-filing" data-id="${escape(d.id)}" data-token="${escape(d.undo_filing.token)}" title="Rétablir le dossier précédent ; une impression déjà envoyée reste inchangée" ${updatesLocked() ? 'disabled' : ''}>Annuler le classement</button>` : ''}</div></div>`;
+    const name = escape(d.original_name || d.name);
+    const previewLabel = isEmail ? 'Voir le PDF du mail' : 'Consulter ' + name;
+    const finderLabel = isEmail ? 'Afficher le PDF du mail dans le Finder' : 'Afficher dans le Finder';
+    return {
+      pending,
+      tracking: `<div class="document-tracking">${filingBadge(d)}<span class="filing-status print-tracking ${d.printable ? escape(print.status) : 'unavailable'}">${escape(print.description)}</span></div>`,
+      error: print.error ? `<small class="document-print-status error">${escape(print.error)}</small>` : '',
+      actions: `<div class="document-actions"><button class="icon-button" data-action="preview" data-id="${escape(d.id)}" title="${previewLabel}" aria-label="${previewLabel}"><span class="document-action-icon icon-eye" aria-hidden="true"></span></button><button class="icon-button" data-action="reveal" data-id="${escape(d.id)}" title="${finderLabel}" aria-label="${finderLabel}"><span class="document-action-icon icon-folder" aria-hidden="true"></span></button><button class="icon-button document-print" data-action="print-document" data-id="${escape(d.id)}" title="${escape(print.label)}" aria-label="${escape(print.label)} : ${name}" ${print.disabled || printBusy || message.status !== 'ready' || updatesLocked() ? 'disabled' : ''} ${printBusy ? 'aria-busy="true"' : ''}><span class="document-action-icon icon-printer" aria-hidden="true"></span></button></div>`,
+      destination: `<button class="document-destination" data-action="classify-document" data-id="${escape(d.id)}" aria-expanded="${open}" aria-controls="filing-${escape(d.id)}" ${message.status !== 'ready' ? 'disabled' : ''}><span>${pending ? 'Choisir un dossier…' : `Dossier : ${escape(d.destination || parentPath(d.path))}`}</span><span aria-hidden="true">${open ? '⌃' : '⌄'}</span></button>`,
+      filing: `<div id="filing-${escape(d.id)}" class="filing-slot"></div>`,
+
+      undo: d.undo_filing && !d.move_to ? `<button class="button quiet small undo-filing" data-action="undo-filing" data-id="${escape(d.id)}" data-token="${escape(d.undo_filing.token)}" title="Rétablir le dossier précédent ; une impression déjà envoyée reste inchangée" ${updatesLocked() ? 'disabled' : ''}>Annuler le classement</button>` : ''
+    };
   }
+  function documentCard(d, message) {
+    const controls = documentControls(d, message);
+    return `<div class="document${controls.pending ? ' pending' : ''}" data-document-id="${escape(d.id)}"><div class="document-row"><span class="document-icon" aria-hidden="true">${escape(d.name.split('.').pop().slice(0, 4).toUpperCase())}</span><div class="document-info"><p class="document-name">${escape(d.name)}</p><div class="document-status-row">${controls.tracking}${controls.actions}</div>${d.inline ? '<small>Image intégrée au message</small>' : ''}${controls.error}</div></div>${controls.destination}${controls.filing}${controls.undo ? `<div class="document-options">${controls.undo}</div>` : ''}</div>`;
+  }
+  function emailFooter(d, message) {
+    const controls = documentControls(d, message, true);
+    return `<footer class="email-footer${controls.pending ? ' pending' : ''}" data-document-id="${escape(d.id)}" aria-label="Classement et impression du PDF du mail"><div class="email-status-row">${controls.tracking}${controls.actions}</div>${controls.error}${controls.destination}${controls.filing}${controls.undo ? `<div class="document-options">${controls.undo}</div>` : ''}</footer>`;
+  }
+
   function renderDetail() {
     const m = activeMessage();
     const panel = $('#detail-panel');
@@ -321,15 +354,27 @@
     const client = messageClient(m);
     const docs = m.documents || [];
     const email = docs.find(d => d.kind === 'email');
+    const attachments = docs.filter(d => d.kind !== 'email');
     if (model.filing && (model.filing.messageId !== m.id || !docs.some(d => d.id === model.filing.documentId))) model.filing = null;
     const candidate = $('#inline-filing');
     const previous = model.filing && candidate?.dataset.documentId === model.filing.documentId ? candidate : null;
     const focused = previous?.contains(document.activeElement) ? document.activeElement : null;
     const scroll = $('.detail-content', panel)?.scrollTop || 0;
     const pendingDocs = docs.filter(d => d.classification !== 'classified' || d.move_to).length;
-    const progress = m.print_progress || {};
-    const printSummary = progress.total ? `Envoyés ${progress.submitted || 0}/${progress.total}${progress.simulated ? ` · Simulés ${progress.simulated}/${progress.total}` : ''}` : 'Aucun document choisi';
-    panel.innerHTML = `<div class="detail-header"><span>APERÇU DE LA COMMUNICATION</span>${email ? `<button class="button quiet small" data-action="preview" data-id="${escape(email.id)}">Ouvrir le PDF ↗</button>` : ''}</div><div class="detail-content"><h2 class="detail-subject">${escape(m.subject || 'Sans objet')}</h2><p class="detail-sender">${escape(m.sender || 'Expéditeur inconnu')} · ${escape(dateLabel(m.date))}</p><div class="detail-statuses">${chip(`Classés ${docs.length - pendingDocs}/${docs.length}`, pendingDocs ? 'pending' : '')}${chip(printSummary, printTone(m.print_status))}${['error', 'uncertain', 'preparing', 'submitting'].includes(m.print_status) ? chip(printLabel(m.print_status), printTone(m.print_status)) : ''}</div>${m.error ? `<div class="notice error"><span>${escape(m.error)}</span><button class="button small" data-action="process">Reprendre</button></div>` : ''}<details class="mail-body" data-body-message="${escape(m.id)}" ${model.bodyCollapsed.has(m.id) ? '' : 'open'}><summary>Contenu du mail</summary><dl class="detail-meta"><dt>De</dt><dd>${escape(m.sender || '—')}</dd><dt>À</dt><dd>${escape(Array.isArray(m.recipients) ? m.recipients.join(', ') : m.recipients || '—')}</dd><dt>Reçu</dt><dd>${escape(dateLabel(m.date, true))}</dd><dt>Client</dt><dd>${escape(client?.name || '—')}</dd></dl><div class="document-preview">${escape(m.body || 'Contenu disponible après export.')}</div></details><h3 class="mini-heading">DOCUMENTS <small>${docs.length} fichier${docs.length > 1 ? 's' : ''}</small></h3><div class="document-list">${docs.length ? docs.map(d => documentCard(d, m)).join('') : '<p class="small subtle">Les documents apparaîtront après l’export.</p>'}</div>${(m.print_jobs || []).length ? `<details class="print-history"><summary>Historique des impressions · ${m.print_jobs.length} tentative${m.print_jobs.length > 1 ? 's' : ''}</summary><p class="detail-note">Les anciens échecs restent dans cet historique. Le suivi courant utilise la dernière tentative de chaque document.</p>${[...m.print_jobs].reverse().map(job => `<p class="detail-note">${escape(docs.find(d => d.id === job.document_id)?.name || 'Document')} · ${escape(printLabel(job.status))}${job.job_id ? ` · ${escape(job.job_id)}` : ''}${job.error ? `<br><strong>${escape(job.error)}</strong>` : ''}</p>`).join('')}</details>` : ''}<p class="detail-note">L’icône imprimante imprime uniquement ce document. Les cases servent aux impressions automatiques ou des mails sélectionnés.</p><p class="detail-note">${m.historical ? 'Historique : aucune impression automatique. ' : ''}${model.state?.settings?.dry_run ? 'Simulation active : aucun papier imprimé. ' : ''}Un envoi à l’imprimante ne confirme pas la sortie du papier.</p></div>`;
+    panel.innerHTML = `<div class="detail-header"><span>APERÇU DE LA COMMUNICATION</span></div><div class="detail-content">
+      <div class="detail-statuses" aria-label="Progression de tous les documents de cette communication">${chip(`Classés ${docs.length - pendingDocs}/${docs.length}`, pendingDocs ? 'pending' : '')}${messagePrintBadges(m).map(badge => chip(badge.label, badge.tone)).join('')}</div>
+      ${m.error ? `<div class="notice error"><span>${escape(m.error)}</span><button class="button small" data-action="process">Reprendre</button></div>` : ''}
+      <article class="email-surface" aria-labelledby="email-subject">
+        <div class="email-reading"><h2 class="detail-subject" id="email-subject">${escape(m.subject || 'Sans objet')}</h2>
+          <dl class="detail-meta"><dt>De</dt><dd>${escape(m.sender || '—')}</dd><dt>À</dt><dd>${escape(Array.isArray(m.recipients) ? m.recipients.join(', ') : m.recipients || '—')}</dd><dt>Reçu</dt><dd>${escape(dateLabel(m.date, true))}</dd><dt>Client</dt><dd>${escape(client?.name || '—')}</dd></dl>
+          <details class="mail-body" data-body-message="${escape(m.id)}" ${model.bodyCollapsed.has(m.id) ? '' : 'open'}><summary>Contenu du mail</summary><div class="document-preview">${escape(m.body || 'Contenu disponible après export.')}</div></details>
+        </div>
+        ${email ? emailFooter(email, m) : '<footer class="email-footer"><p class="small subtle">Le PDF sera disponible après l’export.</p></footer>'}
+      </article>
+      <section class="attachments-section" aria-labelledby="attachments-title"><h3 class="mini-heading" id="attachments-title">PIÈCES JOINTES <small>${attachments.length} fichier${attachments.length > 1 ? 's' : ''}</small></h3><div class="document-list">${attachments.length ? attachments.map(d => documentCard(d, m)).join('') : `<p class="small subtle">${m.status === 'ready' ? 'Aucune pièce jointe.' : 'Les pièces jointes apparaîtront après l’export.'}</p>`}</div></section>
+      ${(m.print_jobs || []).length ? `<details class="print-history"><summary>Historique des impressions · ${m.print_jobs.length} tentative${m.print_jobs.length > 1 ? 's' : ''}</summary><p class="detail-note">Les anciens échecs restent dans cet historique. Le suivi courant utilise la dernière tentative de chaque document.</p>${[...m.print_jobs].reverse().map(job => `<p class="detail-note">${escape(docs.find(d => d.id === job.document_id)?.name || 'Document')} · ${escape(printLabel(job.status))}${job.job_id ? ` · ${escape(job.job_id)}` : ''}${job.error ? `<br><strong>${escape(job.error)}</strong>` : ''}</p>`).join('')}</details>` : ''}
+      <p class="detail-note">${m.historical ? 'Historique : aucune impression automatique. ' : ''}${model.state?.settings?.dry_run ? 'Simulation active : aucun papier imprimé. ' : ''}Un envoi à l’imprimante ne confirme pas la sortie du papier.</p></div>`;
+
     if (model.filing) {
       const slot = document.getElementById('filing-' + model.filing.documentId);
       if (previous) { slot.append(previous); if (focused) focused.focus({preventScroll: true}); renderFolders(); }
