@@ -155,6 +155,15 @@ class UpdateManager:
     def check_async(self):
         return self._start('checking', self.check)
 
+    def _already_included(self, commit):
+        if commit == self.current_commit:
+            return True
+        try:
+            return git('merge-base', commit, self.current_commit, cwd=self.source_root) == commit
+        except UpdateError:
+            # A remote revision may not yet exist in this checkout's object database.
+            return False
+
     def check(self):
         try:
             ref = 'refs/heads/' + self.config['branch']
@@ -162,14 +171,14 @@ class UpdateManager:
             matches = [line.split()[0] for line in output.splitlines() if len(line.split())==2 and line.split()[1]==ref]
             if len(matches)!=1 or not SHA.fullmatch(matches[0]): raise UpdateError('La branche ne fournit pas de version identifiable.')
             sha = matches[0]
-            self._set(status='current' if sha==self.current_commit else 'available', available_commit=sha, checked_at=datetime.now(timezone.utc).isoformat(), error='', progress='')
+            self._set(status='current' if self._already_included(sha) else 'available', available_commit=sha, checked_at=datetime.now(timezone.utc).isoformat(), error='', progress='')
         except (UpdateError, KeyError, OSError) as exc:
             self._set(status='error', error=str(exc) if isinstance(exc, UpdateError) else 'Vérification impossible. Vérifiez la configuration du dépôt.', progress='')
 
     def install_async(self, commit):
         with self.lock:
             if not self.restart: raise ValueError('Relancez l’application avec son lanceur habituel pour activer les mises à jour.')
-            if not isinstance(commit, str) or not SHA.fullmatch(commit) or commit!=self.value.get('available_commit') or commit==self.current_commit:
+            if not isinstance(commit, str) or not SHA.fullmatch(commit) or commit!=self.value.get('available_commit') or self._already_included(commit):
                 raise ValueError('Version indisponible ou périmée. Vérifiez les mises à jour à nouveau.')
             return self._start('installing', self.install, commit)
 

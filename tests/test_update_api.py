@@ -2,9 +2,16 @@ from fastapi.testclient import TestClient
 from mailord.app import create_app
 from mailord.config import defaults
 from mailord.store import Store
+from mailord import updates
 
 
-def test_update_api_security_and_configuration(tmp_path):
+def test_update_api_security_and_configuration(tmp_path, monkeypatch):
+    actual_git = updates.git
+    def no_origin(*args, **kwargs):
+        if args == ('remote', 'get-url', 'origin'):
+            raise updates.UpdateError('No repository configured for this test.')
+        return actual_git(*args, **kwargs)
+    monkeypatch.setattr(updates, 'git', no_origin)
     app=create_app(defaults(tmp_path),background=False)
     with TestClient(app,base_url='http://127.0.0.1:8765') as c:
         s=c.get('/api/state').json();assert s['updates']['status']=='unconfigured'

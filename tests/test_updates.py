@@ -36,6 +36,27 @@ def test_check_exact_commit_and_current(tmp_path,repository):
     m.check();s=m.state();assert s['status']=='available';assert s['available_commit']==git(repository,'rev-parse','HEAD')
     assert s['current_commit']!=s['available_commit']
 
+def test_remote_ancestor_is_not_an_update(tmp_path,repository):
+    checkout=tmp_path/'checkout'
+    git(tmp_path,'clone',str(repository),str(checkout))
+    git(checkout,'config','user.email','test@example.invalid');git(checkout,'config','user.name','Test')
+    (checkout/'local').write_text('local');git(checkout,'add','local');git(checkout,'commit','-m','local change')
+    m=manager(tmp_path,checkout,restart=lambda:None)
+    m.check()
+    assert m.state()['status']=='current'
+    with pytest.raises(ValueError):
+        m.install_async(git(repository,'rev-parse','HEAD'))
+    assert not (m.directory/'pending.json').exists()
+
+def test_remote_commit_absent_from_checkout_is_available(tmp_path,repository):
+    checkout=tmp_path/'checkout'
+    git(tmp_path,'clone',str(repository),str(checkout))
+    m=manager(tmp_path,checkout)
+    (repository/'new').write_text('remote');git(repository,'add','new');git(repository,'commit','-m','remote change')
+    m.check()
+    assert m.state()['status']=='available'
+    assert m.state()['available_commit']==git(repository,'rev-parse','HEAD')
+
 def test_prepare_isolated_pinned_and_does_not_replace_data(tmp_path,repository):
     called=[];m=manager(tmp_path,repository,restart=lambda:called.append(True))
     m.configure(str(repository),'main')
